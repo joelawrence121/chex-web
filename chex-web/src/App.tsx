@@ -17,7 +17,7 @@ function App() {
             <div className="card">j</div>
             <div className="card">k</div>
             <div className="card">l</div>
-            <div className="card">
+            <div className="main">
                 <Chessboard
                     width={400}
                     position="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"/>
