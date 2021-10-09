@@ -1,8 +1,23 @@
-import React from 'react';
-import './App.css';
-import Chessboard from "chessboardjsx";
+import React, {useEffect, useState} from 'react';
+import './styles/App.css';
+import Puzzle from "./Puzzle";
+import ChapiService from "./services/ChapiService";
+import PuzzleData from "./types/PuzzleData";
 
-function App() {
+const App: React.FC = () => {
+    const [puzzle, setPuzzle] = useState<PuzzleData>();
+
+    useEffect(() => {
+        ChapiService.getSingleMatePuzzle()
+            .then(response => {
+                setPuzzle(response.data);
+                console.log(response.data)
+            })
+            .catch(e => {
+                console.log(e)
+            })
+    }, [])
+
     return (
         <section className="animated-grid">
             <div className="card">a</div>
@@ -13,14 +28,7 @@ function App() {
             <div className="card">f</div>
             <div className="card">g</div>
             <div className="card">h</div>
-            <div className="card">i</div>
-            <div className="card">j</div>
-            <div className="card">k</div>
-            <div className="card">l</div>
-            <div className="main">
-                <Chessboard
-                    width={400}
-                    position="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"/>
+            <div className="main"><Puzzle position={puzzle?.starting_fen}/>
             </div>
         </section>
     );
