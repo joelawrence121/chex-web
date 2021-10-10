@@ -47,9 +47,9 @@ const App: React.FC = () => {
         <section className="animated-grid">
             <div className="card">a</div>
             <div className="card"><h2>{puzzle?.to_move} TO MOVE</h2></div>
-            <div className="card" onClick={reRender}>NEW</div>
-            <div className="card"><h2>{getMoveType(puzzle?.type)}</h2></div>
             <div className="card">c</div>
+            <div className="card"><h2>{getMoveType(puzzle?.type)}</h2></div>
+            <div className="card" onClick={reRender}>NEW</div>
             <div className="card" onClick={toggleSolution}>{getSolution()}</div>
             <div className="card">g</div>
             <div className="card">e</div>
