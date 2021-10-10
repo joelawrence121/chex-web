@@ -85,6 +85,7 @@ body {
   background-color: rgb(44, 44, 44);
   animation: cardEntrance 700ms ease-out;
   animation-fill-mode: backwards;
+  user-select: none;
 }
 
 .card:nth-child(1) {
