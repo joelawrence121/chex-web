@@ -1,11 +1,11 @@
 import {Chessboard} from "react-chessboard";
 import React from "react";
 
-interface PuzzleProps {
+interface BoardProps {
     position : string | undefined;
 }
 
-function Puzzle(props:PuzzleProps) {
+function MainBoard(props:BoardProps) {
     return (
         <Chessboard
             boardWidth={400}
@@ -14,4 +14,4 @@ function Puzzle(props:PuzzleProps) {
     )
 }
 
-export default Puzzle;
+export default MainBoard;
