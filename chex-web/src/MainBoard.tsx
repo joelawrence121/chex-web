@@ -8,8 +8,12 @@ interface BoardProps {
 function MainBoard(props:BoardProps) {
     return (
         <Chessboard
-            boardWidth={400}
+            boardWidth={250}
             position= {props.position}
+            customBoardStyle={{
+                borderRadius: "5px",
+                boxShadow: `0 5px 15px rgba(0, 0, 0, 0.5)`
+            }}
         />
     )
 }
