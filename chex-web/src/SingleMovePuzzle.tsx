@@ -12,15 +12,15 @@ const PUZZLE_TYPE_DESCRIPTIONS = new Map([
 ])
 
 const SingleMovePuzzle: React.FC = () => {
+
     // piece of state just to trigger rerender on button press
     const [random, setRandom] = useState(Math.random());
     const [solutionVisible, setSolutionVisible] = useState(false);
+    const [arrow, setArrow] = useState([['', '']])
     const [puzzle, setPuzzle] = useState<PuzzleData>();
     const [puzzleType, changePuzzleType] = useState(PuzzleType.MATE);
 
     const reRender = () => setRandom(Math.random());
-    const toggleSolution = () => setSolutionVisible(!solutionVisible);
-
     useEffect(() => {
         ChapiService.getSingleMatePuzzle(puzzleType.valueOf())
             .then(response => {
@@ -32,6 +32,18 @@ const SingleMovePuzzle: React.FC = () => {
                 console.log(e)
             })
     }, [random, puzzleType])
+
+    function toggleSolution() {
+        if (!solutionVisible) {
+            let solution = puzzle?.move
+            setArrow([[solution?.slice(0, 2) as string, solution?.slice(2, 5) as string]])
+            console.log([[solution?.slice(0, 2) as string, solution?.slice(2, 5) as string]])
+        } else {
+            setArrow([])
+        }
+        setSolutionVisible(!solutionVisible);
+
+    }
 
     function getMoveType(key: string | undefined) {
         if (PUZZLE_TYPE_DESCRIPTIONS.has(key as string)) {
@@ -49,6 +61,10 @@ const SingleMovePuzzle: React.FC = () => {
         changePuzzleType(puzzleTypes[(puzzleTypes.indexOf(puzzleType) + 1) % 3])
     }
 
+    function onPositionChange(currentPosition: any) {
+        console.log(currentPosition)
+    }
+
     return (
         <section className="animated-grid">
             <div className="card">a</div>
@@ -60,7 +76,11 @@ const SingleMovePuzzle: React.FC = () => {
             <div className="card">g</div>
             <div className="card">e</div>
             <div className="main">
-                <MainBoard position={puzzle?.starting_fen} boardOrientation={puzzle?.to_move as string}/>
+                <MainBoard position={puzzle?.starting_fen}
+                           boardOrientation={puzzle?.to_move as string}
+                           onPositionChange={onPositionChange}
+                           arrows={arrow}
+                />
             </div>
         </section>
     );
