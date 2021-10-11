@@ -59,7 +59,8 @@ const SingleMovePuzzle: React.FC = () => {
             <div className="card" onClick={switchPuzzleType}><h2>{getMoveType(puzzle?.type)}</h2></div>
             <div className="card">g</div>
             <div className="card">e</div>
-            <div className="main"><MainBoard position={puzzle?.starting_fen}/>
+            <div className="main">
+                <MainBoard position={puzzle?.starting_fen} boardOrientation={puzzle?.to_move as string}/>
             </div>
         </section>
     );
