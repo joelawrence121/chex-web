@@ -17,6 +17,7 @@ function MainBoard(props: BoardProps) {
             boardOrientation={getBoardOrientation(props.boardOrientation)}
             getPositionObject={props.onPositionChange}
             customArrows={props.arrows}
+
             customBoardStyle={{
                 borderRadius: "5px",
                 boxShadow: `0 5px 15px rgba(0, 0, 0, 0.5)`
