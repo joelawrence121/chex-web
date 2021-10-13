@@ -7,6 +7,7 @@ body {
 }
 
 .card {
+  resize: both;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -26,6 +27,7 @@ body {
 }
 
 .main {
+  resize: both;
   display: flex;
   flex-direction: column;
   justify-content: space-around;

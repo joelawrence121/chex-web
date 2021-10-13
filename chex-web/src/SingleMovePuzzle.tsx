@@ -8,7 +8,8 @@ import PuzzleType from "./types/PuzzleType";
 const PUZZLE_TYPE_DESCRIPTIONS = new Map([
     [PuzzleType.MATE.valueOf(), "MATE IN 1"],
     [PuzzleType.GAIN.valueOf(), "ADVANTAGE GAIN"],
-    [PuzzleType.SWING.valueOf(), "ADVANTAGE SWING"]
+    [PuzzleType.SWING.valueOf(), "ADVANTAGE SWING"],
+    [PuzzleType.PIN.valueOf(), "ABSOLUTE PIN"]
 ])
 
 const SingleMovePuzzle: React.FC = () => {
@@ -33,17 +34,26 @@ const SingleMovePuzzle: React.FC = () => {
             })
     }, [random, puzzleType])
 
+    function getArrows() {
+        function sliceMove(solution : string | undefined) {
+            return [solution?.slice(0, 2) as string, solution?.slice(2, 5) as string]
+        }
+        let solution = puzzle?.move
+        let arrows = [sliceMove(solution)]
+        // if pin puzzle type we want to show the follow move by the other player
+        if (puzzle?.type === PuzzleType.PIN.valueOf()) {
+            arrows.push(sliceMove(puzzle?.follow_move))
+        }
+        return arrows
+    }
+
     function toggleSolution() {
         if (!solutionVisible) {
-            let solution = puzzle?.move
-            // this won't work for the larger move values (like replacement)
-            setArrow([[solution?.slice(0, 2) as string, solution?.slice(2, 5) as string]])
-            console.log([[solution?.slice(0, 2) as string, solution?.slice(2, 5) as string]])
+            setArrow(getArrows())
         } else {
             setArrow([])
         }
         setSolutionVisible(!solutionVisible);
-
     }
 
     function getMoveType(key: string | undefined) {
@@ -58,8 +68,8 @@ const SingleMovePuzzle: React.FC = () => {
     }
 
     function switchPuzzleType() {
-        const puzzleTypes = [PuzzleType.MATE, PuzzleType.GAIN, PuzzleType.SWING]
-        changePuzzleType(puzzleTypes[(puzzleTypes.indexOf(puzzleType) + 1) % 3])
+        const puzzleTypes = [PuzzleType.MATE, PuzzleType.GAIN, PuzzleType.SWING, PuzzleType.PIN]
+        changePuzzleType(puzzleTypes[(puzzleTypes.indexOf(puzzleType) + 1) % puzzleTypes.length])
     }
 
     function onPositionChange(currentPosition: any) {

@@ -1,7 +1,8 @@
 enum PuzzleType {
     MATE = "MATE",
     GAIN = "GAIN",
-    SWING = "SWING"
+    SWING = "SWING",
+    PIN = "PIN"
 }
 
 export default PuzzleType;
