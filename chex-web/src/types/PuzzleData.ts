@@ -5,5 +5,6 @@ export default interface PuzzleData {
     ending_fen: string,
     type: string,
     move: string,
-    to_move: string
+    to_move: string,
+    follow_move: string
 }
