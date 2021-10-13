@@ -36,6 +36,7 @@ const SingleMovePuzzle: React.FC = () => {
     function toggleSolution() {
         if (!solutionVisible) {
             let solution = puzzle?.move
+            // this won't work for the larger move values (like replacement)
             setArrow([[solution?.slice(0, 2) as string, solution?.slice(2, 5) as string]])
             console.log([[solution?.slice(0, 2) as string, solution?.slice(2, 5) as string]])
         } else {
@@ -76,10 +77,11 @@ const SingleMovePuzzle: React.FC = () => {
             <div className="card">g</div>
             <div className="card">e</div>
             <div className="main">
-                <MainBoard position={puzzle?.starting_fen}
-                           boardOrientation={puzzle?.to_move as string}
-                           onPositionChange={onPositionChange}
-                           arrows={arrow}
+                <MainBoard
+                    position={puzzle?.starting_fen}
+                    boardOrientation={puzzle?.to_move as string}
+                    onPositionChange={onPositionChange}
+                    arrows={arrow}
                 />
             </div>
         </section>

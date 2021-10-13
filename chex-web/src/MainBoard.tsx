@@ -12,9 +12,7 @@ function MainBoard(props: BoardProps) {
 
     return (
         <Chessboard
-            boardWidth={400}
-            animationDuration={500}
-            showBoardNotation={true}
+            boardWidth={250}
             position={props.position}
             boardOrientation={getBoardOrientation(props.boardOrientation)}
             getPositionObject={props.onPositionChange}
