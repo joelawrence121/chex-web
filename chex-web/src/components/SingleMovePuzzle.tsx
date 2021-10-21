@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import './styles/SingleMovePuzzle.css';
+import '../styles/SingleMovePuzzle.css';
 import MainBoard from "./MainBoard";
-import ChapiService from "./service/ChapiService";
-import PuzzleData from "./types/PuzzleData";
-import PuzzleType from "./types/PuzzleType";
+import ChapiService from "../service/ChapiService";
+import PuzzleData from "../types/PuzzleData";
+import PuzzleType from "../types/PuzzleType";
 
 const PUZZLE_TYPE_DESCRIPTIONS = new Map([
     [PuzzleType.MATE.valueOf(), "MATE IN 1"],

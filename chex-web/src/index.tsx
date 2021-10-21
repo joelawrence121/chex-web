@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './styles/index.css';
-import SingleMovePuzzle from './SingleMovePuzzle';
 import reportWebVitals from './config/reportWebVitals';
+import App from "./components/App";
 
 ReactDOM.render(
   <React.Fragment>
-    <SingleMovePuzzle />
+    <App />
   </React.Fragment>,
   document.getElementById('root')
 );
