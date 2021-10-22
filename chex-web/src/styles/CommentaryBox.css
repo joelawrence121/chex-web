@@ -48,10 +48,10 @@ body {
     resize: both;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    text-align: center;
+    justify-content: flex-start;
+    text-align: left;
     align-items: center;
-    font-size: 3rem;
+    font-size: 2rem;
     height: 100%;
     width: 100%;
     border-radius: 4px;
@@ -81,7 +81,7 @@ body {
     'e  d  d'
     'e  d  d';
 
-    grid-template-rows: auto auto auto;
+    grid-template-rows: 150px auto auto;
     grid-template-columns: 300px auto auto;
 
     --stagger-delay: 100ms;

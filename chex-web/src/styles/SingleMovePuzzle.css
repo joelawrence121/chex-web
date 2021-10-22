@@ -35,26 +35,6 @@ h2 {
     width:auto;
 }
 
-.card-p {
-  resize: both;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  align-items: center;
-  font-size: 3rem;
-  color: #fff;
-  box-shadow: rgba(3, 8, 20, 0.1) 0 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0 0.075rem 0.175rem;
-  height: 100%;
-  width: 100%;
-  border-radius: 4px;
-  transition: all 500ms;
-  overflow: hidden;
-
-  background-size: cover;
-  background: #353535 no-repeat center;
-}
-
 .card-t {
   resize: both;
   display: flex;
@@ -139,23 +119,23 @@ h2 {
 
 .card:nth-child(1) {
   grid-area: t;
-  animation-delay: calc(1 * var(--stagger-delay));
+  animation-delay: calc(3 * var(--stagger-delay));
 }
 .card:nth-child(2) {
   grid-area: p;
-  animation-delay: calc(2 * var(--stagger-delay));
+  animation-delay: calc(5 * var(--stagger-delay));
 }
 .card:nth-child(3) {
   grid-area: d;
-  animation-delay: calc(3 * var(--stagger-delay));
+  animation-delay: calc(7 * var(--stagger-delay));
 }
 .card:nth-child(4) {
   grid-area: s;
-  animation-delay: calc(4 * var(--stagger-delay));
+  animation-delay: calc(9 * var(--stagger-delay));
 }
 .card:nth-child(5) {
   grid-area: n;
-  animation-delay: calc(5 * var(--stagger-delay));
+  animation-delay: calc(11 * var(--stagger-delay));
 }
 .card:last-child {
   grid-area: 🌟;
