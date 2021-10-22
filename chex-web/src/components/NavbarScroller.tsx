@@ -22,7 +22,7 @@ const NavbarScroller = (props: {
 const Theme = {
     colors: {
         bg: `#fff`,
-        dark: `#03081419`,
+        dark: `rgba(2, 8, 20, 0.1)`,
         light: `#EEEEEE`,
         red: `#ff5851`,
     },
@@ -39,7 +39,12 @@ const Navbar = styled.nav`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  a { color: white; text-decoration: none; }`;
+  a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: large;
+  }`;
 
 const Brand = styled.a`
   font-weight: bold;
@@ -66,7 +71,7 @@ const Li = styled.li`
   display: flex;
   font-size: 14px;
   line-height: 16px;
-  margin: 0 10px ;
+  margin: 0 10px;
   white-space: nowrap;`;
 
 export default NavbarScroller
