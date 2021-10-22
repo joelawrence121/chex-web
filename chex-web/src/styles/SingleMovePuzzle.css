@@ -6,6 +6,10 @@ body {
   font-family: 'Noto Sans', sans-serif;
 }
 
+h2 {
+  resize: both;
+}
+
 .card {
   resize: both;
   display: flex;
@@ -26,21 +30,65 @@ body {
   background: #353535 no-repeat center;
 }
 
-.main {
+h2 {
+    height:auto;
+    width:auto;
+}
+
+.card-p {
   resize: both;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: center;
+  text-align: center;
   align-items: center;
-  flex-wrap: wrap;
+  font-size: 3rem;
   color: #fff;
   box-shadow: rgba(3, 8, 20, 0.1) 0 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0 0.075rem 0.175rem;
   height: 100%;
   width: 100%;
   border-radius: 4px;
+  transition: all 500ms;
   overflow: hidden;
+
   background-size: cover;
   background: #353535 no-repeat center;
+}
+
+.card-t {
+  resize: both;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  font-size: 3rem;
+  color: #fff;
+  box-shadow: rgba(3, 8, 20, 0.1) 0 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0 0.075rem 0.175rem;
+  height: 100%;
+  width: 100%;
+  border-radius: 4px;
+  transition: all 500ms;
+  overflow: hidden;
+
+  grid-area: t;
+}
+
+.main {
+  resize: both;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  font-size: 3rem;
+  height: 100%;
+  width: 100%;
+  border-radius: 4px;
+  transition: all 500ms;
+  overflow: hidden;
+  background-size: cover;
+
   grid-area: 🌟;
 }
 
@@ -58,13 +106,13 @@ body {
 
   /* Explicit grid */
   grid-template-areas:
-    'a  b  b  c'
-    'h  🌟 🌟  d'
-    'h  🌟 🌟  d'
-    'g  f  f  e';
+    't  t  t   p'
+    '🌟 🌟  🌟  d'
+    '🌟 🌟  🌟  s'
+    '🌟 🌟  🌟  n';
 
   grid-template-rows: repeat(4, 25%);
-  grid-template-columns: 240px auto auto 240px;
+  grid-template-columns: auto auto auto 300px;
 
   --stagger-delay: 100ms;
 }
@@ -90,54 +138,26 @@ body {
 }
 
 .card:nth-child(1) {
-  grid-area: a;
+  grid-area: t;
   animation-delay: calc(1 * var(--stagger-delay));
 }
 .card:nth-child(2) {
-  grid-area: b;
+  grid-area: p;
   animation-delay: calc(2 * var(--stagger-delay));
 }
 .card:nth-child(3) {
-  grid-area: c;
+  grid-area: d;
   animation-delay: calc(3 * var(--stagger-delay));
 }
 .card:nth-child(4) {
-  grid-area: d;
+  grid-area: s;
   animation-delay: calc(4 * var(--stagger-delay));
 }
 .card:nth-child(5) {
-  grid-area: e;
+  grid-area: n;
   animation-delay: calc(5 * var(--stagger-delay));
-}
-.card:nth-child(6) {
-  grid-area: f;
-  animation-delay: calc(6 * var(--stagger-delay));
-}
-.card:nth-child(7) {
-  grid-area: g;
-  animation-delay: calc(7 * var(--stagger-delay));
-}
-.card:nth-child(8) {
-  grid-area: h;
-  animation-delay: calc(8 * var(--stagger-delay));
-}
-.card:nth-child(9) {
-  grid-area: i;
-  animation-delay: calc(9 * var(--stagger-delay));
-}
-.card:nth-child(10) {
-  grid-area: j;
-  animation-delay: calc(10 * var(--stagger-delay));
-}
-.card:nth-child(11) {
-  grid-area: k;
-  animation-delay: calc(11 * var(--stagger-delay));
-}
-.card:nth-child(12) {
-  grid-area: l;
-  animation-delay: calc(12 * var(--stagger-delay));
 }
 .card:last-child {
   grid-area: 🌟;
-  animation-delay: calc(13 * var(--stagger-delay));
+  animation-delay: calc(5 * var(--stagger-delay));
 }

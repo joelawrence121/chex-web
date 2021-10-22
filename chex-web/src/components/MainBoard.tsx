@@ -2,6 +2,7 @@ import {Chessboard} from "react-chessboard";
 import React from "react";
 
 interface BoardProps {
+    boardWidth: number
     position: string | undefined;
     boardOrientation: string | undefined;
     onPositionChange: (currentPosition: any) => void
@@ -12,7 +13,7 @@ function MainBoard(props: BoardProps) {
 
     return (
         <Chessboard
-            boardWidth={400}
+            boardWidth={props.boardWidth}
             position={props.position}
             boardOrientation={getBoardOrientation(props.boardOrientation)}
             getPositionObject={props.onPositionChange}

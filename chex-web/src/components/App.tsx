@@ -2,6 +2,7 @@ import SingleMovePuzzle from "./SingleMovePuzzle";
 import React from "react";
 import NavbarScroller from "./NavbarScroller";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import CommentaryBox from "./CommentaryBox";
 
 const navigation = {
     brand: {name: "Chexplanations", to: "/"},
@@ -24,7 +25,7 @@ const App: React.FC = () => {
                 </Route>
                 <Route path="/commentary">
                     <NavbarScroller brand={brand} links={links}/>
-                    <h1>Commentary</h1>
+                    <CommentaryBox />
                 </Route>
                 <Route path="/">
                     <NavbarScroller brand={brand} links={links}/>

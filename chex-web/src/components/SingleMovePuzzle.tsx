@@ -7,9 +7,9 @@ import PuzzleType from "../types/PuzzleType";
 
 const PUZZLE_TYPE_DESCRIPTIONS = new Map([
     [PuzzleType.MATE.valueOf(), "MATE IN 1"],
-    [PuzzleType.GAIN.valueOf(), "ADVANTAGE GAIN"],
-    [PuzzleType.SWING.valueOf(), "ADVANTAGE SWING"],
-    [PuzzleType.PIN.valueOf(), "ABSOLUTE PIN"]
+    [PuzzleType.GAIN.valueOf(), "GAIN"],
+    [PuzzleType.SWING.valueOf(), "SWING"],
+    [PuzzleType.PIN.valueOf(), "PIN"]
 ])
 
 const SingleMovePuzzle: React.FC = () => {
@@ -78,16 +78,16 @@ const SingleMovePuzzle: React.FC = () => {
 
     return (
         <section className="animated-grid">
-            <div className="card">a</div>
-            <div className="card"><h2>{puzzle?.to_move} TO MOVE</h2></div>
-            <div className="card">c</div>
+            <div className="card-t"><h2>{puzzle?.to_move} TO MOVE</h2></div>
+            <div className="card-p" onClick={switchPuzzleType}>
+                <h2>{getMoveType(puzzle?.type)}</h2>
+            </div>
+            <div className="card">d</div>
             <div className="card" onClick={toggleSolution}>{getSolution()}</div>
             <div className="card" onClick={reRender}>NEW</div>
-            <div className="card" onClick={switchPuzzleType}><h2>{getMoveType(puzzle?.type)}</h2></div>
-            <div className="card">g</div>
-            <div className="card">e</div>
             <div className="main">
                 <MainBoard
+                    boardWidth={600}
                     position={puzzle?.starting_fen}
                     boardOrientation={puzzle?.to_move as string}
                     onPositionChange={onPositionChange}
