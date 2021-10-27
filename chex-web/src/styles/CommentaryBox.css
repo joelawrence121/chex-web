@@ -1,0 +1,157 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans&display=swap');
+
+body {
+    background: rgb(19, 19, 19);
+    color: #fff;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.commentary-card {
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-size: 3rem;
+    color: #fff;
+    box-shadow: rgba(3, 8, 20, 0.1) 0 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0 0.075rem 0.175rem;
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    transition: all 500ms;
+    overflow: hidden;
+
+    background-size: cover;
+    background: #353535 no-repeat center;
+}
+
+ul.commentary {
+    list-style: none;
+    max-height: 100%;
+    width: 100%;
+    margin: 0;
+    overflow: auto;
+    padding: 0;
+    font-size: medium;
+    text-indent: 10px;
+}
+
+li.commentary {
+    line-height: auto;
+}
+
+li.commentary:nth-child(odd) {
+    color: #262626;
+    background: #a1c3f5;
+}
+
+li.commentary:nth-child(even) {
+    background: #365992;
+}
+
+.commentary-main {
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-size: 3rem;
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    transition: all 500ms;
+    overflow: hidden;
+    background-size: cover;
+
+    grid-area: d;
+}
+
+.commentary-card-stationary {
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: left;
+    align-items: center;
+    font-size: 2rem;
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    transition: all 500ms;
+    overflow: hidden;
+    background-size: cover;
+    background: #131313FF no-repeat center;
+
+    grid-area: e;
+}
+
+.commentary-card:hover {
+    box-shadow: rgba(2, 8, 20, 0.1) 0 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0 0.175em 0.5em;
+    transform: translateY(-3px) scale(1.05);
+}
+
+.commentary-animated-grid {
+    height: 85vh;
+    margin-bottom: 20px;
+
+    display: grid;
+    gap: 1rem;
+
+    /* Explicit grid */
+    grid-template-areas:
+    'a  b  c'
+    'e  d  d'
+    'e  d  d';
+
+    grid-template-rows: 100px auto auto;
+    grid-template-columns: 300px auto auto;
+
+    --stagger-delay: 100ms;
+}
+
+@keyframes cardEntrance {
+    from {
+        opacity: 0;
+        transform: scale(0.3);
+        filter: hue-rotate(180deg);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+        filter: hue-rotate(0deg);
+    }
+}
+
+.commentary-card {
+    background-color: rgb(44, 44, 44);
+    animation: cardEntrance 700ms ease-out;
+    animation-fill-mode: backwards;
+    user-select: none;
+}
+
+.commentary-card:nth-child(1) {
+    grid-area: a;
+    animation-delay: calc(1 * var(--stagger-delay));
+}
+
+.commentary-card:nth-child(2) {
+    grid-area: b;
+    animation-delay: calc(2 * var(--stagger-delay));
+}
+
+.commentary-card:nth-child(3) {
+    grid-area: c;
+    animation-delay: calc(3 * var(--stagger-delay));
+}
+
+.commentary-card:nth-child(4) {
+    grid-area: d;
+    animation-delay: calc(4 * var(--stagger-delay));
+}
+
+.commentary-card:last-child {
+    grid-area: e;
+    animation-delay: calc(5 * var(--stagger-delay));
+}

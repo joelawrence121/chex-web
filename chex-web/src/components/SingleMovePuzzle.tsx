@@ -4,12 +4,13 @@ import MainBoard from "./MainBoard";
 import ChapiService from "../service/ChapiService";
 import PuzzleData from "../types/PuzzleData";
 import PuzzleType from "../types/PuzzleType";
+import {Chess} from "chess.ts";
 
 const PUZZLE_TYPE_DESCRIPTIONS = new Map([
     [PuzzleType.MATE.valueOf(), "MATE IN 1"],
-    [PuzzleType.GAIN.valueOf(), "ADVANTAGE GAIN"],
-    [PuzzleType.SWING.valueOf(), "ADVANTAGE SWING"],
-    [PuzzleType.PIN.valueOf(), "ABSOLUTE PIN"]
+    [PuzzleType.GAIN.valueOf(), "GAIN"],
+    [PuzzleType.SWING.valueOf(), "SWING"],
+    [PuzzleType.PIN.valueOf(), "PIN"]
 ])
 
 const SingleMovePuzzle: React.FC = () => {
@@ -20,12 +21,18 @@ const SingleMovePuzzle: React.FC = () => {
     const [arrow, setArrow] = useState([['', '']])
     const [puzzle, setPuzzle] = useState<PuzzleData>();
     const [puzzleType, changePuzzleType] = useState(PuzzleType.MATE);
+    const [chess, setChess] = useState(new Chess())
+    const [fen, setFen] = useState<string>()
 
     const reRender = () => setRandom(Math.random());
+
     useEffect(() => {
         ChapiService.getSingleMatePuzzle(puzzleType.valueOf())
             .then(response => {
                 setPuzzle(response.data);
+                setFen((response.data as PuzzleData).starting_fen)
+                chess.load((response.data as PuzzleData).starting_fen)
+                setChess(chess)
                 setSolutionVisible(false)
                 console.log(response.data)
             })
@@ -35,7 +42,7 @@ const SingleMovePuzzle: React.FC = () => {
     }, [random, puzzleType])
 
     function getArrows() {
-        function sliceMove(solution : string | undefined) {
+        function sliceMove(solution: string | undefined) {
             return [solution?.slice(0, 2) as string, solution?.slice(2, 5) as string]
         }
         let solution = puzzle?.move
@@ -72,25 +79,31 @@ const SingleMovePuzzle: React.FC = () => {
         changePuzzleType(puzzleTypes[(puzzleTypes.indexOf(puzzleType) + 1) % puzzleTypes.length])
     }
 
-    function onPositionChange(currentPosition: any) {
-        console.log(currentPosition)
+    function onDrop(sourceSquare: string, targetSquare: string): boolean {
+        let move = chess.move({
+            to: targetSquare,
+            from: sourceSquare,
+        })
+        if (move == null) return false;
+        setFen(chess.fen())
+        return true
     }
 
     return (
         <section className="animated-grid">
-            <div className="card">a</div>
-            <div className="card"><h2>{puzzle?.to_move} TO MOVE</h2></div>
-            <div className="card">c</div>
+            <div className="card-t"><h2>{puzzle?.to_move} TO MOVE</h2></div>
+            <div className="card" onClick={switchPuzzleType}>
+                <h2>{getMoveType(puzzle?.type)}</h2>
+            </div>
+            <div className="card"></div>
             <div className="card" onClick={toggleSolution}>{getSolution()}</div>
             <div className="card" onClick={reRender}>NEW</div>
-            <div className="card" onClick={switchPuzzleType}><h2>{getMoveType(puzzle?.type)}</h2></div>
-            <div className="card">g</div>
-            <div className="card">e</div>
             <div className="main">
                 <MainBoard
-                    position={puzzle?.starting_fen}
+                    boardWidth={600}
+                    position={fen}
                     boardOrientation={puzzle?.to_move as string}
-                    onPositionChange={onPositionChange}
+                    onPieceDrop={onDrop}
                     arrows={arrow}
                 />
             </div>
