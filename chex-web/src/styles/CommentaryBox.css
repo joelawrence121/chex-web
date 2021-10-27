@@ -41,8 +41,13 @@ li.commentary {
     line-height: auto;
 }
 
+li.commentary:nth-child(odd) {
+    color: #262626;
+    background: #a1c3f5;
+}
+
 li.commentary:nth-child(even) {
-    background: #ccc;
+    background: #365992;
 }
 
 .commentary-main {
@@ -77,7 +82,7 @@ li.commentary:nth-child(even) {
     transition: all 500ms;
     overflow: hidden;
     background-size: cover;
-    background: #353535 no-repeat center;
+    background: #131313FF no-repeat center;
 
     grid-area: e;
 }
