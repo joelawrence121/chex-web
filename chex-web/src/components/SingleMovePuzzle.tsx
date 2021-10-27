@@ -94,7 +94,7 @@ const SingleMovePuzzle: React.FC = () => {
             <div className="card" onClick={switchPuzzleType}>
                 <h2>{getMoveType(puzzle?.type)}</h2>
             </div>
-            <div className="card">d</div>
+            <div className="card"></div>
             <div className="card" onClick={toggleSolution}>{getSolution()}</div>
             <div className="card" onClick={reRender}>NEW</div>
             <div className="main">

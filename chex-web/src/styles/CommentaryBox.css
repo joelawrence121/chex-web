@@ -26,6 +26,25 @@ body {
     background: #353535 no-repeat center;
 }
 
+ul.commentary {
+    list-style: none;
+    max-height: 100%;
+    width: 100%;
+    margin: 0;
+    overflow: auto;
+    padding: 0;
+    font-size: medium;
+    text-indent: 10px;
+}
+
+li.commentary {
+    line-height: auto;
+}
+
+li.commentary:nth-child(even) {
+    background: #ccc;
+}
+
 .commentary-main {
     resize: both;
     display: flex;
@@ -81,7 +100,7 @@ body {
     'e  d  d'
     'e  d  d';
 
-    grid-template-rows: 150px auto auto;
+    grid-template-rows: 100px auto auto;
     grid-template-columns: 300px auto auto;
 
     --stagger-delay: 100ms;
@@ -111,18 +130,22 @@ body {
     grid-area: a;
     animation-delay: calc(1 * var(--stagger-delay));
 }
+
 .commentary-card:nth-child(2) {
     grid-area: b;
     animation-delay: calc(2 * var(--stagger-delay));
 }
+
 .commentary-card:nth-child(3) {
     grid-area: c;
     animation-delay: calc(3 * var(--stagger-delay));
 }
+
 .commentary-card:nth-child(4) {
     grid-area: d;
     animation-delay: calc(4 * var(--stagger-delay));
 }
+
 .commentary-card:last-child {
     grid-area: e;
     animation-delay: calc(5 * var(--stagger-delay));
