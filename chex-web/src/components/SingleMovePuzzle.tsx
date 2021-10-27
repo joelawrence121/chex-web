@@ -25,6 +25,7 @@ const SingleMovePuzzle: React.FC = () => {
     const [fen, setFen] = useState<string>()
 
     const reRender = () => setRandom(Math.random());
+
     useEffect(() => {
         ChapiService.getSingleMatePuzzle(puzzleType.valueOf())
             .then(response => {
