@@ -6,6 +6,17 @@ body {
     font-family: 'Noto Sans', sans-serif;
 }
 
+.text {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-size: 3rem;
+    color: #fff;
+    height: 100%;
+    width: 100%;
+}
+
 .commentary-card {
     resize: both;
     display: flex;

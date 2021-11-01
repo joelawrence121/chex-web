@@ -100,7 +100,7 @@ const SingleMovePuzzle: React.FC = () => {
             <div className="card" onClick={reRender}>NEW</div>
             <div className="main">
                 <MainBoard
-                    boardWidth={600}
+                    boardWidth={400}
                     position={fen}
                     boardOrientation={puzzle?.to_move as string}
                     onPieceDrop={onDrop}

@@ -9,7 +9,7 @@ import PlayData from "../types/PlayData";
 const CommentaryBox: React.FC = () => {
 
     const initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-    const difficulty = 8
+    const [stockfishLevel, setStockfishLevel] = useState(1)
     const [chess, setChess] = useState(new Chess())
     const [fen, setFen] = useState(chess.fen())
     const [moveStack, setMoveStack] = useState<string[]>([])
@@ -53,7 +53,7 @@ const CommentaryBox: React.FC = () => {
         if (!isStart) {
             ChapiService.getStockfishMove({
                 fen: chess.fen(),
-                difficulty: difficulty
+                difficulty: stockfishLevel
             })
                 .then(response => {
                     setFen((response.data as unknown as PlayData).fen)
@@ -98,12 +98,20 @@ const CommentaryBox: React.FC = () => {
         setIsStart(true)
     }
 
+    function changeStockfishLevel() {
+        setStockfishLevel((stockfishLevel % 9 + 1))
+    }
+
     return (
         <section className="commentary-animated-grid">
-            <div className="commentary-card">Hint</div>
-            <div className="commentary-card">Difficulty</div>
+            <div className="commentary-card">
+                <h1 className="text">Hint</h1>
+            </div>
+            <div className="commentary-card" onClick={changeStockfishLevel}>
+                <h1 className="text">Stockfish Level: {stockfishLevel}</h1>
+            </div>
             <div className="commentary-card" onClick={resetBoard}>
-                New Game
+                <h1 className="text">New Game</h1>
             </div>
             <div className="commentary-main">
                 <MainBoard
