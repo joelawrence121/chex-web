@@ -3,6 +3,7 @@ import React from "react";
 import NavbarScroller from "./NavbarScroller";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import CommentaryBox from "./CommentaryBox";
+import Home from "./Home";
 
 const navigation = {
     brand: {name: "Chexplanations", to: "/"},
@@ -29,7 +30,7 @@ const App: React.FC = () => {
                 </Route>
                 <Route path="/">
                     <NavbarScroller brand={brand} links={links}/>
-                    <h1>Home</h1>
+                    <Home />
                 </Route>
             </Switch>
         </Router>

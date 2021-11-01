@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans&display=swap');
+
+body {
+    background: rgb(19, 19, 19);
+    color: #fff;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.home-animated-grid {
+    height: 85vh;
+    margin-bottom: 20px;
+
+    display: grid;
+    gap: 1rem;
+
+    /* Explicit grid */
+    grid-template-areas:
+    'a  a  b'
+    'a  a  c'
+    'a  a  d';
+
+    grid-template-rows: auto auto auto;
+    grid-template-columns: auto auto auto;
+
+    --stagger-delay: 100ms;
+}
+
+.card-stationary-a {
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: left;
+    align-items: center;
+    font-size: 2rem;
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    transition: all 500ms;
+    overflow: hidden;
+    background-size: cover;
+    background: #131313FF no-repeat center;
+
+    grid-area: a;
+}
+
+.card-stationary {
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: left;
+    align-items: center;
+    font-size: 2rem;
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    transition: all 500ms;
+    overflow: hidden;
+    background-size: cover;
+    background: #131313FF no-repeat center;
+}
