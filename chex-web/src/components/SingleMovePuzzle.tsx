@@ -89,15 +89,30 @@ const SingleMovePuzzle: React.FC = () => {
         return true
     }
 
+    function resetPuzzle() {
+        setFen((puzzle as PuzzleData).starting_fen)
+        chess.load((puzzle as PuzzleData).starting_fen)
+        setChess(chess)
+        setSolutionVisible(false)
+    }
+
     return (
         <section className="animated-grid">
-            <div className="card-t"><h2>{puzzle?.to_move} TO MOVE</h2></div>
-            <div className="card" onClick={switchPuzzleType}>
-                <h2>{getMoveType(puzzle?.type)}</h2>
+            <div className="card-t">
+                <h1 className="text">{puzzle?.to_move} TO MOVE</h1>
             </div>
-            <div className="card"></div>
-            <div className="card" onClick={toggleSolution}>{getSolution()}</div>
-            <div className="card" onClick={reRender}>NEW</div>
+            <div className="card" onClick={switchPuzzleType}>
+                <h1 className="text">{getMoveType(puzzle?.type)}</h1>
+            </div>
+            <div className="card" onClick={resetPuzzle}>
+                <h1 className="text">Reset</h1>
+            </div>
+            <div className="card" onClick={toggleSolution}>
+                <h1 className="text">{getSolution()}</h1>
+            </div>
+            <div className="card" onClick={reRender}>
+                <h1 className="text">NEW</h1>
+            </div>
             <div className="main">
                 <MainBoard
                     boardWidth={400}

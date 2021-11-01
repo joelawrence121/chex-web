@@ -6,6 +6,17 @@ body {
   font-family: 'Noto Sans', sans-serif;
 }
 
+.text {
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  font-size: 3rem;
+  color: #fff;
+  height: 100%;
+  width: 100%;
+}
+
 h2 {
   resize: both;
 }
@@ -79,7 +90,6 @@ h2 {
 
 .animated-grid {
   height: 85vh;
-  margin-bottom: 200px;
 
   display: grid;
   gap: 1rem;
@@ -91,7 +101,7 @@ h2 {
     '🌟 🌟  🌟  s'
     '🌟 🌟  🌟  n';
 
-  grid-template-rows: repeat(4, 25%);
+  grid-template-rows: repeat(4, 23%);
   grid-template-columns: auto auto auto 300px;
 
   --stagger-delay: 100ms;
