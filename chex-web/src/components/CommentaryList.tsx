@@ -1,16 +1,20 @@
 import React from "react";
+import Collapsible from "react-collapsible";
 
 interface CommentaryListProps {
-    commentaryList: string[]
+    commentaryList: string[],
+    moveStack: string[]
 }
 
 function CommentaryList(props: CommentaryListProps) {
     return (
-        <ul className={"commentary"}>
+        <div>
             {props.commentaryList.map((item: string, index: number) =>
-                <li className={"commentary"} key={index}>{item}</li>
+                <Collapsible key={index} trigger={item}>
+                    <p>{props.moveStack[index]}</p>
+                </Collapsible>
             )}
-        </ul>
+        </div>
     )
 }
 

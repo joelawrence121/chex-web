@@ -32,33 +32,43 @@ body {
     border-radius: 4px;
     transition: all 500ms;
     overflow: hidden;
-
     background-size: cover;
     background: #353535 no-repeat center;
 }
 
-ul.commentary {
-    list-style: none;
-    max-height: 100%;
+.commentary-list {
+    font-size: 2rem;
+    height: 100%;
     width: 100%;
-    margin: 0;
-    overflow: auto;
-    padding: 0;
-    font-size: medium;
-    text-indent: 10px;
+    border-radius: 4px;
+    transition: all 500ms;
+    overflow: hidden;
+    background-size: cover;
+    background: #131313FF no-repeat center;
+    grid-area: e;
 }
 
-li.commentary {
-    line-height: auto;
+.Collapsible {
+    text-align: center;
+    list-style: none;
+    user-select: none;
+    max-height: 100%;
+    font-size: large;
+    font-weight: bold;
 }
 
-li.commentary:nth-child(odd) {
+.Collapsible:nth-child(odd) {
     color: #262626;
     background: #a1c3f5;
 }
 
-li.commentary:nth-child(even) {
+.Collapsible:nth-child(even) {
     background: #365992;
+}
+
+p {
+    font-weight: normal;
+    text-align: center;
 }
 
 .commentary-main {
@@ -77,25 +87,6 @@ li.commentary:nth-child(even) {
     background-size: cover;
 
     grid-area: d;
-}
-
-.commentary-card-stationary {
-    resize: both;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    text-align: left;
-    align-items: center;
-    font-size: 2rem;
-    height: 100%;
-    width: 100%;
-    border-radius: 4px;
-    transition: all 500ms;
-    overflow: hidden;
-    background-size: cover;
-    background: #131313FF no-repeat center;
-
-    grid-area: e;
 }
 
 .commentary-card:hover {
@@ -117,7 +108,7 @@ li.commentary:nth-child(even) {
     'e  d  d';
 
     grid-template-rows: 100px auto auto;
-    grid-template-columns: 300px auto auto;
+    grid-template-columns: 400px auto auto;
 
     --stagger-delay: 100ms;
 }

@@ -43,6 +43,7 @@ const CommentaryBox: React.FC = () => {
                     setMoveCommentary(newMoveCommentary)
                 })
                 .catch(e => {
+                    setMoveCommentary(["Chapi isn't happy :("])
                     console.log(e)
                 })
         }
@@ -76,7 +77,6 @@ const CommentaryBox: React.FC = () => {
 
         // if invalid move
         if (move == null) return false;
-
         if (isStart) setIsStart(false)
 
         // user's turn
@@ -115,15 +115,15 @@ const CommentaryBox: React.FC = () => {
             </div>
             <div className="commentary-main">
                 <MainBoard
-                    boardWidth={400}
+                    boardWidth={500}
                     position={fen}
                     boardOrientation={"white"}
                     onPieceDrop={onDrop}
                     arrows={[]}
                 />
             </div>
-            <div className="commentary-card-stationary">
-                <CommentaryList commentaryList={moveCommentary}/>
+            <div className="commentary-list">
+                <CommentaryList commentaryList={moveCommentary} moveStack={moveStack}/>
             </div>
         </section>
     );

@@ -11,7 +11,6 @@ const getMoveDescription = (request : OpeningRequest) => {
 }
 
 const getStockfishMove = (request : PlayRequest) => {
-    console.log(request)
     return http.post("/play", request)
 }
 
