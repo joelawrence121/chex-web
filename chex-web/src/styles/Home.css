@@ -15,18 +15,17 @@ body {
 
     /* Explicit grid */
     grid-template-areas:
-    'a  a  b'
-    'a  a  c'
-    'a  a  d';
+    'a  a  a  a'
+    'b  b  c  c'
+    'b  b  c  c';
 
     grid-template-rows: auto auto auto;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto auto auto auto;
 
     --stagger-delay: 100ms;
 }
 
-.card-stationary-a {
-    resize: both;
+.card-stationary {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -40,23 +39,16 @@ body {
     overflow: hidden;
     background-size: cover;
     background: #131313FF no-repeat center;
+}
 
+.card-stationary.a {
     grid-area: a;
 }
 
-.card-stationary {
-    resize: both;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    text-align: left;
-    align-items: center;
-    font-size: 2rem;
-    height: 100%;
-    width: 100%;
-    border-radius: 4px;
-    transition: all 500ms;
-    overflow: hidden;
-    background-size: cover;
-    background: #131313FF no-repeat center;
+.card-stationary.b {
+    grid-area: b;
+}
+
+.card-stationary.c {
+    grid-area: c;
 }
