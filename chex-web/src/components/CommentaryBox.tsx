@@ -12,7 +12,9 @@ const CommentaryBox: React.FC = () => {
     const [stockfishLevel, setStockfishLevel] = useState(1)
     const [chess, setChess] = useState(new Chess())
     const [fen, setFen] = useState(chess.fen())
+    const [arrow, setArrow] = useState([['', '']])
     const [moveStack, setMoveStack] = useState<string[]>([])
+    const [fenStack, setFenStack] = useState<string[]>([initialFen])
     const [moveCommentary, setMoveCommentary] = useState<string[]>([])
     const [turn, setTurn] = useState(false)
     const [isStart, setIsStart] = useState(true)
@@ -59,9 +61,12 @@ const CommentaryBox: React.FC = () => {
                 .then(response => {
                     setFen((response.data as unknown as PlayData).fen)
                     setChess(new Chess((response.data as unknown as PlayData).fen))
-                    const newList = moveStack.slice()
-                    newList.push((response.data as unknown as PlayData).move)
-                    setMoveStack(newList)
+                    const newMoveStack = moveStack.slice()
+                    newMoveStack.push((response.data as unknown as PlayData).move)
+                    setMoveStack(newMoveStack)
+                    const newFenStack = fenStack.slice()
+                    newFenStack.push((response.data as unknown as PlayData).fen)
+                    setFenStack(newFenStack)
                 })
                 .catch(e => {
                     console.log(e)
@@ -81,9 +86,12 @@ const CommentaryBox: React.FC = () => {
 
         // user's turn
         setFen(chess.fen())
-        const newList = moveStack.slice()
-        newList.push(sourceSquare + targetSquare)
-        setMoveStack(newList)
+        const newMoveStack = moveStack.slice()
+        newMoveStack.push(sourceSquare + targetSquare)
+        setMoveStack(newMoveStack)
+        const newFenStack = fenStack.slice()
+        newFenStack.push(chess.fen())
+        setFenStack(newFenStack)
 
         // trigger stockfish's turn
         setTurn(!turn)
@@ -100,6 +108,26 @@ const CommentaryBox: React.FC = () => {
 
     function changeStockfishLevel() {
         setStockfishLevel((stockfishLevel % 9 + 1))
+    }
+
+    function sliceMove(move: string) {
+        return [[move.slice(0, 2) as string, move.slice(2, 5) as string]]
+    }
+
+    function onCollapsibleOpening(index: number) {
+        setFen(fenStack[index])
+    }
+
+    function onCollapsibleOpen(index: number) {
+        let arrows = sliceMove(moveStack[index])
+        setArrow(arrows)
+    }
+
+    function onCollapsibleClosing() {
+        setArrow([['', '']])
+        let latestFen = fenStack[fenStack.length - 1]
+        setFen(latestFen)
+        setChess(new Chess(latestFen))
     }
 
     return (
@@ -119,11 +147,17 @@ const CommentaryBox: React.FC = () => {
                     position={fen}
                     boardOrientation={"white"}
                     onPieceDrop={onDrop}
-                    arrows={[]}
+                    arrows={arrow}
                 />
             </div>
             <div className="commentary-list">
-                <CommentaryList commentaryList={moveCommentary} moveStack={moveStack} />
+                <CommentaryList
+                    commentaryList={moveCommentary}
+                    moveStack={moveStack}
+                    onOpening={onCollapsibleOpening}
+                    onOpen={onCollapsibleOpen}
+                    onClosing={onCollapsibleClosing}
+                />
             </div>
         </section>
     );
