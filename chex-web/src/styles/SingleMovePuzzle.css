@@ -1,153 +1,208 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans&display=swap');
 
 body {
-  background: rgb(19, 19, 19);
-  color: #fff;
-  font-family: 'Noto Sans', sans-serif;
+    background: rgb(19, 19, 19);
+    color: #fff;
+    font-family: 'Noto Sans', sans-serif;
 }
 
 .text {
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  align-items: center;
-  font-size: 3rem;
-  color: #fff;
-  height: 100%;
-  width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-size: 3rem;
+    color: #fff;
+    height: 100%;
+    width: 100%;
 }
 
 h2 {
-  resize: both;
+    resize: both;
+}
+
+img.smaller {
+    max-width: 80%;
+    max-height: 80%;
+}
+
+img.bigger {
+    max-width: 100%;
+    max-height: 100%;
 }
 
 .card {
-  resize: both;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  align-items: center;
-  font-size: 3rem;
-  color: #fff;
-  box-shadow: rgba(3, 8, 20, 0.1) 0 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0 0.075rem 0.175rem;
-  height: 100%;
-  width: 100%;
-  border-radius: 4px;
-  transition: all 500ms;
-  overflow: hidden;
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-size: 3rem;
+    color: #fff;
+    box-shadow: rgba(3, 8, 20, 0.1) 0 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0 0.075rem 0.175rem;
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    transition: all 500ms;
+    overflow: hidden;
+    background-size: cover;
+    background: #353535 no-repeat center;
+}
 
-  background-size: cover;
-  background: #353535 no-repeat center;
+.card.r {
+    grid-area: r;
+}
+
+.card.n {
+    grid-area: n;
 }
 
 h2 {
-    height:auto;
-    width:auto;
+    height: auto;
+    width: auto;
 }
 
-.card-t {
-  resize: both;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  align-items: center;
-  font-size: 3rem;
-  color: #fff;
-  box-shadow: rgba(3, 8, 20, 0.1) 0 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0 0.075rem 0.175rem;
-  height: 100%;
-  width: 100%;
-  border-radius: 4px;
-  transition: all 500ms;
-  overflow: hidden;
+.card-no-shadow {
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-size: 3rem;
+    color: #fff;
+    box-shadow: rgba(3, 8, 20, 0.1) 0 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0 0.075rem 0.175rem;
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    transition: all 500ms;
+    overflow: hidden;
+}
 
-  grid-area: t;
+.card-no-shadow.m {
+    grid-area: m;
+}
+
+.card-no-shadow.t {
+    grid-area: t;
+}
+
+.card-no-shadow.s {
+    grid-area: s;
+}
+
+.card-no-shadow.c {
+    grid-area: c;
+}
+
+.card-no-shadow.d {
+    grid-area: d;
 }
 
 .main {
-  resize: both;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  align-items: center;
-  font-size: 3rem;
-  height: 100%;
-  width: 100%;
-  border-radius: 4px;
-  transition: all 500ms;
-  overflow: hidden;
-  background-size: cover;
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-size: 3rem;
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    transition: all 500ms;
+    overflow: hidden;
+    background-size: cover;
 
-  grid-area: 🌟;
+    grid-area: 🌟;
 }
 
 .card:hover {
-  box-shadow: rgba(2, 8, 20, 0.1) 0 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0 0.175em 0.5em;
-  transform: translateY(-3px) scale(1.05);
+    box-shadow: rgba(2, 8, 20, 0.1) 0 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0 0.175em 0.5em;
+    transform: translateY(-3px) scale(1.05);
 }
 
 .animated-grid {
-  height: 85vh;
+    height: 85vh;
 
-  display: grid;
-  gap: 1rem;
+    display: grid;
+    gap: 1rem;
 
-  /* Explicit grid */
-  grid-template-areas:
-    't  t  t   p'
-    '🌟 🌟  🌟  d'
-    '🌟 🌟  🌟  s'
-    '🌟 🌟  🌟  n';
+    /* Explicit grid */
+    grid-template-areas:
+    'm  r  t  n  s'
+    'c  🌟 🌟 🌟  d'
+    'c  🌟 🌟 🌟  d'
+    'c  🌟 🌟 🌟  d';
 
-  grid-template-rows: repeat(4, 23%);
-  grid-template-columns: auto auto auto 300px;
+    grid-template-rows: 100px auto auto auto;
+    grid-template-columns: auto auto 50% auto auto;
 
-  --stagger-delay: 100ms;
+    --stagger-delay: 100ms;
 }
 
 @keyframes cardEntrance {
-  from {
-    opacity: 0;
-    transform: scale(0.3);
-    filter: hue-rotate(180deg);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-    filter: hue-rotate(0deg);
-  }
+    from {
+        opacity: 0;
+        transform: scale(0.3);
+        filter: hue-rotate(180deg);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+        filter: hue-rotate(0deg);
+    }
 }
 
 .card {
-  background-color: rgb(44, 44, 44);
-  animation: cardEntrance 700ms ease-out;
-  animation-fill-mode: backwards;
-  user-select: none;
+    background-color: rgba(141, 141, 141, 0.11);
+    animation: cardEntrance 700ms ease-out;
+    animation-fill-mode: backwards;
+    user-select: none;
 }
 
 .card:nth-child(1) {
-  grid-area: t;
-  animation-delay: calc(3 * var(--stagger-delay));
+    grid-area: m;
+    animation-delay: calc(3 * var(--stagger-delay));
 }
+
 .card:nth-child(2) {
-  grid-area: p;
-  animation-delay: calc(5 * var(--stagger-delay));
+    grid-area: r;
+    animation-delay: calc(5 * var(--stagger-delay));
 }
+
 .card:nth-child(3) {
-  grid-area: d;
-  animation-delay: calc(7 * var(--stagger-delay));
+    grid-area: t;
+    animation-delay: calc(7 * var(--stagger-delay));
 }
+
 .card:nth-child(4) {
-  grid-area: s;
-  animation-delay: calc(9 * var(--stagger-delay));
+    grid-area: n;
+    animation-delay: calc(9 * var(--stagger-delay));
 }
+
 .card:nth-child(5) {
-  grid-area: n;
-  animation-delay: calc(11 * var(--stagger-delay));
+    grid-area: n;
+    animation-delay: calc(11 * var(--stagger-delay));
 }
+
+.card:nth-child(6) {
+    grid-area: s;
+    animation-delay: calc(13 * var(--stagger-delay));
+}
+
+.card:nth-child(7) {
+    grid-area: c;
+    animation-delay: calc(15 * var(--stagger-delay));
+}
+
+.card:nth-child(8) {
+    grid-area: d;
+    animation-delay: calc(17 * var(--stagger-delay));
+}
+
 .card:last-child {
-  grid-area: 🌟;
-  animation-delay: calc(5 * var(--stagger-delay));
+    grid-area: 🌟;
+    animation-delay: calc(19 * var(--stagger-delay));
 }

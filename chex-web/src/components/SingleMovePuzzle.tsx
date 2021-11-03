@@ -5,6 +5,12 @@ import ChapiService from "../service/ChapiService";
 import PuzzleData from "../types/PuzzleData";
 import PuzzleType from "../types/PuzzleType";
 import {Chess} from "chess.ts";
+import refresh from './icons/refresh.png';
+import eyeFilled from './icons/eye-filled.png';
+import eyeUnfilled from './icons/eye-unfilled.png';
+import rightArrow from './icons/right-arrow.png';
+import blackPawn from './icons/black-pawn.png';
+import whitePawn from './icons/white-pawn.png';
 
 const PUZZLE_TYPE_DESCRIPTIONS = new Map([
     [PuzzleType.MATE.valueOf(), "MATE IN 1"],
@@ -45,9 +51,10 @@ const SingleMovePuzzle: React.FC = () => {
         function sliceMove(solution: string | undefined) {
             return [solution?.slice(0, 2) as string, solution?.slice(2, 5) as string]
         }
+
         let solution = puzzle?.move
         let arrows = [sliceMove(solution)]
-        // if pin puzzle type we want to show the follow move by the other player
+        // if pin puzzle type we want to show the following move by the other player
         if (puzzle?.type === PuzzleType.PIN.valueOf()) {
             arrows.push(sliceMove(puzzle?.follow_move))
         }
@@ -71,7 +78,11 @@ const SingleMovePuzzle: React.FC = () => {
     }
 
     function getSolution() {
-        return (solutionVisible ? puzzle?.move : "Show Solution")
+        return (solutionVisible ? eyeFilled : eyeUnfilled)
+    }
+
+    function getToMove() {
+        return (puzzle?.to_move === 'WHITE' ? whitePawn : blackPawn)
     }
 
     function switchPuzzleType() {
@@ -98,21 +109,22 @@ const SingleMovePuzzle: React.FC = () => {
 
     return (
         <section className="animated-grid">
-            <div className="card-t">
-                <h1 className="text">{puzzle?.to_move} TO MOVE</h1>
+            <div className="card-no-shadow m">
+                <img className={"bigger"} src={getToMove()} alt={puzzle?.to_move}/>
             </div>
-            <div className="card" onClick={switchPuzzleType}>
+            <div className="card r" onClick={resetPuzzle}>
+                <img className={"smaller"} src={refresh} alt="Refresh"/>
+            </div>
+            <div className="card t" onClick={switchPuzzleType}>
                 <h1 className="text">{getMoveType(puzzle?.type)}</h1>
             </div>
-            <div className="card" onClick={resetPuzzle}>
-                <h1 className="text">Reset</h1>
+            <div className="card n" onClick={reRender}>
+                <img className={"smaller"} src={rightArrow} alt="Next"/>
             </div>
-            <div className="card" onClick={toggleSolution}>
-                <h1 className="text">{getSolution()}</h1>
+            <div className="card-no-shadow s" onClick={toggleSolution}>
+                <img className={"bigger"} src={getSolution()} alt="Show Solution"/>
             </div>
-            <div className="card" onClick={reRender}>
-                <h1 className="text">NEW</h1>
-            </div>
+            <div className="card-no-shadow c"> </div>
             <div className="main">
                 <MainBoard
                     boardWidth={500}
@@ -123,6 +135,7 @@ const SingleMovePuzzle: React.FC = () => {
                     alternateArrows={false}
                 />
             </div>
+            <div className="card-no-shadow d"> </div>
         </section>
     );
 }
