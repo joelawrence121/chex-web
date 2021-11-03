@@ -120,6 +120,7 @@ const SingleMovePuzzle: React.FC = () => {
                     boardOrientation={puzzle?.to_move as string}
                     onPieceDrop={onDrop}
                     arrows={arrow}
+                    alternateArrows={false}
                 />
             </div>
         </section>

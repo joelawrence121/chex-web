@@ -141,8 +141,8 @@ const CommentaryBox: React.FC = () => {
     function onCollapsibleClosing() {
         setArrow([['', '']])
         let latestFen = fenStack[fenStack.length - 1]
-        setFen(latestFen)
         setChess(new Chess(latestFen))
+        fenStack.forEach(fen => setFen(fen))
     }
 
     return (
@@ -164,6 +164,7 @@ const CommentaryBox: React.FC = () => {
                     boardOrientation={"white"}
                     onPieceDrop={onDrop}
                     arrows={arrow}
+                    alternateArrows={true}
                 />
             </div>
             <div className="commentary-list">
