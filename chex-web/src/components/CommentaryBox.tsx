@@ -123,7 +123,7 @@ const CommentaryBox: React.FC = () => {
                 />
             </div>
             <div className="commentary-list">
-                <CommentaryList commentaryList={moveCommentary} moveStack={moveStack}/>
+                <CommentaryList commentaryList={moveCommentary} moveStack={moveStack} />
             </div>
         </section>
     );

@@ -7,11 +7,16 @@ interface CommentaryListProps {
 }
 
 function CommentaryList(props: CommentaryListProps) {
+
+    function getTrigger(index: number, item : string): string {
+        return (Math.ceil((index + 1) / 2)).toString() + ": " + item;
+    }
+
     return (
         <div>
             {props.commentaryList.map((item: string, index: number) =>
-                <Collapsible key={index} trigger={item}>
-                    <p>{props.moveStack[index]}</p>
+                <Collapsible key={index} trigger={getTrigger(index, props.moveStack[index])}>
+                    <p>{item}</p>
                 </Collapsible>
             )}
         </div>
