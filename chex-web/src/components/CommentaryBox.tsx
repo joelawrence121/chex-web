@@ -10,7 +10,7 @@ import ProgressBar from "@ramonak/react-progress-bar";
 const CommentaryBox: React.FC = () => {
 
     const initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-    const [stockfishLevel, setStockfishLevel] = useState(1)
+    const [stockfishLevel, setStockfishLevel] = useState(6)
     const [chess, setChess] = useState(new Chess())
     const [fen, setFen] = useState(chess.fen())
     const [arrow, setArrow] = useState([['', '']])
@@ -107,12 +107,26 @@ const CommentaryBox: React.FC = () => {
         setIsStart(true)
     }
 
-    function changeStockfishLevel() {
-        setStockfishLevel((stockfishLevel % 10 + 1))
-    }
-
     function sliceMove(move: string) {
         return [[move.slice(0, 2) as string, move.slice(2, 5) as string]]
+    }
+
+    function generateHint() {
+        ChapiService.getStockfishMove({
+            fen: chess.fen(),
+            difficulty: stockfishLevel
+        })
+            .then(response => {
+                console.log(response)
+                setArrow(sliceMove((response.data as unknown as PlayData).move))
+            })
+            .catch(e => {
+                console.log(e)
+            })
+    }
+
+    function changeStockfishLevel() {
+        setStockfishLevel((stockfishLevel % 10 + 1))
     }
 
     function onCollapsibleOpening(index: number) {
@@ -133,14 +147,14 @@ const CommentaryBox: React.FC = () => {
 
     return (
         <section className="commentary-animated-grid">
-            <div className="commentary-card">
+            <div className="commentary-card" onClick={generateHint}>
                 <h1 className="text">Hint</h1>
             </div>
             <div className="commentary-card" onClick={changeStockfishLevel}>
                 Difficulty
                 <ProgressBar className="difficulty-bar"
                              completed={stockfishLevel * 10}
-                             bgColor = "#365992"/>
+                             bgColor="#365992"/>
             </div>
             <div className="commentary-card" onClick={resetBoard}>
                 <h1 className="text">New Game</h1>
