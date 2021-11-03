@@ -5,6 +5,7 @@ import {Chess} from 'chess.ts'
 import CommentaryList from "./CommentaryList";
 import ChapiService from "../service/ChapiService";
 import PlayData from "../types/PlayData";
+import ProgressBar from "@ramonak/react-progress-bar";
 
 const CommentaryBox: React.FC = () => {
 
@@ -107,7 +108,7 @@ const CommentaryBox: React.FC = () => {
     }
 
     function changeStockfishLevel() {
-        setStockfishLevel((stockfishLevel % 9 + 1))
+        setStockfishLevel((stockfishLevel % 10 + 1))
     }
 
     function sliceMove(move: string) {
@@ -136,7 +137,10 @@ const CommentaryBox: React.FC = () => {
                 <h1 className="text">Hint</h1>
             </div>
             <div className="commentary-card" onClick={changeStockfishLevel}>
-                <h1 className="text">Stockfish Level: {stockfishLevel}</h1>
+                Difficulty
+                <ProgressBar className="difficulty-bar"
+                             completed={stockfishLevel * 10}
+                             bgColor = "#365992"/>
             </div>
             <div className="commentary-card" onClick={resetBoard}>
                 <h1 className="text">New Game</h1>

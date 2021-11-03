@@ -109,6 +109,10 @@ p {
     text-align: center;
 }
 
+.difficulty-bar {
+   width: 90%;
+}
+
 .commentary-main {
     resize: both;
     display: flex;
