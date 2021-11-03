@@ -6,6 +6,7 @@ import Statistics from "../types/Statistics";
 
 const Home: React.FC = () => {
 
+    const BStyle = {height : '100%', width : '100%'}
     const [puzzleTypes, setPuzzleTypes] = useState<string[]>([])
     const [puzzleCounts, setPuzzleCounts] = useState<number[]>([])
 
@@ -37,9 +38,10 @@ const Home: React.FC = () => {
                 COMP30030 & COMP30040
             </div>
             <div className="card-stationary b">
-                <BarChart values={puzzleTypes} yValueFn={getYCount} xLabelFn={getXLabel}/>
+                Puzzle Statistics
+                <BarChart values={puzzleTypes} yValueFn={getYCount} xLabelFn={getXLabel} style={BStyle}/>
             </div>
-            <div className="card-stationary c"> </div>
+            <div className="card-stationary c"></div>
         </section>
     );
 }
