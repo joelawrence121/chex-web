@@ -6,6 +6,8 @@ import CommentaryList from "./CommentaryList";
 import ChapiService from "../service/ChapiService";
 import PlayData from "../types/PlayData";
 import ProgressBar from "@ramonak/react-progress-bar";
+import refresh from './icons/refresh.png';
+import hint from './icons/hint.png';
 
 const CommentaryBox: React.FC = () => {
 
@@ -148,14 +150,14 @@ const CommentaryBox: React.FC = () => {
     return (
         <section className="commentary-animated-grid">
             <div className="commentary-card" onClick={generateHint}>
-                <h1 className="text">Hint</h1>
+                <img className={"smaller"} src={hint} alt="Hint"/>
             </div>
             <div className="commentary-card" onClick={changeStockfishLevel}>
                 Difficulty
                 <ProgressBar className="difficulty-bar" completed={stockfishLevel * 10} bgColor="#365992"/>
             </div>
             <div className="commentary-card" onClick={resetBoard}>
-                <h1 className="text">New Game</h1>
+                <img className={"smaller"} src={refresh} alt="Refresh"/>
             </div>
             <div className="commentary-main">
                 <MainBoard

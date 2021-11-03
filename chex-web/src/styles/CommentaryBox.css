@@ -6,6 +6,11 @@ body {
     font-family: 'Noto Sans', sans-serif;
 }
 
+img.smaller {
+    max-width: 80%;
+    max-height: 80%;
+}
+
 .text {
     flex-direction: column;
     justify-content: center;
