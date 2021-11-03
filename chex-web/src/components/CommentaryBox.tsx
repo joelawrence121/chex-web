@@ -152,9 +152,7 @@ const CommentaryBox: React.FC = () => {
             </div>
             <div className="commentary-card" onClick={changeStockfishLevel}>
                 Difficulty
-                <ProgressBar className="difficulty-bar"
-                             completed={stockfishLevel * 10}
-                             bgColor="#365992"/>
+                <ProgressBar className="difficulty-bar" completed={stockfishLevel * 10} bgColor="#365992"/>
             </div>
             <div className="commentary-card" onClick={resetBoard}>
                 <h1 className="text">New Game</h1>
