@@ -1,5 +1,6 @@
 import {Chessboard} from "react-chessboard";
 import React from "react";
+import {Chess} from "chess.ts";
 
 interface BoardProps {
     boardWidth: number
@@ -7,6 +8,7 @@ interface BoardProps {
     boardOrientation: string | undefined;
     onPieceDrop: (sourceSquare: any, targetSquare: any, piece: any) => boolean
     arrows: string[][]
+    alternateArrows: boolean
 }
 
 function MainBoard(props: BoardProps) {
@@ -21,11 +23,22 @@ function MainBoard(props: BoardProps) {
             customLightSquareStyle={{backgroundColor: '#a1c3f5'}}
             customDarkSquareStyle={{backgroundColor: '#365992'}}
             customDropSquareStyle={{boxShadow: 'inset 0 0 1px 6px rgba(255,255,255,0.75)'}}
+            customArrowColor={getArrowColour(props.position, props.alternateArrows)}
             customBoardStyle={{
                 borderRadius: "5px",
                 boxShadow: `0 5px 15px rgba(0, 0, 0, 0.5)`
             }}/>
     )
+
+    function getArrowColour(position: string | undefined, alternateArrows: boolean) {
+        if (alternateArrows) {
+            let chess = new Chess(position)
+            if (chess.turn() == "w") {
+                return "#60efda";
+            }
+            return "#5118c4";
+        }
+    }
 
     function getBoardOrientation(boardOrientation: string | undefined): 'white' | 'black' {
         if (boardOrientation === 'BLACK') {
