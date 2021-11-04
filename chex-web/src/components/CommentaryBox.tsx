@@ -81,7 +81,6 @@ const CommentaryBox: React.FC = () => {
             })
                 .then(response => {
                     const stockfishResult = (response.data as unknown as PlayData)
-
                     setFen(stockfishResult.fen)
                     setChess(new Chess(stockfishResult.fen))
 

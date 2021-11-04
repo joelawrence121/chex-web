@@ -3,7 +3,6 @@ import '../styles/SingleMovePuzzle.css';
 import MainBoard from "./MainBoard";
 import ChapiService from "../service/ChapiService";
 import SinglePuzzleData from "../types/SinglePuzzleData";
-import PuzzleType from "../types/PuzzleType";
 import {Chess} from "chess.ts";
 import refresh from './icons/refresh.png';
 import eyeFilled from './icons/eye-filled.png';
@@ -12,56 +11,68 @@ import rightArrow from './icons/right-arrow.png';
 import blackPawn from './icons/black-pawn.png';
 import whitePawn from './icons/white-pawn.png';
 import BoardHighlight from "../types/BoardHighlight";
+import MatePuzzleData from "../types/MatePuzzleData";
+import PlayData from "../types/PlayData";
 
-const PUZZLE_TYPE_DESCRIPTIONS = new Map([
-    [PuzzleType.MATE.valueOf(), "MATE IN 1"],
-    [PuzzleType.GAIN.valueOf(), "GAIN"],
-    [PuzzleType.SWING.valueOf(), "SWING"],
-    [PuzzleType.PIN.valueOf(), "PIN"]
-])
+const MatePuzzle: React.FC = () => {
 
-const SingleMovePuzzle: React.FC = () => {
-
-    // piece of state just to trigger rerender on button press
-    const [random, setRandom] = useState(Math.random());
-    const [solutionVisible, setSolutionVisible] = useState(false);
-    const [correct, setCorrect] = useState(false);
-    const [arrow, setArrow] = useState([['', '']])
-    const [puzzle, setPuzzle] = useState<SinglePuzzleData>();
-    const [puzzleType, changePuzzleType] = useState(PuzzleType.MATE);
     const [chess, setChess] = useState(new Chess())
     const [fen, setFen] = useState<string>()
+    const [arrow, setArrow] = useState([['', '']])
+    const [nextMove, setNextMove] = useState<string>()
+    const [getNextMove, setGetNextMove] = useState<boolean>(true)
+    const [puzzle, setPuzzle] = useState<MatePuzzleData>();
+    const [n, setN] = useState(2);
+    const [random, setRandom] = useState(Math.random());
+    const [turn, setTurn] = useState(false)
+    const [isStart, setIsStart] = useState(true)
+    const [winner, setWinner] = useState<string | undefined>()
+    const [solutionVisible, setSolutionVisible] = useState(false);
 
     const reRender = () => setRandom(Math.random());
 
     useEffect(() => {
-        ChapiService.getSingleMatePuzzle(puzzleType.valueOf())
+        ChapiService.getMateInNPuzzle(n)
             .then(response => {
+                console.log(response.data)
                 setPuzzle(response.data);
-                setFen((response.data as SinglePuzzleData).starting_fen)
-                chess.load((response.data as SinglePuzzleData).starting_fen)
+                const puzzleData = (response.data as SinglePuzzleData)
+                setFen(puzzleData.starting_fen)
+                chess.load(puzzleData.starting_fen)
                 setChess(chess)
                 setSolutionVisible(false)
-                setCorrect(false)
-                console.log(response.data)
             })
             .catch(e => {
                 console.log(e)
             })
-    }, [random, puzzleType])
+    }, [random, n])
+
+    // stockfish move hook
+    useEffect(() => {
+        if (!isStart) {
+            ChapiService.getStockfishMove({
+                fen: chess.fen(),
+                difficulty: 1
+            })
+                .then(response => {
+                    const stockfishResult = (response.data as unknown as PlayData)
+                    setFen(stockfishResult.fen)
+                    setChess(new Chess(stockfishResult.fen))
+                    setWinner(stockfishResult.winner)
+                    setGetNextMove(!getNextMove)
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+        }
+    }, [turn])
 
     function getArrows() {
         function sliceMove(solution: string | undefined) {
             return [solution?.slice(0, 2) as string, solution?.slice(2, 5) as string]
         }
 
-        let solution = puzzle?.move
-        let arrows = [sliceMove(solution)]
-        // if pin puzzle type we want to show the following move by the other player
-        if (puzzle?.type === PuzzleType.PIN.valueOf()) {
-            arrows.push(sliceMove(puzzle?.follow_move))
-        }
-        return arrows
+        return [sliceMove(nextMove)]
     }
 
     function toggleSolution() {
@@ -73,13 +84,6 @@ const SingleMovePuzzle: React.FC = () => {
         setSolutionVisible(!solutionVisible);
     }
 
-    function getMoveType(key: string | undefined) {
-        if (PUZZLE_TYPE_DESCRIPTIONS.has(key as string)) {
-            return PUZZLE_TYPE_DESCRIPTIONS.get(key as string)
-        }
-        return ""
-    }
-
     function getSolution() {
         return (solutionVisible ? eyeFilled : eyeUnfilled)
     }
@@ -89,8 +93,8 @@ const SingleMovePuzzle: React.FC = () => {
     }
 
     function switchPuzzleType() {
-        const puzzleTypes = [PuzzleType.MATE, PuzzleType.GAIN, PuzzleType.SWING, PuzzleType.PIN]
-        changePuzzleType(puzzleTypes[(puzzleTypes.indexOf(puzzleType) + 1) % puzzleTypes.length])
+        const nRange = [2, 3, 4, 5]
+        setN(nRange[(nRange.indexOf(n) + 1) % nRange.length])
     }
 
     function onDrop(sourceSquare: string, targetSquare: string): boolean {
@@ -99,17 +103,21 @@ const SingleMovePuzzle: React.FC = () => {
             from: sourceSquare,
         })
         if (move == null) return false;
+        if (isStart) setIsStart(false)
+
         setFen(chess.fen())
-        setCorrect(move.from + move.to == puzzle?.move)
+
+        // trigger stockfish's turn
+        setTurn(!turn)
         return true
     }
 
     function resetPuzzle() {
-        setFen((puzzle as SinglePuzzleData).starting_fen)
-        chess.load((puzzle as SinglePuzzleData).starting_fen)
+        setFen((puzzle as MatePuzzleData).starting_fen)
+        chess.load((puzzle as MatePuzzleData).starting_fen)
         setChess(chess)
         setSolutionVisible(false)
-        setCorrect(false)
+        setWinner(undefined)
     }
 
     return (
@@ -121,7 +129,7 @@ const SingleMovePuzzle: React.FC = () => {
                 <img className={"smaller"} src={refresh} alt="Refresh"/>
             </div>
             <div className="card t" onClick={switchPuzzleType}>
-                <h1 className="text">{getMoveType(puzzle?.type)}</h1>
+                <h1 className="text">Mate in {n}</h1>
             </div>
             <div className="card n" onClick={reRender}>
                 <img className={"smaller"} src={rightArrow} alt="Next"/>
@@ -133,12 +141,12 @@ const SingleMovePuzzle: React.FC = () => {
             <div className="main">
                 <MainBoard
                     boardWidth={500}
-                    position={correct ? puzzle?.ending_fen : fen}
+                    position={fen}
                     boardOrientation={puzzle?.to_move as string}
                     onPieceDrop={onDrop}
                     arrows={arrow}
                     alternateArrows={false}
-                    boardHighlight={correct ? BoardHighlight.userWinner() : BoardHighlight.normal()}
+                    boardHighlight={winner == puzzle?.to_move.toLowerCase() ? BoardHighlight.userWinner() : BoardHighlight.normal()}
                 />
             </div>
             <div className="card-no-shadow d"></div>
@@ -146,4 +154,4 @@ const SingleMovePuzzle: React.FC = () => {
     );
 }
 
-export default SingleMovePuzzle;
+export default MatePuzzle;

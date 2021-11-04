@@ -4,12 +4,14 @@ import NavbarScroller from "./NavbarScroller";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import CommentaryBox from "./CommentaryBox";
 import Home from "./Home";
+import MatePuzzle from "./MatePuzzle";
 
 const navigation = {
     brand: {name: "Chexplanations", to: "/"},
     links: [
         {name: "Commentary", to: "/commentary"},
-        {name: "Single Move Puzzles", to: "/puzzles"}
+        {name: "Single Move Puzzles", to: "/puzzles"},
+        {name: "Mate in N", to: "/mate"}
     ]
 }
 
@@ -26,11 +28,15 @@ const App: React.FC = () => {
                 </Route>
                 <Route path="/commentary">
                     <NavbarScroller brand={brand} links={links}/>
-                    <CommentaryBox />
+                    <CommentaryBox/>
+                </Route>
+                <Route path="/mate">
+                    <NavbarScroller brand={brand} links={links}/>
+                    <MatePuzzle/>
                 </Route>
                 <Route path="/">
                     <NavbarScroller brand={brand} links={links}/>
-                    <Home />
+                    <Home/>
                 </Route>
             </Switch>
         </Router>

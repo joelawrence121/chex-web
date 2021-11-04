@@ -24,11 +24,17 @@ const getStatistics = () => {
     return http.get("/statistics", headers)
 }
 
+const getMateInNPuzzle = (n: number) => {
+    return http.get("/mate_in/" + n, headers);
+};
+
+
 const ChapiService = {
     getSingleMatePuzzle,
     getMoveDescription,
     getStockfishMove,
-    getStatistics
+    getStatistics,
+    getMateInNPuzzle
 }
 
 export default ChapiService;
