@@ -12,6 +12,7 @@ interface CommentaryListProps {
 function CommentaryList(props: CommentaryListProps) {
 
     function getTrigger(index: number, item: string): string {
+        // 1. e2e4  1. b7b6   2. c2c4  2. d7d6
         return (Math.ceil((index + 1) / 2)).toString() + ": " + item;
     }
 

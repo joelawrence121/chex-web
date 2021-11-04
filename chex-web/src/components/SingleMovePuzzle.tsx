@@ -24,6 +24,7 @@ const SingleMovePuzzle: React.FC = () => {
     // piece of state just to trigger rerender on button press
     const [random, setRandom] = useState(Math.random());
     const [solutionVisible, setSolutionVisible] = useState(false);
+    const [correct, setCorrect] = useState(false);
     const [arrow, setArrow] = useState([['', '']])
     const [puzzle, setPuzzle] = useState<PuzzleData>();
     const [puzzleType, changePuzzleType] = useState(PuzzleType.MATE);
@@ -40,6 +41,7 @@ const SingleMovePuzzle: React.FC = () => {
                 chess.load((response.data as PuzzleData).starting_fen)
                 setChess(chess)
                 setSolutionVisible(false)
+                setCorrect(false)
                 console.log(response.data)
             })
             .catch(e => {
@@ -97,6 +99,7 @@ const SingleMovePuzzle: React.FC = () => {
         })
         if (move == null) return false;
         setFen(chess.fen())
+        setCorrect(move.from + move.to == puzzle?.move)
         return true
     }
 
@@ -105,6 +108,7 @@ const SingleMovePuzzle: React.FC = () => {
         chess.load((puzzle as PuzzleData).starting_fen)
         setChess(chess)
         setSolutionVisible(false)
+        setCorrect(false)
     }
 
     return (
@@ -133,6 +137,7 @@ const SingleMovePuzzle: React.FC = () => {
                     onPieceDrop={onDrop}
                     arrows={arrow}
                     alternateArrows={false}
+                    correctHighlight={correct}
                 />
             </div>
             <div className="card-no-shadow d"></div>
