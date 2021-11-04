@@ -1,5 +1,5 @@
 import {Chessboard} from "react-chessboard";
-import React from "react";
+import React, {CSSProperties} from "react";
 import {Chess} from "chess.ts";
 
 interface BoardProps {
@@ -9,7 +9,7 @@ interface BoardProps {
     onPieceDrop: (sourceSquare: any, targetSquare: any, piece: any) => boolean
     arrows: string[][]
     alternateArrows: boolean
-    correctHighlight: boolean
+    boardHighlight : CSSProperties[]
 }
 
 function MainBoard(props: BoardProps) {
@@ -21,8 +21,8 @@ function MainBoard(props: BoardProps) {
             boardOrientation={getBoardOrientation(props.boardOrientation)}
             customArrows={props.arrows}
             onPieceDrop={props.onPieceDrop}
-            customLightSquareStyle={getBoardColour(props.correctHighlight)[0]}
-            customDarkSquareStyle={getBoardColour(props.correctHighlight)[1]}
+            customLightSquareStyle={props.boardHighlight[0]}
+            customDarkSquareStyle={props.boardHighlight[1]}
             customDropSquareStyle={{boxShadow: 'inset 0 0 1px 6px rgba(255,255,255,0.75)'}}
             customArrowColor={getArrowColour(props.position, props.alternateArrows)}
             customBoardStyle={{
@@ -30,13 +30,6 @@ function MainBoard(props: BoardProps) {
                 boxShadow: `0 5px 15px rgba(0, 0, 0, 0.5)`
             }}/>
     )
-
-    function getBoardColour(correctHighlight : boolean) {
-        if (!correctHighlight) {
-            return [{backgroundColor: '#a1c3f5'}, {backgroundColor: '#365992'}]
-        }
-        return [{backgroundColor: '#80ff80'}, {backgroundColor: '#3ba62f'}]
-    }
 
     function getArrowColour(position: string | undefined, alternateArrows: boolean) {
         if (alternateArrows) {

@@ -11,6 +11,7 @@ import eyeUnfilled from './icons/eye-unfilled.png';
 import rightArrow from './icons/right-arrow.png';
 import blackPawn from './icons/black-pawn.png';
 import whitePawn from './icons/white-pawn.png';
+import BoardHighlight from "../types/BoardHighlight";
 
 const PUZZLE_TYPE_DESCRIPTIONS = new Map([
     [PuzzleType.MATE.valueOf(), "MATE IN 1"],
@@ -132,12 +133,12 @@ const SingleMovePuzzle: React.FC = () => {
             <div className="main">
                 <MainBoard
                     boardWidth={500}
-                    position={fen}
+                    position={correct ? puzzle?.ending_fen : fen}
                     boardOrientation={puzzle?.to_move as string}
                     onPieceDrop={onDrop}
                     arrows={arrow}
                     alternateArrows={false}
-                    correctHighlight={correct}
+                    boardHighlight={correct ? BoardHighlight.userWinner() : BoardHighlight.normal()}
                 />
             </div>
             <div className="card-no-shadow d"></div>

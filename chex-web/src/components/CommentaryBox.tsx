@@ -9,6 +9,7 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import refresh from './icons/refresh.png';
 import lightFilled from './icons/light-filled.png';
 import lightUnfilled from './icons/light-unfilled.png';
+import BoardHighlight from "../types/BoardHighlight";
 
 const CommentaryBox: React.FC = () => {
 
@@ -23,6 +24,7 @@ const CommentaryBox: React.FC = () => {
     const [turn, setTurn] = useState(false)
     const [isStart, setIsStart] = useState(true)
     const [showHint, setShowHint] = useState(false)
+    const [winner, setWinner] = useState<string | undefined>()
 
     function resetBoard() {
         setChess(new Chess())
@@ -34,6 +36,7 @@ const CommentaryBox: React.FC = () => {
         setTurn(false)
         setIsStart(true)
         setShowHint(false)
+        setWinner(undefined)
     }
 
     function getUser() {
@@ -77,13 +80,21 @@ const CommentaryBox: React.FC = () => {
                 difficulty: stockfishLevel
             })
                 .then(response => {
-                    setFen((response.data as unknown as PlayData).fen)
-                    setChess(new Chess((response.data as unknown as PlayData).fen))
-                    const newMoveStack = moveStack.slice()
-                    newMoveStack.push((response.data as unknown as PlayData).move)
-                    setMoveStack(newMoveStack)
+                    const stockfishResult = (response.data as unknown as PlayData)
+
+                    setFen(stockfishResult.fen)
+                    setChess(new Chess(stockfishResult.fen))
+
+                    // move will be null when game is over
+                    if (stockfishResult.move) {
+                        const newMoveStack = moveStack.slice()
+                        newMoveStack.push(stockfishResult.move)
+                        setMoveStack(newMoveStack)
+                    }
+                    setWinner(stockfishResult.winner)
+
                     const newFenStack = fenStack.slice()
-                    newFenStack.push((response.data as unknown as PlayData).fen)
+                    newFenStack.push(stockfishResult.fen)
                     setFenStack(newFenStack)
                 })
                 .catch(e => {
@@ -116,7 +127,7 @@ const CommentaryBox: React.FC = () => {
         return true
     }
 
-    function sliceMove(move: string) {
+    function sliceMove(move: string | undefined) {
         if (move) {
             return [[move.slice(0, 2) as string, move.slice(2, 5) as string]]
         }
@@ -166,6 +177,19 @@ const CommentaryBox: React.FC = () => {
         return showHint ? lightFilled : lightUnfilled;
     }
 
+    function getBoardHighlight() {
+        if (!winner) {
+            return BoardHighlight.normal();
+        }
+        if (winner == 'white') {
+            return BoardHighlight.userWinner();
+        }
+        if (winner == 'black') {
+            return BoardHighlight.stockfishWinner();
+        }
+        return BoardHighlight.normal();
+    }
+
     return (
         <section className="commentary-animated-grid">
             <div className="commentary-card" onClick={generateHint}>
@@ -186,6 +210,7 @@ const CommentaryBox: React.FC = () => {
                     onPieceDrop={onDrop}
                     arrows={arrow}
                     alternateArrows={true}
+                    boardHighlight={getBoardHighlight()}
                 />
             </div>
             <div className="commentary-list">
