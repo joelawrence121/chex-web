@@ -1,5 +1,4 @@
 # chex-web (Work in progress)
-## Overview 
 Front end web application for the Chexplanations project. Interacts with Chapi for the backend. 
 
 ## Setup 
