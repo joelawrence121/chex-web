@@ -7,7 +7,8 @@ import ChapiService from "../service/ChapiService";
 import PlayData from "../types/PlayData";
 import ProgressBar from "@ramonak/react-progress-bar";
 import refresh from './icons/refresh.png';
-import hint from './icons/hint.png';
+import lightFilled from './icons/light-filled.png';
+import lightUnfilled from './icons/light-unfilled.png';
 
 const CommentaryBox: React.FC = () => {
 
@@ -21,6 +22,7 @@ const CommentaryBox: React.FC = () => {
     const [moveCommentary, setMoveCommentary] = useState<string[]>([])
     const [turn, setTurn] = useState(false)
     const [isStart, setIsStart] = useState(true)
+    const [showHint, setShowHint] = useState(false)
 
     function getUser() {
         if (chess.turn() === 'b') {
@@ -114,17 +116,22 @@ const CommentaryBox: React.FC = () => {
     }
 
     function generateHint() {
-        ChapiService.getStockfishMove({
-            fen: chess.fen(),
-            difficulty: stockfishLevel
-        })
-            .then(response => {
-                console.log(response)
-                setArrow(sliceMove((response.data as unknown as PlayData).move))
+        if (!showHint) {
+            ChapiService.getStockfishMove({
+                fen: chess.fen(),
+                difficulty: stockfishLevel
             })
-            .catch(e => {
-                console.log(e)
-            })
+                .then(response => {
+                    console.log(response)
+                    setArrow(sliceMove((response.data as unknown as PlayData).move))
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+        } else {
+            setArrow([['', '']])
+        }
+        setShowHint(!showHint)
     }
 
     function changeStockfishLevel() {
@@ -147,10 +154,14 @@ const CommentaryBox: React.FC = () => {
         fenStack.forEach(fen => setFen(fen))
     }
 
+    function getHintIcon() {
+        return showHint ? lightFilled : lightUnfilled;
+    }
+
     return (
         <section className="commentary-animated-grid">
             <div className="commentary-card" onClick={generateHint}>
-                <img className={"smaller"} src={hint} alt="Hint"/>
+                <img className={"smaller"} src={getHintIcon()} alt="Hint"/>
             </div>
             <div className="commentary-card" onClick={changeStockfishLevel}>
                 Difficulty
