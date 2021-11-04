@@ -19,8 +19,7 @@ const MatePuzzle: React.FC = () => {
     const [chess, setChess] = useState(new Chess())
     const [fen, setFen] = useState<string>()
     const [arrow, setArrow] = useState([['', '']])
-    const [nextMove, setNextMove] = useState<string>()
-    const [getNextMove, setGetNextMove] = useState<boolean>(true)
+    const [nextMove, setNextMove] = useState<string | undefined>()
     const [puzzle, setPuzzle] = useState<MatePuzzleData>();
     const [n, setN] = useState(2);
     const [random, setRandom] = useState(Math.random());
@@ -41,11 +40,39 @@ const MatePuzzle: React.FC = () => {
                 chess.load(puzzleData.starting_fen)
                 setChess(chess)
                 setSolutionVisible(false)
+                ChapiService.getStockfishMove({
+                    fen: chess.fen(),
+                    difficulty: 9
+                })
+                    .then(response => {
+                        const stockfishResult = (response.data as unknown as PlayData)
+                        console.log(stockfishResult)
+                        setNextMove(stockfishResult.move)
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
             })
             .catch(e => {
                 console.log(e)
             })
+        console.log(nextMove)
     }, [random, n])
+
+    useEffect(() => {
+        ChapiService.getStockfishMove({
+            fen: fen ? fen : chess.fen(),
+            difficulty: 9
+        })
+            .then(response => {
+                const stockfishResult = (response.data as unknown as PlayData)
+                console.log(stockfishResult)
+                setNextMove(stockfishResult.move)
+            })
+            .catch(e => {
+                console.log(e)
+            })
+    }, [fen])
 
     // stockfish move hook
     useEffect(() => {
@@ -59,7 +86,6 @@ const MatePuzzle: React.FC = () => {
                     setFen(stockfishResult.fen)
                     setChess(new Chess(stockfishResult.fen))
                     setWinner(stockfishResult.winner)
-                    setGetNextMove(!getNextMove)
                 })
                 .catch(e => {
                     console.log(e)
@@ -67,17 +93,10 @@ const MatePuzzle: React.FC = () => {
         }
     }, [turn])
 
-    function getArrows() {
-        function sliceMove(solution: string | undefined) {
-            return [solution?.slice(0, 2) as string, solution?.slice(2, 5) as string]
-        }
-
-        return [sliceMove(nextMove)]
-    }
 
     function toggleSolution() {
         if (!solutionVisible) {
-            setArrow(getArrows())
+            setArrow([[nextMove?.slice(0, 2) as string, nextMove?.slice(2, 5) as string]])
         } else {
             setArrow([])
         }
@@ -120,6 +139,13 @@ const MatePuzzle: React.FC = () => {
         setWinner(undefined)
     }
 
+    function getBoardHighlight() {
+        if (winner) {
+            return winner === puzzle?.to_move.toLowerCase() ? BoardHighlight.userWinner() : BoardHighlight.normal();
+        }
+        return BoardHighlight.normal()
+    }
+
     return (
         <section className="animated-grid">
             <div className="card-no-shadow m">
@@ -146,7 +172,7 @@ const MatePuzzle: React.FC = () => {
                     onPieceDrop={onDrop}
                     arrows={arrow}
                     alternateArrows={false}
-                    boardHighlight={winner == puzzle?.to_move.toLowerCase() ? BoardHighlight.userWinner() : BoardHighlight.normal()}
+                    boardHighlight={getBoardHighlight()}
                 />
             </div>
             <div className="card-no-shadow d"></div>
