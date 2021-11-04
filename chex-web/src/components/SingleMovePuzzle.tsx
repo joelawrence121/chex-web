@@ -124,7 +124,7 @@ const SingleMovePuzzle: React.FC = () => {
             <div className="card-no-shadow s" onClick={toggleSolution}>
                 <img className={"bigger"} src={getSolution()} alt="Show Solution"/>
             </div>
-            <div className="card-no-shadow c"> </div>
+            <div className="card-no-shadow c"></div>
             <div className="main">
                 <MainBoard
                     boardWidth={500}
@@ -135,7 +135,7 @@ const SingleMovePuzzle: React.FC = () => {
                     alternateArrows={false}
                 />
             </div>
-            <div className="card-no-shadow d"> </div>
+            <div className="card-no-shadow d"></div>
         </section>
     );
 }

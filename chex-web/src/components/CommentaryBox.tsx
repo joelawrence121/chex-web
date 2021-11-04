@@ -19,10 +19,22 @@ const CommentaryBox: React.FC = () => {
     const [arrow, setArrow] = useState([['', '']])
     const [moveStack, setMoveStack] = useState<string[]>([])
     const [fenStack, setFenStack] = useState<string[]>([initialFen])
-    const [moveCommentary, setMoveCommentary] = useState<string[]>([])
+    const [moveCommentary, setMoveCommentary] = useState<string[][]>([])
     const [turn, setTurn] = useState(false)
     const [isStart, setIsStart] = useState(true)
     const [showHint, setShowHint] = useState(false)
+
+    function resetBoard() {
+        setChess(new Chess())
+        setFen(initialFen)
+        setArrow([['', '']])
+        setMoveStack([])
+        setFenStack([initialFen])
+        setMoveCommentary([])
+        setTurn(false)
+        setIsStart(true)
+        setShowHint(false)
+    }
 
     function getUser() {
         if (chess.turn() === 'b') {
@@ -45,12 +57,13 @@ const CommentaryBox: React.FC = () => {
                 fen: chess.fen()
             })
                 .then(response => {
+                    let descriptions = response.data as unknown as string[]
                     let newMoveCommentary = moveCommentary.slice()
-                    newMoveCommentary.push(response.data.toString())
+                    newMoveCommentary.push(descriptions)
                     setMoveCommentary(newMoveCommentary)
                 })
                 .catch(e => {
-                    setMoveCommentary(["Chapi isn't happy :("])
+                    setMoveCommentary([["Chapi isn't happy :("]])
                     console.log(e)
                 })
         }
@@ -103,16 +116,11 @@ const CommentaryBox: React.FC = () => {
         return true
     }
 
-    function resetBoard() {
-        setChess(new Chess())
-        setFen(initialFen)
-        setMoveStack([])
-        setMoveCommentary([])
-        setIsStart(true)
-    }
-
     function sliceMove(move: string) {
-        return [[move.slice(0, 2) as string, move.slice(2, 5) as string]]
+        if (move) {
+            return [[move.slice(0, 2) as string, move.slice(2, 5) as string]]
+        }
+        return [['', '']]
     }
 
     function generateHint() {
