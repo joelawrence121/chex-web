@@ -30,23 +30,23 @@ const MatePuzzle: React.FC = () => {
 
     const reRender = () => setRandom(Math.random());
 
+    // load puzzle hook
     useEffect(() => {
         ChapiService.getMateInNPuzzle(n)
             .then(response => {
-                console.log(response.data)
                 setPuzzle(response.data);
                 const puzzleData = (response.data as SinglePuzzleData)
                 setFen(puzzleData.starting_fen)
                 chess.load(puzzleData.starting_fen)
                 setChess(chess)
                 setSolutionVisible(false)
+                setWinner(undefined)
                 ChapiService.getStockfishMove({
                     fen: chess.fen(),
                     difficulty: 9
                 })
                     .then(response => {
                         const stockfishResult = (response.data as unknown as PlayData)
-                        console.log(stockfishResult)
                         setNextMove(stockfishResult.move)
                     })
                     .catch(e => {
@@ -56,9 +56,9 @@ const MatePuzzle: React.FC = () => {
             .catch(e => {
                 console.log(e)
             })
-        console.log(nextMove)
     }, [random, n])
 
+    // get next best move hook
     useEffect(() => {
         ChapiService.getStockfishMove({
             fen: fen ? fen : chess.fen(),
@@ -66,7 +66,6 @@ const MatePuzzle: React.FC = () => {
         })
             .then(response => {
                 const stockfishResult = (response.data as unknown as PlayData)
-                console.log(stockfishResult)
                 setNextMove(stockfishResult.move)
             })
             .catch(e => {
@@ -95,7 +94,7 @@ const MatePuzzle: React.FC = () => {
 
 
     function toggleSolution() {
-        if (!solutionVisible) {
+        if (!solutionVisible && nextMove) {
             setArrow([[nextMove?.slice(0, 2) as string, nextMove?.slice(2, 5) as string]])
         } else {
             setArrow([])
@@ -123,8 +122,8 @@ const MatePuzzle: React.FC = () => {
         })
         if (move == null) return false;
         if (isStart) setIsStart(false)
-
         setFen(chess.fen())
+        setSolutionVisible(false)
 
         // trigger stockfish's turn
         setTurn(!turn)
