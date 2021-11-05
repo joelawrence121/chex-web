@@ -120,6 +120,7 @@ const CommentaryBox: React.FC = () => {
         const newFenStack = fenStack.slice()
         newFenStack.push(chess.fen())
         setFenStack(newFenStack)
+        console.log(fenStack)
 
         // trigger stockfish's turn
         setTurn(!turn)

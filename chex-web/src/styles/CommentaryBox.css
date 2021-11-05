@@ -150,12 +150,12 @@ p {
 
     /* Explicit grid */
     grid-template-areas:
-    'a  b  c'
-    'e  d  d'
-    'e  d  d';
+    'x  a  b  c'
+    'e  d  d  d'
+    'e  d  d  d';
 
     grid-template-rows: 100px auto auto;
-    grid-template-columns: 400px auto auto;
+    grid-template-columns: 30% auto auto auto;
 
     --stagger-delay: 100ms;
 }
