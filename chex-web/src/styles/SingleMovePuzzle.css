@@ -50,14 +50,6 @@ img.bigger {
     background: #353535 no-repeat center;
 }
 
-.card.r {
-    grid-area: r;
-}
-
-.card.n {
-    grid-area: n;
-}
-
 h2 {
     height: auto;
     width: auto;
@@ -84,12 +76,35 @@ h2 {
     grid-area: m;
 }
 
+.card-no-shadow.n {
+    grid-area: n;
+}
+
+.card-no-shadow.r {
+    grid-area: r;
+}
+
 .card-no-shadow.t {
     grid-area: t;
 }
 
 .card-no-shadow.s {
     grid-area: s;
+}
+
+.card-no-shadow.s:hover {
+    box-shadow: rgba(2, 8, 20, 0.1) 0 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0 0.175em 0.5em;
+    transform: translateY(-3px) scale(1.05);
+}
+
+.card-no-shadow.n:hover {
+    box-shadow: rgba(2, 8, 20, 0.1) 0 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0 0.175em 0.5em;
+    transform: translateY(-3px) scale(1.05);
+}
+
+.card-no-shadow.r:hover {
+    box-shadow: rgba(2, 8, 20, 0.1) 0 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0 0.175em 0.5em;
+    transform: translateY(-3px) scale(1.05);
 }
 
 .card-no-shadow.c {

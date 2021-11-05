@@ -192,14 +192,14 @@ const CommentaryBox: React.FC = () => {
 
     return (
         <section className="commentary-animated-grid">
-            <div className="commentary-card" onClick={generateHint}>
+            <div className="commentary-card no-background" onClick={generateHint}>
                 <img className={"smaller"} src={getHintIcon()} alt="Hint"/>
             </div>
             <div className="commentary-card" onClick={changeStockfishLevel}>
                 Difficulty
                 <ProgressBar className="difficulty-bar" completed={stockfishLevel * 10} bgColor="#365992"/>
             </div>
-            <div className="commentary-card" onClick={resetBoard}>
+            <div className="commentary-card no-background" onClick={resetBoard}>
                 <img className={"smaller"} src={refresh} alt="Refresh"/>
             </div>
             <div className="commentary-main">

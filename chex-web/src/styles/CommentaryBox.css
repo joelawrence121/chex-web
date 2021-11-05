@@ -115,7 +115,7 @@ p {
 }
 
 .difficulty-bar {
-   width: 90%;
+    width: 90%;
 }
 
 .commentary-main {
@@ -175,6 +175,13 @@ p {
 
 .commentary-card {
     background-color: rgb(44, 44, 44);
+    animation: cardEntrance 700ms ease-out;
+    animation-fill-mode: backwards;
+    user-select: none;
+}
+
+.commentary-card.no-background {
+    background-color: rgb(0, 0, 0);
     animation: cardEntrance 700ms ease-out;
     animation-fill-mode: backwards;
     user-select: none;

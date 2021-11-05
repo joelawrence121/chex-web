@@ -150,13 +150,13 @@ const MatePuzzle: React.FC = () => {
             <div className="card-no-shadow m">
                 <img className={"bigger"} src={getToMove()} alt={puzzle?.to_move}/>
             </div>
-            <div className="card r" onClick={resetPuzzle}>
+            <div className="card-no-shadow r" onClick={resetPuzzle}>
                 <img className={"smaller"} src={refresh} alt="Refresh"/>
             </div>
             <div className="card t" onClick={switchPuzzleType}>
                 <h1 className="text">Mate in {n}</h1>
             </div>
-            <div className="card n" onClick={reRender}>
+            <div className="card-no-shadow n" onClick={reRender}>
                 <img className={"smaller"} src={rightArrow} alt="Next"/>
             </div>
             <div className="card-no-shadow s" onClick={toggleSolution}>
