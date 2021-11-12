@@ -114,6 +114,19 @@ p {
     text-align: center;
 }
 
+a {
+    font-weight: normal;
+    text-align: center;
+}
+
+a:link {
+    color: #020000;
+}
+
+a:visited {
+    color: #020000;
+}
+
 .difficulty-bar {
     width: 90%;
 }

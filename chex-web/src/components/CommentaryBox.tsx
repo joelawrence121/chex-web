@@ -10,6 +10,7 @@ import refresh from './icons/refresh.png';
 import lightFilled from './icons/light-filled.png';
 import lightUnfilled from './icons/light-unfilled.png';
 import BoardHighlight from "../types/BoardHighlight";
+import DescriptionData from "../types/DescriptionData";
 
 const CommentaryBox: React.FC = () => {
 
@@ -20,7 +21,7 @@ const CommentaryBox: React.FC = () => {
     const [arrow, setArrow] = useState([['', '']])
     const [moveStack, setMoveStack] = useState<string[]>([])
     const [fenStack, setFenStack] = useState<string[]>([initialFen])
-    const [moveCommentary, setMoveCommentary] = useState<string[][]>([])
+    const [descDataStack, setDescDataStack] = useState<DescriptionData[]>([])
     const [turn, setTurn] = useState(false)
     const [isStart, setIsStart] = useState(true)
     const [showHint, setShowHint] = useState(false)
@@ -32,7 +33,7 @@ const CommentaryBox: React.FC = () => {
         setArrow([['', '']])
         setMoveStack([])
         setFenStack([initialFen])
-        setMoveCommentary([])
+        setDescDataStack([])
         setTurn(false)
         setIsStart(true)
         setShowHint(false)
@@ -60,13 +61,12 @@ const CommentaryBox: React.FC = () => {
                 fen: chess.fen()
             })
                 .then(response => {
-                    let descriptions = response.data as unknown as string[]
-                    let newMoveCommentary = moveCommentary.slice()
-                    newMoveCommentary.push(descriptions)
-                    setMoveCommentary(newMoveCommentary)
+                    let descriptionData = response.data as unknown as DescriptionData
+                    let newDescDataStack = descDataStack.slice()
+                    newDescDataStack.push(descriptionData)
+                    setDescDataStack(newDescDataStack)
                 })
                 .catch(e => {
-                    setMoveCommentary([["Chapi isn't happy :("]])
                     console.log(e)
                 })
         }
@@ -215,7 +215,7 @@ const CommentaryBox: React.FC = () => {
             </div>
             <div className="commentary-list">
                 <CommentaryList
-                    commentaryList={moveCommentary}
+                    descDataStack={descDataStack}
                     moveStack={moveStack}
                     onOpening={onCollapsibleOpening}
                     onOpen={onCollapsibleOpen}
