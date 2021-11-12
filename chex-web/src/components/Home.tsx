@@ -1,47 +1,59 @@
 import React, {useEffect, useState} from 'react';
 import '../styles/Home.css';
-import BarChart from "./BarChart";
+import MainBoard from "./MainBoard";
+import {Chess} from "chess.ts";
+import Utils from "../service/Utils";
 import ChapiService from "../service/ChapiService";
-import Statistics from "../types/Statistics";
+import PlayData from "../types/PlayData";
 
 const Home: React.FC = () => {
 
-    const BStyle = {height : '100%', width : '100%'}
-    const [puzzleTypes, setPuzzleTypes] = useState<string[]>([])
-    const [puzzleCounts, setPuzzleCounts] = useState<number[]>([])
+    const initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    const stockfishLevel = 8
+    const [playData, setPlayData] = useState<PlayData>()
+    const [winner, setWinner] = useState<string>()
 
-    // retrieve statistics hook
     useEffect(() => {
-        ChapiService.getStatistics()
-            .then(response => {
-                console.log(response)
-                setPuzzleTypes((response.data as unknown as Statistics).types)
-                setPuzzleCounts((response.data as unknown as Statistics).counts)
+        const interval = setInterval(() => {
+            ChapiService.getStockfishMove({
+                fen: playData ? playData.fen : initialFen,
+                difficulty: stockfishLevel
             })
-            .catch(e => {
-                console.log(e)
-            })
-    }, [])
+                .then(response => {
+                    const stockfishResult = (response.data as unknown as PlayData)
+                    setPlayData(stockfishResult)
+                    setWinner(stockfishResult.winner)
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+        }, 1000);
+        return () => clearInterval(interval) ;
+    }, [playData]);
 
-    function getYCount(type: string): number {
-        return puzzleCounts[puzzleTypes.indexOf(type)]
-    }
-
-    function getXLabel(type: string): string {
-        return type
+    function onDrop(sourceSquare: string, targetSquare: string): boolean {
+        return false
     }
 
     return (
         <section className="home-animated-grid">
-            <div className="card-stationary a">
-                <h2>Welcome to Chexplanations!</h2>
-                COMP30030 & COMP30040
+            <div className="card-stationary">
+                <h1>Welcome to Chexplanations!</h1>
             </div>
-            <div className="card-stationary b">
-                Puzzle Statistics
-                <BarChart values={puzzleTypes} yValueFn={getYCount} xLabelFn={getXLabel} style={BStyle}/>
+            <div className="card-stationary"></div>
+            <div className="card-stationary m">
+                <MainBoard
+                    boardWidth={600}
+                    position={playData ? playData.fen : initialFen}
+                    boardOrientation={"white"}
+                    onPieceDrop={onDrop}
+                    arrows={[]}
+                    alternateArrows={false}
+                    boardHighlight={Utils.getBoardHighlight(winner)}
+                />
             </div>
-            <div className="card-stationary c"></div>
+            <div className="card-stationary"></div>
+            <div className="card-stationary"></div>
         </section>
     );
 }

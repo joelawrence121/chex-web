@@ -9,7 +9,7 @@ interface BoardProps {
     onPieceDrop: (sourceSquare: any, targetSquare: any, piece: any) => boolean
     arrows: string[][]
     alternateArrows: boolean
-    boardHighlight : CSSProperties[]
+    boardHighlight: CSSProperties[]
 }
 
 function MainBoard(props: BoardProps) {

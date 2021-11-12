@@ -9,9 +9,9 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import refresh from './icons/refresh.png';
 import lightFilled from './icons/light-filled.png';
 import lightUnfilled from './icons/light-unfilled.png';
-import BoardHighlight from "../types/BoardHighlight";
 import DescriptionData from "../types/DescriptionData";
 import RecentDescription from "./RecentDescription";
+import Utils from "../service/Utils";
 
 const CommentaryBox: React.FC = () => {
 
@@ -121,7 +121,6 @@ const CommentaryBox: React.FC = () => {
         const newFenStack = fenStack.slice()
         newFenStack.push(chess.fen())
         setFenStack(newFenStack)
-        console.log(fenStack)
 
         // trigger stockfish's turn
         setTurn(!turn)
@@ -178,19 +177,6 @@ const CommentaryBox: React.FC = () => {
         return showHint ? lightFilled : lightUnfilled;
     }
 
-    function getBoardHighlight() {
-        if (!winner) {
-            return BoardHighlight.normal();
-        }
-        if (winner == 'white') {
-            return BoardHighlight.userWinner();
-        }
-        if (winner == 'black') {
-            return BoardHighlight.stockfishWinner();
-        }
-        return BoardHighlight.normal();
-    }
-
     return (
         <section className="commentary-animated-grid">
             <div className="commentary-card no-background" onClick={generateHint}>
@@ -211,7 +197,7 @@ const CommentaryBox: React.FC = () => {
                     onPieceDrop={onDrop}
                     arrows={arrow}
                     alternateArrows={true}
-                    boardHighlight={getBoardHighlight()}
+                    boardHighlight={Utils.getBoardHighlight(winner)}
                 />
             </div>
             <div className="commentary-list">

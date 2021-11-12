@@ -1,5 +1,6 @@
 import DescriptionData from "../types/DescriptionData";
 import React from "react";
+import BoardHighlight from "../types/BoardHighlight";
 
 function getTrigger(index: number, item: string): string {
     // 1. e2e4  1. b7b6   2. c2c4  2. d7d6
@@ -17,9 +18,23 @@ function formatDescription(description: string, descData: DescriptionData) {
     return <p>{description}</p>
 }
 
+function getBoardHighlight(winner: string | undefined) {
+    if (!winner) {
+        return BoardHighlight.normal();
+    }
+    if (winner == 'white') {
+        return BoardHighlight.userWinner();
+    }
+    if (winner == 'black') {
+        return BoardHighlight.stockfishWinner();
+    }
+    return BoardHighlight.normal();
+}
+
 const Utils = {
     getTrigger,
-    formatDescription
+    formatDescription,
+    getBoardHighlight
 }
 
 export default Utils;
