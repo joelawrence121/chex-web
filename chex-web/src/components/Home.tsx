@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import '../styles/Home.css';
 import MainBoard from "./MainBoard";
-import {Chess} from "chess.ts";
 import Utils from "../service/Utils";
 import ChapiService from "../service/ChapiService";
 import PlayData from "../types/PlayData";
@@ -28,7 +27,7 @@ const Home: React.FC = () => {
                     console.log(e)
                 })
         }, 1000);
-        return () => clearInterval(interval) ;
+        return () => clearInterval(interval);
     }, [playData]);
 
     function onDrop(sourceSquare: string, targetSquare: string): boolean {
@@ -37,11 +36,11 @@ const Home: React.FC = () => {
 
     return (
         <section className="home-animated-grid">
-            <div className="card-stationary">
+            <div className="home-stationary a">
                 <h1>Welcome to Chexplanations!</h1>
             </div>
-            <div className="card-stationary"></div>
-            <div className="card-stationary m">
+            <div className="home-stationary"></div>
+            <div className="home-stationary m">
                 <MainBoard
                     boardWidth={600}
                     position={playData ? playData.fen : initialFen}
@@ -52,8 +51,8 @@ const Home: React.FC = () => {
                     boardHighlight={Utils.getBoardHighlight(winner)}
                 />
             </div>
-            <div className="card-stationary"></div>
-            <div className="card-stationary"></div>
+            <div className="home-stationary"></div>
+            <div className="home-stationary"></div>
         </section>
     );
 }

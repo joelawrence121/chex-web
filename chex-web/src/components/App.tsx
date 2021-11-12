@@ -34,13 +34,13 @@ const App: React.FC = () => {
                     <NavbarScroller brand={brand} links={links}/>
                     <MatePuzzle/>
                 </Route>
-                <Route path="/">
-                    <NavbarScroller brand={brand} links={links}/>
-                    <Home/>
-                </Route>
                 <Route path="/about">
                     <NavbarScroller brand={brand} links={links}/>
                     <About/>
+                </Route>
+                <Route path="/">
+                    <NavbarScroller brand={brand} links={links}/>
+                    <Home/>
                 </Route>
             </Switch>
         </Router>
