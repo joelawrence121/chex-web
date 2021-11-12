@@ -21,10 +21,8 @@ const App: React.FC = () => {
         <Router>
             <Switch>
                 <Route path="/puzzles">
-                    <div className="App">
-                        <NavbarScroller brand={brand} links={links}/>
-                        <SingleMovePuzzle/>
-                    </div>
+                    <NavbarScroller brand={brand} links={links}/>
+                    <SingleMovePuzzle/>
                 </Route>
                 <Route path="/commentary">
                     <NavbarScroller brand={brand} links={links}/>

@@ -11,6 +11,7 @@ import lightFilled from './icons/light-filled.png';
 import lightUnfilled from './icons/light-unfilled.png';
 import BoardHighlight from "../types/BoardHighlight";
 import DescriptionData from "../types/DescriptionData";
+import RecentDescription from "./RecentDescription";
 
 const CommentaryBox: React.FC = () => {
 
@@ -221,6 +222,9 @@ const CommentaryBox: React.FC = () => {
                     onOpen={onCollapsibleOpen}
                     onClosing={onCollapsibleClosing}
                 />
+            </div>
+            <div className="commentary-main-desc">
+                <RecentDescription descDataStack={descDataStack} moveStack={moveStack}/>
             </div>
         </section>
     );
