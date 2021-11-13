@@ -23,7 +23,8 @@ function AutoBoard(props: AutoBoardProps) {
             ChapiService.getStockfishMove({
                 id: props.id,
                 fen: playData ? playData.fen : initialFen,
-                difficulty: stockfishLevel
+                difficulty: stockfishLevel,
+                time_limit: 0.2
             })
                 .then(response => {
                     const stockfishResult = (response.data as unknown as PlayData)

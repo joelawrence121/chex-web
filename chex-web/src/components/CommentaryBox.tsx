@@ -80,7 +80,8 @@ const CommentaryBox: React.FC = () => {
             ChapiService.getStockfishMove({
                 id: BOARD_ID,
                 fen: chess.fen(),
-                difficulty: stockfishLevel
+                difficulty: stockfishLevel,
+                time_limit: 0.5
             })
                 .then(response => {
                     const stockfishResult = (response.data as unknown as PlayData)
@@ -141,7 +142,8 @@ const CommentaryBox: React.FC = () => {
             ChapiService.getStockfishMove({
                 id: BOARD_ID,
                 fen: chess.fen(),
-                difficulty: stockfishLevel
+                difficulty: 9,
+                time_limit: 1.5
             })
                 .then(response => {
                     console.log(response)
