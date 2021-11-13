@@ -1,5 +1,5 @@
 import {Chessboard} from "react-chessboard";
-import React from "react";
+import React, {CSSProperties} from "react";
 import {Chess} from "chess.ts";
 
 interface BoardProps {
@@ -9,6 +9,7 @@ interface BoardProps {
     onPieceDrop: (sourceSquare: any, targetSquare: any, piece: any) => boolean
     arrows: string[][]
     alternateArrows: boolean
+    boardHighlight: CSSProperties[]
 }
 
 function MainBoard(props: BoardProps) {
@@ -20,8 +21,8 @@ function MainBoard(props: BoardProps) {
             boardOrientation={getBoardOrientation(props.boardOrientation)}
             customArrows={props.arrows}
             onPieceDrop={props.onPieceDrop}
-            customLightSquareStyle={{backgroundColor: '#a1c3f5'}}
-            customDarkSquareStyle={{backgroundColor: '#365992'}}
+            customLightSquareStyle={props.boardHighlight[0]}
+            customDarkSquareStyle={props.boardHighlight[1]}
             customDropSquareStyle={{boxShadow: 'inset 0 0 1px 6px rgba(255,255,255,0.75)'}}
             customArrowColor={getArrowColour(props.position, props.alternateArrows)}
             customBoardStyle={{

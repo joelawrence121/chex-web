@@ -9,20 +9,38 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import refresh from './icons/refresh.png';
 import lightFilled from './icons/light-filled.png';
 import lightUnfilled from './icons/light-unfilled.png';
+import DescriptionData from "../types/DescriptionData";
+import RecentDescription from "./RecentDescription";
+import Utils from "../service/Utils";
 
 const CommentaryBox: React.FC = () => {
 
-    const initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    const BOARD_ID = "commentaryBox"
+    const INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
     const [stockfishLevel, setStockfishLevel] = useState(6)
     const [chess, setChess] = useState(new Chess())
     const [fen, setFen] = useState(chess.fen())
     const [arrow, setArrow] = useState([['', '']])
     const [moveStack, setMoveStack] = useState<string[]>([])
-    const [fenStack, setFenStack] = useState<string[]>([initialFen])
-    const [moveCommentary, setMoveCommentary] = useState<string[]>([])
+    const [fenStack, setFenStack] = useState<string[]>([INITIAL_FEN])
+    const [descDataStack, setDescDataStack] = useState<DescriptionData[]>([])
     const [turn, setTurn] = useState(false)
     const [isStart, setIsStart] = useState(true)
     const [showHint, setShowHint] = useState(false)
+    const [winner, setWinner] = useState<string | undefined>()
+
+    function resetBoard() {
+        setChess(new Chess())
+        setFen(INITIAL_FEN)
+        setArrow([['', '']])
+        setMoveStack([])
+        setFenStack([INITIAL_FEN])
+        setDescDataStack([])
+        setTurn(false)
+        setIsStart(true)
+        setShowHint(false)
+        setWinner(undefined)
+    }
 
     function getUser() {
         if (chess.turn() === 'b') {
@@ -45,12 +63,12 @@ const CommentaryBox: React.FC = () => {
                 fen: chess.fen()
             })
                 .then(response => {
-                    let newMoveCommentary = moveCommentary.slice()
-                    newMoveCommentary.push(response.data.toString())
-                    setMoveCommentary(newMoveCommentary)
+                    let descriptionData = response.data as unknown as DescriptionData
+                    let newDescDataStack = descDataStack.slice()
+                    newDescDataStack.push(descriptionData)
+                    setDescDataStack(newDescDataStack)
                 })
                 .catch(e => {
-                    setMoveCommentary(["Chapi isn't happy :("])
                     console.log(e)
                 })
         }
@@ -60,17 +78,25 @@ const CommentaryBox: React.FC = () => {
     useEffect(() => {
         if (!isStart) {
             ChapiService.getStockfishMove({
+                id: BOARD_ID,
                 fen: chess.fen(),
                 difficulty: stockfishLevel
             })
                 .then(response => {
-                    setFen((response.data as unknown as PlayData).fen)
-                    setChess(new Chess((response.data as unknown as PlayData).fen))
-                    const newMoveStack = moveStack.slice()
-                    newMoveStack.push((response.data as unknown as PlayData).move)
-                    setMoveStack(newMoveStack)
+                    const stockfishResult = (response.data as unknown as PlayData)
+                    setFen(stockfishResult.fen)
+                    setChess(new Chess(stockfishResult.fen))
+
+                    // move will be null when game is over
+                    if (stockfishResult.move) {
+                        const newMoveStack = moveStack.slice()
+                        newMoveStack.push(stockfishResult.move)
+                        setMoveStack(newMoveStack)
+                    }
+                    setWinner(stockfishResult.winner)
+
                     const newFenStack = fenStack.slice()
-                    newFenStack.push((response.data as unknown as PlayData).fen)
+                    newFenStack.push(stockfishResult.fen)
                     setFenStack(newFenStack)
                 })
                 .catch(e => {
@@ -103,21 +129,17 @@ const CommentaryBox: React.FC = () => {
         return true
     }
 
-    function resetBoard() {
-        setChess(new Chess())
-        setFen(initialFen)
-        setMoveStack([])
-        setMoveCommentary([])
-        setIsStart(true)
-    }
-
-    function sliceMove(move: string) {
-        return [[move.slice(0, 2) as string, move.slice(2, 5) as string]]
+    function sliceMove(move: string | undefined) {
+        if (move) {
+            return [[move.slice(0, 2) as string, move.slice(2, 5) as string]]
+        }
+        return [['', '']]
     }
 
     function generateHint() {
         if (!showHint) {
             ChapiService.getStockfishMove({
+                id: BOARD_ID,
                 fen: chess.fen(),
                 difficulty: stockfishLevel
             })
@@ -160,14 +182,14 @@ const CommentaryBox: React.FC = () => {
 
     return (
         <section className="commentary-animated-grid">
-            <div className="commentary-card" onClick={generateHint}>
+            <div className="commentary-card no-background" onClick={generateHint}>
                 <img className={"smaller"} src={getHintIcon()} alt="Hint"/>
             </div>
             <div className="commentary-card" onClick={changeStockfishLevel}>
                 Difficulty
                 <ProgressBar className="difficulty-bar" completed={stockfishLevel * 10} bgColor="#365992"/>
             </div>
-            <div className="commentary-card" onClick={resetBoard}>
+            <div className="commentary-card no-background" onClick={resetBoard}>
                 <img className={"smaller"} src={refresh} alt="Refresh"/>
             </div>
             <div className="commentary-main">
@@ -178,16 +200,20 @@ const CommentaryBox: React.FC = () => {
                     onPieceDrop={onDrop}
                     arrows={arrow}
                     alternateArrows={true}
+                    boardHighlight={Utils.getBoardHighlight(winner)}
                 />
             </div>
             <div className="commentary-list">
                 <CommentaryList
-                    commentaryList={moveCommentary}
+                    descDataStack={descDataStack}
                     moveStack={moveStack}
                     onOpening={onCollapsibleOpening}
                     onOpen={onCollapsibleOpen}
                     onClosing={onCollapsibleClosing}
                 />
+            </div>
+            <div className="commentary-main-desc">
+                <RecentDescription descDataStack={descDataStack} moveStack={moveStack}/>
             </div>
         </section>
     );

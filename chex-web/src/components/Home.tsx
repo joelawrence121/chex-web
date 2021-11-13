@@ -1,47 +1,27 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import '../styles/Home.css';
-import BarChart from "./BarChart";
-import ChapiService from "../service/ChapiService";
-import Statistics from "../types/Statistics";
+import AutoBoard from "./AutoBoard";
 
 const Home: React.FC = () => {
 
-    const BStyle = {height : '100%', width : '100%'}
-    const [puzzleTypes, setPuzzleTypes] = useState<string[]>([])
-    const [puzzleCounts, setPuzzleCounts] = useState<number[]>([])
-
-    // retrieve statistics hook
-    useEffect(() => {
-        ChapiService.getStatistics()
-            .then(response => {
-                console.log(response)
-                setPuzzleTypes((response.data as unknown as Statistics).types)
-                setPuzzleCounts((response.data as unknown as Statistics).counts)
-            })
-            .catch(e => {
-                console.log(e)
-            })
-    }, [])
-
-    function getYCount(type: string): number {
-        return puzzleCounts[puzzleTypes.indexOf(type)]
-    }
-
-    function getXLabel(type: string): string {
-        return type
-    }
+    const BOARD_WIDTH = 500
+    const INTERVAL = 1000
 
     return (
         <section className="home-animated-grid">
-            <div className="card-stationary a">
-                <h2>Welcome to Chexplanations!</h2>
-                COMP30030 & COMP30040
+            <div className="home-stationary a">
+                <h1>Welcome to Chexplanations!</h1>
             </div>
-            <div className="card-stationary b">
-                Puzzle Statistics
-                <BarChart values={puzzleTypes} yValueFn={getYCount} xLabelFn={getXLabel} style={BStyle}/>
+            <div className="home-stationary b">
+                <AutoBoard id={"board1"} boardWidth={BOARD_WIDTH} interval={INTERVAL}/>
             </div>
-            <div className="card-stationary c"></div>
+            <div className="home-stationary c">
+                <AutoBoard id={"board2"} boardWidth={BOARD_WIDTH} interval={INTERVAL}/>
+            </div>
+            <div className="home-stationary d">
+                <AutoBoard id={"board3"} boardWidth={BOARD_WIDTH} interval={INTERVAL}/>
+            </div>
+            <div className="home-stationary"></div>
         </section>
     );
 }

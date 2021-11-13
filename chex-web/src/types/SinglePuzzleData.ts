@@ -1,4 +1,4 @@
-export default interface PuzzleData {
+export default interface SinglePuzzleData {
     id?: any | null,
     gain: number,
     starting_fen: string,

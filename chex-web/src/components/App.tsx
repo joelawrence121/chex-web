@@ -3,13 +3,17 @@ import React from "react";
 import NavbarScroller from "./NavbarScroller";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import CommentaryBox from "./CommentaryBox";
+import About from "./About";
+import MatePuzzle from "./MatePuzzle";
 import Home from "./Home";
 
 const navigation = {
     brand: {name: "Chexplanations", to: "/"},
     links: [
+        {name: "About", to: "/about"},
         {name: "Commentary", to: "/commentary"},
-        {name: "Single Move Puzzles", to: "/puzzles"}
+        {name: "Single Move Puzzles", to: "/puzzles"},
+        {name: "Mate in N", to: "/mate"}
     ]
 }
 
@@ -18,19 +22,25 @@ const App: React.FC = () => {
     return (
         <Router>
             <Switch>
-                <Route path="/puzzles">
-                    <div className="App">
-                        <NavbarScroller brand={brand} links={links}/>
-                        <SingleMovePuzzle/>
-                    </div>
-                </Route>
                 <Route path="/commentary">
                     <NavbarScroller brand={brand} links={links}/>
-                    <CommentaryBox />
+                    <CommentaryBox/>
+                </Route>
+                <Route path="/puzzles">
+                    <NavbarScroller brand={brand} links={links}/>
+                    <SingleMovePuzzle/>
+                </Route>
+                <Route path="/mate">
+                    <NavbarScroller brand={brand} links={links}/>
+                    <MatePuzzle/>
+                </Route>
+                <Route path="/about">
+                    <NavbarScroller brand={brand} links={links}/>
+                    <About/>
                 </Route>
                 <Route path="/">
                     <NavbarScroller brand={brand} links={links}/>
-                    <Home />
+                    <Home/>
                 </Route>
             </Switch>
         </Router>

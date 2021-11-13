@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import '../styles/SingleMovePuzzle.css';
 import MainBoard from "./MainBoard";
 import ChapiService from "../service/ChapiService";
-import PuzzleData from "../types/PuzzleData";
+import SinglePuzzleData from "../types/SinglePuzzleData";
 import PuzzleType from "../types/PuzzleType";
 import {Chess} from "chess.ts";
 import refresh from './icons/refresh.png';
@@ -11,6 +11,7 @@ import eyeUnfilled from './icons/eye-unfilled.png';
 import rightArrow from './icons/right-arrow.png';
 import blackPawn from './icons/black-pawn.png';
 import whitePawn from './icons/white-pawn.png';
+import BoardHighlight from "../types/BoardHighlight";
 
 const PUZZLE_TYPE_DESCRIPTIONS = new Map([
     [PuzzleType.MATE.valueOf(), "MATE IN 1"],
@@ -24,8 +25,9 @@ const SingleMovePuzzle: React.FC = () => {
     // piece of state just to trigger rerender on button press
     const [random, setRandom] = useState(Math.random());
     const [solutionVisible, setSolutionVisible] = useState(false);
+    const [correct, setCorrect] = useState(false);
     const [arrow, setArrow] = useState([['', '']])
-    const [puzzle, setPuzzle] = useState<PuzzleData>();
+    const [puzzle, setPuzzle] = useState<SinglePuzzleData>();
     const [puzzleType, changePuzzleType] = useState(PuzzleType.MATE);
     const [chess, setChess] = useState(new Chess())
     const [fen, setFen] = useState<string>()
@@ -36,10 +38,11 @@ const SingleMovePuzzle: React.FC = () => {
         ChapiService.getSingleMatePuzzle(puzzleType.valueOf())
             .then(response => {
                 setPuzzle(response.data);
-                setFen((response.data as PuzzleData).starting_fen)
-                chess.load((response.data as PuzzleData).starting_fen)
+                setFen((response.data as SinglePuzzleData).starting_fen)
+                chess.load((response.data as SinglePuzzleData).starting_fen)
                 setChess(chess)
                 setSolutionVisible(false)
+                setCorrect(false)
                 console.log(response.data)
             })
             .catch(e => {
@@ -97,14 +100,16 @@ const SingleMovePuzzle: React.FC = () => {
         })
         if (move == null) return false;
         setFen(chess.fen())
+        setCorrect(move.from + move.to == puzzle?.move)
         return true
     }
 
     function resetPuzzle() {
-        setFen((puzzle as PuzzleData).starting_fen)
-        chess.load((puzzle as PuzzleData).starting_fen)
+        setFen((puzzle as SinglePuzzleData).starting_fen)
+        chess.load((puzzle as SinglePuzzleData).starting_fen)
         setChess(chess)
         setSolutionVisible(false)
+        setCorrect(false)
     }
 
     return (
@@ -112,30 +117,31 @@ const SingleMovePuzzle: React.FC = () => {
             <div className="card-no-shadow m">
                 <img className={"bigger"} src={getToMove()} alt={puzzle?.to_move}/>
             </div>
-            <div className="card r" onClick={resetPuzzle}>
+            <div className="card-no-shadow r" onClick={resetPuzzle}>
                 <img className={"smaller"} src={refresh} alt="Refresh"/>
             </div>
             <div className="card t" onClick={switchPuzzleType}>
                 <h1 className="text">{getMoveType(puzzle?.type)}</h1>
             </div>
-            <div className="card n" onClick={reRender}>
+            <div className="card-no-shadow n" onClick={reRender}>
                 <img className={"smaller"} src={rightArrow} alt="Next"/>
             </div>
             <div className="card-no-shadow s" onClick={toggleSolution}>
                 <img className={"bigger"} src={getSolution()} alt="Show Solution"/>
             </div>
-            <div className="card-no-shadow c"> </div>
+            <div className="card-no-shadow c"></div>
             <div className="main">
                 <MainBoard
                     boardWidth={500}
-                    position={fen}
+                    position={correct ? puzzle?.ending_fen : fen}
                     boardOrientation={puzzle?.to_move as string}
                     onPieceDrop={onDrop}
                     arrows={arrow}
                     alternateArrows={false}
+                    boardHighlight={correct ? BoardHighlight.userWinner() : BoardHighlight.normal()}
                 />
             </div>
-            <div className="card-no-shadow d"> </div>
+            <div className="card-no-shadow d"></div>
         </section>
     );
 }

@@ -6,29 +6,26 @@ body {
     font-family: 'Noto Sans', sans-serif;
 }
 
-h1 {
-    font-size: xx-large;
-}
-
-.home-animated-grid {
+.about-animated-grid {
     height: 85vh;
+    margin-bottom: 20px;
 
     display: grid;
     gap: 1rem;
 
     /* Explicit grid */
     grid-template-areas:
-    'a  a  a'
-    'b  c  d'
-    'm  m  m';
+    'a  a  a  a'
+    'b  b  b  b'
+    'b  b  b  b';
 
+    grid-template-columns: auto auto auto auto;
     grid-template-rows: auto auto auto;
-    grid-template-columns: auto auto auto;
 
     --stagger-delay: 100ms;
 }
 
-.home-stationary {
+.card-stationary {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -39,26 +36,15 @@ h1 {
     width: 100%;
     border-radius: 4px;
     transition: all 500ms;
+    overflow: hidden;
     background-size: cover;
     background: #131313FF no-repeat center;
 }
 
-.home-stationary.a {
+.card-stationary.a {
     grid-area: a;
 }
 
-.home-stationary.b {
+.card-stationary.b {
     grid-area: b;
-}
-
-.home-stationary.c {
-    grid-area: c;
-}
-
-.home-stationary.d {
-    grid-area: d;
-}
-
-.home-stationary.m {
-    grid-area: m;
 }

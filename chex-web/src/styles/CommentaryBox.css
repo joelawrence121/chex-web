@@ -112,10 +112,24 @@ img.smaller {
 p {
     font-weight: normal;
     text-align: center;
+    font-size: medium;
+}
+
+a {
+    font-weight: normal;
+    text-align: center;
+}
+
+a:link {
+    color: #020000;
+}
+
+a:visited {
+    color: #020000;
 }
 
 .difficulty-bar {
-   width: 90%;
+    width: 90%;
 }
 
 .commentary-main {
@@ -136,6 +150,21 @@ p {
     grid-area: d;
 }
 
+.commentary-main-desc {
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    font-size: 3rem;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    border-radius: 4px;
+    transition: all 500ms;
+    background-size: cover;
+    grid-area: x;
+}
+
 .commentary-card:hover {
     box-shadow: rgba(2, 8, 20, 0.1) 0 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0 0.175em 0.5em;
     transform: translateY(-3px) scale(1.05);
@@ -150,12 +179,12 @@ p {
 
     /* Explicit grid */
     grid-template-areas:
-    'a  b  c'
-    'e  d  d'
-    'e  d  d';
+    'x  a  b  c'
+    'e  d  d  d'
+    'e  d  d  d';
 
     grid-template-rows: 100px auto auto;
-    grid-template-columns: 400px auto auto;
+    grid-template-columns: 30% auto auto auto;
 
     --stagger-delay: 100ms;
 }
@@ -175,6 +204,13 @@ p {
 
 .commentary-card {
     background-color: rgb(44, 44, 44);
+    animation: cardEntrance 700ms ease-out;
+    animation-fill-mode: backwards;
+    user-select: none;
+}
+
+.commentary-card.no-background {
+    background-color: #131313FF;
     animation: cardEntrance 700ms ease-out;
     animation-fill-mode: backwards;
     user-select: none;
