@@ -15,13 +15,14 @@ import Utils from "../service/Utils";
 
 const CommentaryBox: React.FC = () => {
 
-    const initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    const BOARD_ID = "commentaryBox"
+    const INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
     const [stockfishLevel, setStockfishLevel] = useState(6)
     const [chess, setChess] = useState(new Chess())
     const [fen, setFen] = useState(chess.fen())
     const [arrow, setArrow] = useState([['', '']])
     const [moveStack, setMoveStack] = useState<string[]>([])
-    const [fenStack, setFenStack] = useState<string[]>([initialFen])
+    const [fenStack, setFenStack] = useState<string[]>([INITIAL_FEN])
     const [descDataStack, setDescDataStack] = useState<DescriptionData[]>([])
     const [turn, setTurn] = useState(false)
     const [isStart, setIsStart] = useState(true)
@@ -30,10 +31,10 @@ const CommentaryBox: React.FC = () => {
 
     function resetBoard() {
         setChess(new Chess())
-        setFen(initialFen)
+        setFen(INITIAL_FEN)
         setArrow([['', '']])
         setMoveStack([])
-        setFenStack([initialFen])
+        setFenStack([INITIAL_FEN])
         setDescDataStack([])
         setTurn(false)
         setIsStart(true)
@@ -77,6 +78,7 @@ const CommentaryBox: React.FC = () => {
     useEffect(() => {
         if (!isStart) {
             ChapiService.getStockfishMove({
+                id: BOARD_ID,
                 fen: chess.fen(),
                 difficulty: stockfishLevel
             })
@@ -137,6 +139,7 @@ const CommentaryBox: React.FC = () => {
     function generateHint() {
         if (!showHint) {
             ChapiService.getStockfishMove({
+                id: BOARD_ID,
                 fen: chess.fen(),
                 difficulty: stockfishLevel
             })

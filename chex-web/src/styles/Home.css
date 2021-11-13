@@ -19,11 +19,11 @@ h1 {
     /* Explicit grid */
     grid-template-areas:
     'a  a  a'
-    'b  m  c'
-    'd  d  d';
+    'b  c  d'
+    'm  m  m';
 
-    grid-template-rows: 20px auto 20px;
-    grid-template-columns: 20px auto 20px;
+    grid-template-rows: auto auto auto;
+    grid-template-columns: auto auto auto;
 
     --stagger-delay: 100ms;
 }
@@ -45,6 +45,18 @@ h1 {
 
 .home-stationary.a {
     grid-area: a;
+}
+
+.home-stationary.b {
+    grid-area: b;
+}
+
+.home-stationary.c {
+    grid-area: c;
+}
+
+.home-stationary.d {
+    grid-area: d;
 }
 
 .home-stationary.m {

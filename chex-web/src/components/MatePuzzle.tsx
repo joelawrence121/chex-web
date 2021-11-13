@@ -16,6 +16,7 @@ import PlayData from "../types/PlayData";
 
 const MatePuzzle: React.FC = () => {
 
+    const BOARD_ID = "matePuzzle"
     const [chess, setChess] = useState(new Chess())
     const [fen, setFen] = useState<string>()
     const [arrow, setArrow] = useState([['', '']])
@@ -42,6 +43,7 @@ const MatePuzzle: React.FC = () => {
                 setSolutionVisible(false)
                 setWinner(undefined)
                 ChapiService.getStockfishMove({
+                    id: BOARD_ID,
                     fen: chess.fen(),
                     difficulty: 9
                 })
@@ -61,6 +63,7 @@ const MatePuzzle: React.FC = () => {
     // get next best move hook
     useEffect(() => {
         ChapiService.getStockfishMove({
+            id: BOARD_ID,
             fen: fen ? fen : chess.fen(),
             difficulty: 9
         })
@@ -77,6 +80,7 @@ const MatePuzzle: React.FC = () => {
     useEffect(() => {
         if (!isStart) {
             ChapiService.getStockfishMove({
+                id: BOARD_ID,
                 fen: chess.fen(),
                 difficulty: 1
             })
