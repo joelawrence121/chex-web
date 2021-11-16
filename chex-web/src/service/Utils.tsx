@@ -11,7 +11,7 @@ function formatDescription(description: string, descData: DescriptionData) {
     if (descData.opening && description.includes(descData.opening) && descData.link) {
         // replace any occurrences of 'opening' with link to opening
         const link = <a href={descData.link}>{descData.opening}</a>;
-        description = description.replaceAll(descData.opening, "$")
+        description = description.replace(descData.opening, "$")
         const index = description.indexOf("$");
         return <p>{description.substr(0, index)}{link}{description.substr(index + 1)}</p>
     }
