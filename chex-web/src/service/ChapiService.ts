@@ -1,5 +1,5 @@
 import http from "../config/http-common";
-import OpeningRequest from "../types/OpeningRequest";
+import DescriptionRequest from "../types/DescriptionRequest";
 import PlayRequest from "../types/PlayRequest";
 
 const headers = {
@@ -12,7 +12,8 @@ const getSingleMatePuzzle = (puzzle_type: string) => {
     return http.get("/single_move/" + puzzle_type, headers);
 };
 
-const getMoveDescription = (request: OpeningRequest) => {
+const getMoveDescription = (request: DescriptionRequest) => {
+    console.log(request)
     return http.post("/description", request, headers)
 }
 

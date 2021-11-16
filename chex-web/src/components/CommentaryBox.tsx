@@ -60,7 +60,8 @@ const CommentaryBox: React.FC = () => {
                 user: user,
                 moveStack: moveStack,
                 move: move,
-                fen: chess.fen()
+                fen: chess.fen(),
+                fenStack: fenStack
             })
                 .then(response => {
                     let descriptionData = response.data as unknown as DescriptionData
