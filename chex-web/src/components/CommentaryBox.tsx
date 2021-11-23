@@ -13,6 +13,7 @@ import lightUnfilled from './icons/light-unfilled.png';
 import DescriptionData from "../types/DescriptionData";
 import RecentDescription from "./RecentDescription";
 import Utils from "../service/Utils";
+import AdvantageGraph from "./AdvantageGraph";
 
 const CommentaryBox: React.FC = () => {
 
@@ -189,9 +190,8 @@ const CommentaryBox: React.FC = () => {
             <div className="commentary-main-desc">
                 <RecentDescription descDataStack={descDataStack} moveStack={moveStack}/>
             </div>
-            <div className="commentary-card graph" onClick={changeStockfishLevel}>
-                Difficulty
-                <ProgressBar className="difficulty-bar" completed={stockfishLevel * 10} bgColor="#365992"/>
+            <div className="commentary-card no-background graph">
+                <AdvantageGraph moveStack={moveStack} dataStack={descDataStack}/>
             </div>
             <div className="commentary-card difficulty" onClick={changeStockfishLevel}>
                 Difficulty

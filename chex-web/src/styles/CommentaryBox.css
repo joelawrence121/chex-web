@@ -46,11 +46,12 @@ img.smaller {
     background: #353535 no-repeat center;
 }
 
-.commentary-card.graph {
+.commentary-card.no-background.graph {
     grid-area: g;
 }
 
 .commentary-card.difficulty {
+    background-color: #131313FF;
     grid-area: d;
 }
 
