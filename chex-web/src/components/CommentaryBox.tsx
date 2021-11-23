@@ -17,7 +17,7 @@ const CommentaryBox: React.FC = () => {
 
     const BOARD_ID = "commentaryBox"
     const INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-    const [stockfishLevel, setStockfishLevel] = useState(6)
+    const [stockfishLevel, setStockfishLevel] = useState(1)
     const [chess, setChess] = useState(new Chess())
     const [fen, setFen] = useState(chess.fen())
     const [arrow, setArrow] = useState([['', '']])
@@ -44,9 +44,9 @@ const CommentaryBox: React.FC = () => {
 
     function getUser() {
         if (chess.turn() === 'b') {
-            return 'human'
+            return Utils.WHITE
         } else {
-            return 'stockfish'
+            return Utils.BLACK
         }
     }
 
@@ -59,7 +59,7 @@ const CommentaryBox: React.FC = () => {
             ChapiService.getMoveDescription({
                 user: user,
                 moveStack: moveStack,
-                move: move,
+                uci: move,
                 fen: chess.fen(),
                 fenStack: fenStack
             })

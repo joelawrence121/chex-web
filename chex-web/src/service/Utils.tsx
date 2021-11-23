@@ -2,6 +2,16 @@ import DescriptionData from "../types/DescriptionData";
 import React from "react";
 import BoardHighlight from "../types/BoardHighlight";
 
+const WHITE = "white"
+const BLACK = "black"
+
+function getOtherUser(user : string) {
+    if (user === WHITE) {
+        return BLACK
+    }
+    return WHITE
+}
+
 function getTrigger(index: number, item: string): string {
     // 1. e2e4  1. b7b6   2. c2c4  2. d7d6
     return (Math.ceil((index + 1) / 2)).toString() + ": " + item;
@@ -32,9 +42,12 @@ function getBoardHighlight(winner: string | undefined) {
 }
 
 const Utils = {
+    WHITE,
+    BLACK,
     getTrigger,
     formatDescription,
-    getBoardHighlight
+    getBoardHighlight,
+    getOtherUser
 }
 
 export default Utils;

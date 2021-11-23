@@ -1,7 +1,7 @@
 export default interface DescriptionRequest {
     user: string,
     moveStack: string[],
-    move: string | undefined,
+    uci: string | undefined,
     fen: string,
     fenStack: string[]
 }
