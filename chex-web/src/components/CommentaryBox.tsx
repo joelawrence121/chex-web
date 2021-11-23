@@ -7,6 +7,7 @@ import ChapiService from "../service/ChapiService";
 import PlayData from "../types/PlayData";
 import ProgressBar from "@ramonak/react-progress-bar";
 import refresh from './icons/refresh.png';
+import undo from './icons/undo.png';
 import lightFilled from './icons/light-filled.png';
 import lightUnfilled from './icons/light-unfilled.png';
 import DescriptionData from "../types/DescriptionData";
@@ -185,26 +186,16 @@ const CommentaryBox: React.FC = () => {
 
     return (
         <section className="commentary-animated-grid">
-            <div className="commentary-card no-background" onClick={generateHint}>
-                <img className={"smaller"} src={getHintIcon()} alt="Hint"/>
+            <div className="commentary-main-desc">
+                <RecentDescription descDataStack={descDataStack} moveStack={moveStack}/>
             </div>
-            <div className="commentary-card" onClick={changeStockfishLevel}>
+            <div className="commentary-card graph" onClick={changeStockfishLevel}>
                 Difficulty
                 <ProgressBar className="difficulty-bar" completed={stockfishLevel * 10} bgColor="#365992"/>
             </div>
-            <div className="commentary-card no-background" onClick={resetBoard}>
-                <img className={"smaller"} src={refresh} alt="Refresh"/>
-            </div>
-            <div className="commentary-main">
-                <MainBoard
-                    boardWidth={500}
-                    position={fen}
-                    boardOrientation={"white"}
-                    onPieceDrop={onDrop}
-                    arrows={arrow}
-                    alternateArrows={true}
-                    boardHighlight={Utils.getBoardHighlight(winner)}
-                />
+            <div className="commentary-card difficulty" onClick={changeStockfishLevel}>
+                Difficulty
+                <ProgressBar className="difficulty-bar" completed={stockfishLevel * 10} bgColor="#365992"/>
             </div>
             <div className="commentary-list">
                 <CommentaryList
@@ -215,8 +206,28 @@ const CommentaryBox: React.FC = () => {
                     onClosing={onCollapsibleClosing}
                 />
             </div>
-            <div className="commentary-main-desc">
-                <RecentDescription descDataStack={descDataStack} moveStack={moveStack}/>
+            <div className="commentary-main">
+                <MainBoard
+                    boardWidth={600}
+                    position={fen}
+                    boardOrientation={"white"}
+                    onPieceDrop={onDrop}
+                    arrows={arrow}
+                    alternateArrows={true}
+                    boardHighlight={Utils.getBoardHighlight(winner)}
+                />
+            </div>
+            <div className="commentary-card no-background hint" onClick={generateHint}>
+                <img className={"smaller"} src={getHintIcon()} alt="Hint"/>
+            </div>
+            <div className="commentary-card no-background restart" onClick={resetBoard}>
+                <img className={"smaller"} src={refresh} alt="Restart"/>
+            </div>
+            <div className="commentary-card no-background undo" onClick={resetBoard}>
+                <img src={undo} alt="Restart"/>
+            </div>
+            <div className="commentary-card no-background x" onClick={resetBoard}>
+                <img className={"smaller"} src={refresh} alt="Restart"/>
             </div>
         </section>
     );
