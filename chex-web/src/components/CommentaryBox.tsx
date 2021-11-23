@@ -19,7 +19,7 @@ const CommentaryBox: React.FC = () => {
 
     const BOARD_ID = "commentaryBox"
     const INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-    const [stockfishLevel, setStockfishLevel] = useState(1)
+    const [stockfishLevel, setStockfishLevel] = useState(2)
     const [chess, setChess] = useState(new Chess())
     const [fen, setFen] = useState(chess.fen())
     const [arrow, setArrow] = useState([['', '']])
@@ -42,6 +42,23 @@ const CommentaryBox: React.FC = () => {
         setIsStart(true)
         setShowHint(false)
         setWinner(undefined)
+    }
+
+    function undoMove() {
+        setArrow([['', '']])
+        setShowHint(false)
+        setTurn(false)
+        const newMoveStack = moveStack.slice(0, -2)
+        setMoveStack(newMoveStack)
+        const newFenStack = fenStack.slice(0, -2)
+        setFenStack(newFenStack)
+        const newFen = newFenStack[newFenStack.length - 1]
+        setFen(newFen)
+        setIsStart(true)
+        setWinner(undefined)
+        setChess(new Chess(newFen))
+        const newDescDataStack = descDataStack.slice(0, -2)
+        setDescDataStack(newDescDataStack)
     }
 
     function getUser() {
@@ -223,8 +240,8 @@ const CommentaryBox: React.FC = () => {
             <div className="commentary-card no-background restart" onClick={resetBoard}>
                 <img className={"smaller"} src={refresh} alt="Restart"/>
             </div>
-            <div className="commentary-card no-background undo" onClick={resetBoard}>
-                <img src={undo} alt="Restart"/>
+            <div className="commentary-card no-background undo" onClick={undoMove}>
+                <img src={undo} alt="Undo"/>
             </div>
             <div className="commentary-card no-background x" onClick={resetBoard}>
                 <img className={"smaller"} src={refresh} alt="Restart"/>

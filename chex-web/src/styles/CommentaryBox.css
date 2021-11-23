@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans&display=swap');
 
+html {
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
+
 body {
     background: rgb(19, 19, 19);
     color: #fff;

@@ -16,7 +16,7 @@ function AdvantageGraph(props: AdvantageGraphProps) {
     useEffect(() => {
         const newData: { name: string, uv: number }[] = []
         props.dataStack.forEach(((value, index) => {
-            newData.push({name: props.moveStack[index].toString(), uv: value.score})
+            newData.push({name: props.moveStack[index]?.toString(), uv: value.score})
         }))
         setData(newData)
     }, [props.dataStack, props.moveStack])
