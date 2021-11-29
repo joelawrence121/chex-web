@@ -10,6 +10,8 @@ import refresh from './icons/refresh.png';
 import undo from './icons/undo.png';
 import lightFilled from './icons/light-filled.png';
 import lightUnfilled from './icons/light-unfilled.png';
+import autoFilled from './icons/auto-filled.png';
+import autoUnfilled from './icons/auto-unfilled.png';
 import DescriptionData from "../types/DescriptionData";
 import RecentDescription from "./RecentDescription";
 import Utils from "../service/Utils";
@@ -27,7 +29,9 @@ const CommentaryBox: React.FC = () => {
     const [fenStack, setFenStack] = useState<string[]>([INITIAL_FEN])
     const [descDataStack, setDescDataStack] = useState<DescriptionData[]>([])
     const [turn, setTurn] = useState(false)
+    const [trigger, setTrigger] = useState(false)
     const [isStart, setIsStart] = useState(true)
+    const [isStockfishTakeover, setIsStockfishTakeover] = useState(false)
     const [showHint, setShowHint] = useState(false)
     const [winner, setWinner] = useState<string | undefined>()
 
@@ -96,7 +100,7 @@ const CommentaryBox: React.FC = () => {
 
     // stockfish move hook
     useEffect(() => {
-        if (!isStart) {
+        if ((!isStart || isStockfishTakeover) && !winner) {
             ChapiService.getStockfishMove({
                 id: BOARD_ID,
                 fen: chess.fen(),
@@ -107,7 +111,6 @@ const CommentaryBox: React.FC = () => {
                     const stockfishResult = (response.data as unknown as PlayData)
                     setFen(stockfishResult.fen)
                     setChess(new Chess(stockfishResult.fen))
-
                     // move will be null when game is over
                     if (stockfishResult.move) {
                         const newMoveStack = moveStack.slice()
@@ -115,7 +118,6 @@ const CommentaryBox: React.FC = () => {
                         setMoveStack(newMoveStack)
                     }
                     setWinner(stockfishResult.winner)
-
                     const newFenStack = fenStack.slice()
                     newFenStack.push(stockfishResult.fen)
                     setFenStack(newFenStack)
@@ -124,7 +126,16 @@ const CommentaryBox: React.FC = () => {
                     console.log(e)
                 })
         }
-    }, [turn])
+    }, [turn, trigger])
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (isStockfishTakeover) {
+                setTurn(!turn)
+            }
+        }, 2000);
+        return () => clearInterval(interval);
+    }, [turn]);
 
     function onDrop(sourceSquare: string, targetSquare: string): boolean {
         let move = chess.move({
@@ -203,6 +214,23 @@ const CommentaryBox: React.FC = () => {
         return showHint ? lightFilled : lightUnfilled;
     }
 
+    function getAutoIcon() {
+        return isStockfishTakeover ? autoFilled : autoUnfilled;
+    }
+
+    function triggerStockfishTakeover() {
+        if (!isStockfishTakeover) {
+            setIsStockfishTakeover(true)
+            setTurn(!turn)
+        } else {
+            setIsStockfishTakeover(false)
+            if (turn) {
+                setTrigger(!trigger)
+            }
+            setTurn(true)
+        }
+    }
+
     return (
         <section className="commentary-animated-grid">
             <div className="commentary-main-desc">
@@ -244,8 +272,8 @@ const CommentaryBox: React.FC = () => {
             <div className="commentary-card no-background undo" onClick={undoMove}>
                 <img src={undo} alt="Undo"/>
             </div>
-            <div className="commentary-card no-background x" onClick={resetBoard}>
-                <img className={"smaller"} src={refresh} alt="Restart"/>
+            <div className="commentary-card no-background x" onClick={triggerStockfishTakeover}>
+                <img className={"smaller"} src={getAutoIcon()} alt="Stockfish Takeover"/>
             </div>
         </section>
     );

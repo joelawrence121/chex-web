@@ -80,7 +80,7 @@ img.smaller {
 .Collapsible {
     text-align: left;
     list-style: none;
-    user-select: none;
+
     max-height: 100%;
     font-size: large;
     font-weight: bold;
