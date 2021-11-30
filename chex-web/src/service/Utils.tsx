@@ -39,6 +39,9 @@ function getBoardHighlight(winner: string | undefined) {
     if (winner === 'black') {
         return BoardHighlight.stockfishWinner();
     }
+    if (winner === 'stale') {
+        return BoardHighlight.stalemate()
+    }
     return BoardHighlight.normal();
 }
 

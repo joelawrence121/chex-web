@@ -24,14 +24,14 @@ function AdvantageGraph(props: AdvantageGraphProps) {
                 // add value if exists, if not default to previous value
                 newData.push({
                     name: props.moveStack![index]?.toString(),
-                    uv: value.score ? value.score : newData[newData.length - 1].uv
+                    uv: value.score ? Math.round(value.score * 100) / 100 : newData[newData.length - 1].uv
                 })
             }))
         } else if (props.playStack) {
             props.playStack.forEach(((value, index) => {
                 newData.push({
                     name: index.toString(),
-                    uv: value.score ? value.score : newData[newData.length - 1].uv
+                    uv: value.score ? Math.round(value.score * 100) / 100 : newData[newData.length - 1].uv
                 })
             }))
         }

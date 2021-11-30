@@ -56,15 +56,6 @@ img.smaller {
     background: #353535 no-repeat center;
 }
 
-.commentary-card.no-background.graph {
-    grid-area: g;
-}
-
-.commentary-card.difficulty {
-    background-color: #131313FF;
-    grid-area: d;
-}
-
 .commentary-list {
     font-size: 2rem;
     height: 100%;
@@ -156,39 +147,6 @@ a:visited {
     width: 90%;
 }
 
-.commentary-main {
-    resize: both;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    font-size: 3rem;
-    height: 100%;
-    width: 100%;
-    border-radius: 4px;
-    transition: all 500ms;
-    overflow: hidden;
-    background-size: cover;
-
-    grid-area: m;
-}
-
-.commentary-main-desc {
-    resize: both;
-    display: flex;
-    flex-direction: column;
-    align-self: center;
-    font-size: 3rem;
-    height: 100%;
-    width: 100%;
-    overflow: auto;
-    border-radius: 4px;
-    transition: all 500ms;
-    background-size: cover;
-    grid-area: e;
-}
-
 .commentary-card:hover {
     box-shadow: rgba(2, 8, 20, 0.1) 0 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0 0.175em 0.5em;
     transform: translateY(-3px) scale(1.05);
@@ -217,6 +175,69 @@ a:visited {
     --stagger-delay: 100ms;
 }
 
+.commentary-card.no-background.graph {
+    grid-area: g;
+    animation-delay: calc(1 * var(--stagger-delay));
+}
+
+.commentary-card.difficulty {
+    background-color: #131313FF;
+    grid-area: d;
+    animation-delay: calc(3 * var(--stagger-delay));
+}
+
+.commentary-card.no-background.hint {
+    grid-area: h;
+    animation-delay: calc(5 * var(--stagger-delay));
+}
+
+.commentary-card.no-background.restart {
+    grid-area: r;
+    animation-delay: calc(7 * var(--stagger-delay));
+}
+
+.commentary-card.no-background.undo {
+    grid-area: u;
+    animation-delay: calc(9 * var(--stagger-delay));
+}
+
+.commentary-card.no-background.x {
+    grid-area: x;
+    animation-delay: calc(11 * var(--stagger-delay));
+}
+
+.commentary-main {
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-size: 3rem;
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    transition: all 500ms;
+    overflow: hidden;
+    background-size: cover;
+    grid-area: m;
+}
+
+.commentary-main-desc {
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    font-size: 3rem;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    border-radius: 4px;
+    transition: all 500ms;
+    background-size: cover;
+    grid-area: e;
+}
+
 @keyframes cardEntrance {
     from {
         opacity: 0;
@@ -242,23 +263,6 @@ a:visited {
     animation: cardEntrance 700ms ease-out;
     animation-fill-mode: backwards;
     user-select: none;
-}
-
-.commentary-card.no-background.hint {
-
-    grid-area: h;
-}
-
-.commentary-card.no-background.restart {
-    grid-area: r;
-}
-
-.commentary-card.no-background.undo {
-    grid-area: u;
-}
-
-.commentary-card.no-background.x {
-    grid-area: x;
 }
 
 .commentary-card:nth-child(1) {
