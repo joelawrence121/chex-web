@@ -4,6 +4,7 @@ import BoardHighlight from "../types/BoardHighlight";
 
 const WHITE = "white"
 const BLACK = "black"
+const INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 function getOtherUser(user : string) {
     if (user === WHITE) {
@@ -32,10 +33,10 @@ function getBoardHighlight(winner: string | undefined) {
     if (!winner) {
         return BoardHighlight.normal();
     }
-    if (winner == 'white') {
+    if (winner === 'white') {
         return BoardHighlight.userWinner();
     }
-    if (winner == 'black') {
+    if (winner === 'black') {
         return BoardHighlight.stockfishWinner();
     }
     return BoardHighlight.normal();
@@ -44,6 +45,7 @@ function getBoardHighlight(winner: string | undefined) {
 const Utils = {
     WHITE,
     BLACK,
+    INITIAL_FEN,
     getTrigger,
     formatDescription,
     getBoardHighlight,
