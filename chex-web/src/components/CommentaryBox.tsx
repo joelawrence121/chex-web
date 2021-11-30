@@ -20,13 +20,12 @@ import AdvantageGraph from "./AdvantageGraph";
 const CommentaryBox: React.FC = () => {
 
     const BOARD_ID = "commentaryBox"
-    const INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
     const [stockfishLevel, setStockfishLevel] = useState(2)
     const [chess, setChess] = useState(new Chess())
     const [fen, setFen] = useState(chess.fen())
     const [arrow, setArrow] = useState([['', '']])
     const [moveStack, setMoveStack] = useState<string[]>([])
-    const [fenStack, setFenStack] = useState<string[]>([INITIAL_FEN])
+    const [fenStack, setFenStack] = useState<string[]>([Utils.INITIAL_FEN])
     const [descDataStack, setDescDataStack] = useState<DescriptionData[]>([])
     const [turn, setTurn] = useState(false)
     const [trigger, setTrigger] = useState(false)
@@ -37,10 +36,10 @@ const CommentaryBox: React.FC = () => {
 
     function resetBoard() {
         setChess(new Chess())
-        setFen(INITIAL_FEN)
+        setFen(Utils.INITIAL_FEN)
         setArrow([['', '']])
         setMoveStack([])
-        setFenStack([INITIAL_FEN])
+        setFenStack([Utils.INITIAL_FEN])
         setDescDataStack([])
         setTurn(false)
         setIsStart(true)
@@ -88,9 +87,11 @@ const CommentaryBox: React.FC = () => {
             })
                 .then(response => {
                     let descriptionData = response.data as unknown as DescriptionData
-                    let newDescDataStack = descDataStack.slice()
-                    newDescDataStack.push(descriptionData)
-                    setDescDataStack(newDescDataStack)
+                    if (descriptionData) {
+                        let newDescDataStack = descDataStack.slice()
+                        newDescDataStack.push(descriptionData)
+                        setDescDataStack(newDescDataStack)
+                    }
                 })
                 .catch(e => {
                     console.log(e)
@@ -237,7 +238,7 @@ const CommentaryBox: React.FC = () => {
                 <RecentDescription descDataStack={descDataStack} moveStack={moveStack}/>
             </div>
             <div className="commentary-card no-background graph">
-                <AdvantageGraph moveStack={moveStack} dataStack={descDataStack}/>
+                <AdvantageGraph moveStack={moveStack} dataStack={descDataStack} playStack={undefined} width={600}/>
             </div>
             <div className="commentary-card difficulty" onClick={changeStockfishLevel}>
                 Difficulty

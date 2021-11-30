@@ -2,10 +2,13 @@ import React, {useEffect, useState} from 'react';
 import '../styles/Home.css';
 import {Area, AreaChart, CartesianGrid, Tooltip, YAxis} from 'recharts';
 import DescriptionData from "../types/DescriptionData";
+import PlayData from "../types/PlayData";
 
 interface AdvantageGraphProps {
-    moveStack: string[]
-    dataStack: DescriptionData[]
+    moveStack: string[] | undefined
+    dataStack: DescriptionData[] | undefined
+    playStack: PlayData[] | undefined
+    width: number
 }
 
 function AdvantageGraph(props: AdvantageGraphProps) {
@@ -15,11 +18,25 @@ function AdvantageGraph(props: AdvantageGraphProps) {
     // generate data from props on load
     useEffect(() => {
         const newData: { name: string, uv: number }[] = []
-        props.dataStack.forEach(((value, index) => {
-            newData.push({name: props.moveStack[index]?.toString(), uv: value.score})
-        }))
+        // permit data from description or play stacks
+        if (props.dataStack) {
+            props.dataStack.forEach(((value, index) => {
+                // add value if exists, if not default to previous value
+                newData.push({
+                    name: props.moveStack![index]?.toString(),
+                    uv: value.score ? value.score : newData[newData.length - 1].uv
+                })
+            }))
+        } else if (props.playStack) {
+            props.playStack.forEach(((value, index) => {
+                newData.push({
+                    name: index.toString(),
+                    uv: value.score ? value.score : newData[newData.length - 1].uv
+                })
+            }))
+        }
         setData(newData)
-    }, [props.dataStack, props.moveStack])
+    }, [props.dataStack, props.moveStack, props.playStack])
 
     const CustomTooltip = ({active, payload}: any) => {
         if (active && payload) {
@@ -33,10 +50,10 @@ function AdvantageGraph(props: AdvantageGraphProps) {
     };
 
     return (
-        <AreaChart width={600} height={100} data={data} margin={{top: 0, right: 0, left: 0, bottom: 0}}>
+        <AreaChart width={props.width} height={100} data={data} margin={{top: 0, right: 0, left: 0, bottom: 0}}>
             <YAxis type="number" domain={[-1, 1]} hide={true}/>
             <Tooltip content={<CustomTooltip/>}/>
-            <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
+            <CartesianGrid stroke="#eee" strokeDasharray="2 5"/>
             <Area
                 type='monotone'
                 dataKey='uv'
