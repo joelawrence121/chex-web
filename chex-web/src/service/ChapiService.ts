@@ -1,6 +1,8 @@
 import http from "../config/http-common";
 import DescriptionRequest from "../types/DescriptionRequest";
 import PlayRequest from "../types/PlayRequest";
+import AggregationRequest from "../types/AggregationRequest";
+import axios from "axios";
 
 const headers = {
     headers: {
@@ -29,13 +31,22 @@ const getMateInNPuzzle = (n: number) => {
     return http.get("/mate_in/" + n, headers);
 };
 
+const getDescriptionAggregation = (request: AggregationRequest) => {
+    return axios.create({
+        baseURL: "http://127.0.0.1:5005/",
+        headers: {
+            "Content-type": "application/json"
+        }
+    }).post("/aggregation", request, headers);
+}
 
 const ChapiService = {
     getSingleMatePuzzle,
     getMoveDescription,
     getStockfishMove,
     getStatistics,
-    getMateInNPuzzle
+    getMateInNPuzzle,
+    getDescriptionAggregation
 }
 
 export default ChapiService;

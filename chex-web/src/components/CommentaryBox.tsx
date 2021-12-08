@@ -16,6 +16,7 @@ import DescriptionData from "../types/DescriptionData";
 import RecentDescription from "./RecentDescription";
 import Utils from "../service/Utils";
 import AdvantageGraph from "./AdvantageGraph";
+import AggregationData from "../types/AggregationData";
 
 const CommentaryBox: React.FC = () => {
 
@@ -33,6 +34,7 @@ const CommentaryBox: React.FC = () => {
     const [isStockfishTakeover, setIsStockfishTakeover] = useState(false)
     const [showHint, setShowHint] = useState(false)
     const [winner, setWinner] = useState<string | undefined>()
+    const [aggregation, setAggregation] = useState<AggregationData>()
 
     function resetBoard() {
         setChess(new Chess())
@@ -98,6 +100,41 @@ const CommentaryBox: React.FC = () => {
                 })
         }
     }, [moveStack])
+
+    // move aggregation hook
+    useEffect(() => {
+        if (!isStart) {
+            let index = descDataStack.length - 1
+            if (index > -1 && index) {
+                let original = descDataStack[index].descriptions[0]
+                console.log(original)
+                ChapiService.getDescriptionAggregation({
+                    index: index,
+                    original: original,
+                })
+                    .then(response => {
+                        console.log(response)
+                        let aggregationData = response.data as unknown as AggregationData
+                        if (aggregationData) {
+                            setAggregation(aggregationData)
+                        }
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
+            }
+        }
+    }, [descDataStack])
+
+    // move aggregation hook
+    useEffect(() => {
+        console.log(aggregation)
+        if (aggregation) {
+            let newDescDataStack = descDataStack.slice()
+            newDescDataStack[aggregation.index].descriptions[0] = aggregation.aggregation
+            setDescDataStack(newDescDataStack)
+        }
+    }, [aggregation])
 
     // stockfish move hook
     useEffect(() => {
