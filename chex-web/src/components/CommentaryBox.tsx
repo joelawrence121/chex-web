@@ -24,34 +24,36 @@ const CommentaryBox: React.FC = () => {
     const [stockfishLevel, setStockfishLevel] = useState(2)
     const [chess, setChess] = useState(new Chess())
     const [fen, setFen] = useState(chess.fen())
-    const [arrow, setArrow] = useState([['', '']])
+    const [arrows, setArrows] = useState([['', '']])
     const [moveStack, setMoveStack] = useState<string[]>([])
+    const [winner, setWinner] = useState<string | undefined>()
     const [fenStack, setFenStack] = useState<string[]>([Utils.INITIAL_FEN])
     const [descDataStack, setDescDataStack] = useState<DescriptionData[]>([])
     const [turn, setTurn] = useState(false)
     const [trigger, setTrigger] = useState(false)
     const [isStart, setIsStart] = useState(true)
-    const [isStockfishTakeover, setIsStockfishTakeover] = useState(false)
-    const [showHint, setShowHint] = useState(false)
-    const [winner, setWinner] = useState<string | undefined>()
-    const [aggregation, setAggregation] = useState<AggregationData>()
+    const [stockfishTakeoverEnabled, setStockfishTakeoverEnabled] = useState(false)
+    const [hintEnabled, setHintEnabled] = useState(false)
+    const [aggregationEnabled, setAggregationEnabled] = useState<boolean>(true)
+    const [aggregationData, setAggregationData] = useState<AggregationData>()
+    const [aggregationChange, setAggregationChange] = useState<boolean>(false)
 
     function resetBoard() {
         setChess(new Chess())
         setFen(Utils.INITIAL_FEN)
-        setArrow([['', '']])
+        setArrows([['', '']])
         setMoveStack([])
         setFenStack([Utils.INITIAL_FEN])
         setDescDataStack([])
         setTurn(false)
         setIsStart(true)
-        setShowHint(false)
+        setHintEnabled(false)
         setWinner(undefined)
     }
 
     function undoMove() {
-        setArrow([['', '']])
-        setShowHint(false)
+        setArrows([['', '']])
+        setHintEnabled(false)
         setTurn(false)
         const newMoveStack = moveStack.slice(0, -2)
         setMoveStack(newMoveStack)
@@ -93,6 +95,7 @@ const CommentaryBox: React.FC = () => {
                         let newDescDataStack = descDataStack.slice()
                         newDescDataStack.push(descriptionData)
                         setDescDataStack(newDescDataStack)
+                        setAggregationChange(true)
                     }
                 })
                 .catch(e => {
@@ -103,7 +106,7 @@ const CommentaryBox: React.FC = () => {
 
     // move aggregation hook
     useEffect(() => {
-        if (!isStart) {
+        if (aggregationChange && aggregationEnabled) {
             let index = descDataStack.length - 1
             if (index > -1 && index) {
                 let original = descDataStack[index].descriptions[0]
@@ -116,7 +119,7 @@ const CommentaryBox: React.FC = () => {
                         console.log(response)
                         let aggregationData = response.data as unknown as AggregationData
                         if (aggregationData) {
-                            setAggregation(aggregationData)
+                            setAggregationData(aggregationData)
                         }
                     })
                     .catch(e => {
@@ -124,21 +127,21 @@ const CommentaryBox: React.FC = () => {
                     })
             }
         }
-    }, [descDataStack])
+    }, [descDataStack, aggregationChange, aggregationEnabled])
 
-    // move aggregation hook
+    // move aggregation update hook
     useEffect(() => {
-        console.log(aggregation)
-        if (aggregation) {
+        if (aggregationData && aggregationData.index < descDataStack.length) {
             let newDescDataStack = descDataStack.slice()
-            newDescDataStack[aggregation.index].descriptions[0] = aggregation.aggregation
+            newDescDataStack[aggregationData.index].descriptions.push(aggregationData.aggregation)
             setDescDataStack(newDescDataStack)
+            setAggregationChange(false)
         }
-    }, [aggregation])
+    }, [aggregationData])
 
     // stockfish move hook
     useEffect(() => {
-        if ((!isStart || isStockfishTakeover) && !winner) {
+        if ((!isStart || stockfishTakeoverEnabled) && !winner) {
             ChapiService.getStockfishMove({
                 id: BOARD_ID,
                 fen: chess.fen(),
@@ -168,7 +171,7 @@ const CommentaryBox: React.FC = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            if (isStockfishTakeover) {
+            if (stockfishTakeoverEnabled) {
                 setTurn(!turn)
             }
         }, 2000);
@@ -193,7 +196,7 @@ const CommentaryBox: React.FC = () => {
         const newFenStack = fenStack.slice()
         newFenStack.push(chess.fen())
         setFenStack(newFenStack)
-        setShowHint(false)
+        setHintEnabled(false)
 
         // trigger stockfish's turn
         setTurn(!turn)
@@ -208,7 +211,7 @@ const CommentaryBox: React.FC = () => {
     }
 
     function generateHint() {
-        if (!showHint) {
+        if (!hintEnabled) {
             ChapiService.getStockfishMove({
                 id: BOARD_ID,
                 fen: chess.fen(),
@@ -217,19 +220,15 @@ const CommentaryBox: React.FC = () => {
             })
                 .then(response => {
                     console.log(response)
-                    setArrow(sliceMove((response.data as unknown as PlayData).move))
+                    setArrows(sliceMove((response.data as unknown as PlayData).move))
                 })
                 .catch(e => {
                     console.log(e)
                 })
         } else {
-            setArrow([['', '']])
+            setArrows([['', '']])
         }
-        setShowHint(!showHint)
-    }
-
-    function changeStockfishLevel() {
-        setStockfishLevel((stockfishLevel % 10 + 1))
+        setHintEnabled(!hintEnabled)
     }
 
     function onCollapsibleOpening(index: number) {
@@ -238,30 +237,22 @@ const CommentaryBox: React.FC = () => {
 
     function onCollapsibleOpen(index: number) {
         let arrows = sliceMove(moveStack[index])
-        setArrow(arrows)
+        setArrows(arrows)
     }
 
     function onCollapsibleClosing() {
-        setArrow([['', '']])
+        setArrows([['', '']])
         let latestFen = fenStack[fenStack.length - 1]
         setChess(new Chess(latestFen))
         fenStack.forEach(fen => setFen(fen))
     }
 
-    function getHintIcon() {
-        return showHint ? lightFilled : lightUnfilled;
-    }
-
-    function getAutoIcon() {
-        return isStockfishTakeover ? autoFilled : autoUnfilled;
-    }
-
     function triggerStockfishTakeover() {
-        if (!isStockfishTakeover) {
-            setIsStockfishTakeover(true)
+        if (!stockfishTakeoverEnabled) {
+            setStockfishTakeoverEnabled(true)
             setTurn(!turn)
         } else {
-            setIsStockfishTakeover(false)
+            setStockfishTakeoverEnabled(false)
             if (turn) {
                 setTrigger(!trigger)
             }
@@ -271,13 +262,17 @@ const CommentaryBox: React.FC = () => {
 
     return (
         <section className="commentary-animated-grid">
-            <div className="commentary-main-desc">
-                <RecentDescription descDataStack={descDataStack} moveStack={moveStack}/>
+            <div className="commentary-main-desc" onClick={() => setAggregationEnabled(!aggregationEnabled)}>
+                <RecentDescription
+                    descDataStack={descDataStack}
+                    moveStack={moveStack}
+                    aggregationEnabled={aggregationEnabled}
+                />
             </div>
             <div className="commentary-card no-background graph">
                 <AdvantageGraph moveStack={moveStack} dataStack={descDataStack} playStack={undefined} width={600}/>
             </div>
-            <div className="commentary-card difficulty" onClick={changeStockfishLevel}>
+            <div className="commentary-card difficulty" onClick={() => setStockfishLevel((stockfishLevel % 10 + 1))}>
                 Difficulty
                 <ProgressBar className="difficulty-bar" completed={stockfishLevel * 10} bgColor="#365992"/>
             </div>
@@ -296,13 +291,13 @@ const CommentaryBox: React.FC = () => {
                     position={fen}
                     boardOrientation={"white"}
                     onPieceDrop={onDrop}
-                    arrows={arrow}
+                    arrows={arrows}
                     alternateArrows={true}
                     boardHighlight={Utils.getBoardHighlight(winner)}
                 />
             </div>
             <div className="commentary-card no-background hint" onClick={generateHint}>
-                <img className={"smaller"} src={getHintIcon()} alt="Hint"/>
+                <img className={"smaller"} src={hintEnabled ? lightFilled : lightUnfilled} alt="Hint"/>
             </div>
             <div className="commentary-card no-background restart" onClick={resetBoard}>
                 <img className={"smaller"} src={refresh} alt="Restart"/>
@@ -311,7 +306,10 @@ const CommentaryBox: React.FC = () => {
                 <img src={undo} alt="Undo"/>
             </div>
             <div className="commentary-card no-background x" onClick={triggerStockfishTakeover}>
-                <img className={"smaller"} src={getAutoIcon()} alt="Stockfish Takeover"/>
+                <img
+                    className={"smaller"}
+                    src={stockfishTakeoverEnabled ? autoFilled : autoUnfilled}
+                    alt="Stockfish Takeover"/>
             </div>
         </section>
     );
