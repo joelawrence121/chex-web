@@ -46,7 +46,8 @@ const MatePuzzle: React.FC = () => {
                     id: BOARD_ID,
                     fen: chess.fen(),
                     difficulty: 9,
-                    time_limit : 1.0
+                    time_limit: 1.0,
+                    wait: false
                 })
                     .then(response => {
                         const stockfishResult = (response.data as unknown as PlayData)
@@ -67,7 +68,8 @@ const MatePuzzle: React.FC = () => {
             id: BOARD_ID,
             fen: fen ? fen : chess.fen(),
             difficulty: 9,
-            time_limit: 1.5
+            time_limit: 1.5,
+            wait: false
         })
             .then(response => {
                 const stockfishResult = (response.data as unknown as PlayData)
@@ -85,7 +87,8 @@ const MatePuzzle: React.FC = () => {
                 id: BOARD_ID,
                 fen: chess.fen(),
                 difficulty: 1,
-                time_limit: 0.3
+                time_limit: 0.3,
+                wait: false
             })
                 .then(response => {
                     const stockfishResult = (response.data as unknown as PlayData)

@@ -54,6 +54,7 @@
   "devDependencies": {
     "@types/styled-components": "^5.1.15",
     "chessboardjsx": "^2.4.7",
+    "gh-pages": "^3.2.3",
     "tslint-config-prettier": "^1.18.0"
   }
 }

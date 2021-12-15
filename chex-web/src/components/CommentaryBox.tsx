@@ -146,7 +146,8 @@ const CommentaryBox: React.FC = () => {
                 id: BOARD_ID,
                 fen: chess.fen(),
                 difficulty: stockfishLevel,
-                time_limit: 0.5
+                time_limit: 0.5,
+                wait: true
             })
                 .then(response => {
                     const stockfishResult = (response.data as unknown as PlayData)
@@ -216,7 +217,8 @@ const CommentaryBox: React.FC = () => {
                 id: BOARD_ID,
                 fen: chess.fen(),
                 difficulty: 9,
-                time_limit: 1.5
+                time_limit: 1.5,
+                wait: false
             })
                 .then(response => {
                     console.log(response)

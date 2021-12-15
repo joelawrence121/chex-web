@@ -28,7 +28,8 @@ function AutoBoard(props: AutoBoardProps) {
                     id: props.id,
                     fen: playData ? playData.fen : Utils.INITIAL_FEN,
                     difficulty: stockfishLevel,
-                    time_limit: 0.2
+                    time_limit: 0.2,
+                    wait: false
                 })
                     .then(response => {
                         const stockfishResult = (response.data as unknown as PlayData)
