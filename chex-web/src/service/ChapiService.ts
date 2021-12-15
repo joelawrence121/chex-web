@@ -40,13 +40,18 @@ const getDescriptionAggregation = (request: AggregationRequest) => {
     }).post("/aggregation", request, headers);
 }
 
+const getRandomOpening = () => {
+    return http.get("/random_opening", headers);
+};
+
 const ChapiService = {
     getSingleMatePuzzle,
     getMoveDescription,
     getStockfishMove,
     getStatistics,
     getMateInNPuzzle,
-    getDescriptionAggregation
+    getDescriptionAggregation,
+    getRandomOpening
 }
 
 export default ChapiService;

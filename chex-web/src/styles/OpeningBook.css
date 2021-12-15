@@ -21,6 +21,11 @@ img {
     max-height: 80%;
 }
 
+img.bigger {
+    max-width: 100%;
+    max-height: 100%;
+}
+
 img.smaller {
     max-width: 65%;
     max-height: 65%;
@@ -51,7 +56,6 @@ img.smaller {
     width: 100%;
     border-radius: 4px;
     transition: all 500ms;
-    overflow: hidden;
     background-size: cover;
     background: #353535 no-repeat center;
 }
@@ -105,17 +109,18 @@ img.smaller {
 
 .Collapsible:nth-child(odd) {
     color: #262626;
-    background: #a1c3f5;
+    background: rgba(255, 255, 255, 0.96);
 }
 
 .Collapsible:nth-child(even) {
-    background: #365992;
+    color: #262626;
+    background: rgba(255, 255, 255, 0.96);
 }
 
 p {
     font-weight: normal;
     text-align: center;
-    font-size: medium;
+    font-size: x-large;
 }
 
 a {
@@ -146,7 +151,6 @@ a {
     width: 100%;
     border-radius: 4px;
     transition: all 500ms;
-    overflow: hidden;
     background-size: cover;
     grid-area: b;
 }
@@ -165,23 +169,24 @@ a {
 
 .opening-animated-grid {
     height: 85vh;
-    margin-bottom: 5px;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-bottom: 15px;
+    margin-left: 20px;
+    margin-right: 20px;
 
     display: grid;
     gap: 1rem;
 
     /* Explicit grid */
     grid-template-areas:
-    'a  a  a  a  e  e  e'
-    'b  b  b  b  f  f  f'
-    'b  b  b  b  f  f  f'
-    'b  b  b  b  f  f  f'
-    'c  c  d  d  f  f  f';
+    'a  a  a  a  a  n  n  n'
+    'e  e  e  e  e  n  n  n'
+    'b  b  b  b  b  f  f  f'
+    'b  b  b  b  b  f  f  f'
+    'b  b  b  b  b  f  f  f'
+    'x  c  t  d  v  f  f  f';
 
-    grid-template-columns: auto auto auto auto auto auto;
-    grid-template-rows: 15% auto auto auto 10%;
+    grid-template-columns: 12% 10% 5% 10% 12% auto auto auto;
+    grid-template-rows: 15% 5% auto auto auto 10%;
 
     --stagger-delay: 100ms;
 }
@@ -196,18 +201,24 @@ a {
     animation-delay: calc(5 * var(--stagger-delay));
 }
 
+.opening-card.no-background.turn {
+    grid-area: t;
+    animation-delay: calc(3 * var(--stagger-delay));
+}
+
 .opening-card.no-background.play {
     grid-area: d;
     animation-delay: calc(7 * var(--stagger-delay));
 }
 
-.opening-card.no-background.pgn {
-    grid-area: e;
-    animation-delay: calc(9 * var(--stagger-delay));
-}
-
 .opening-card.no-background.g {
     grid-area: g;
+    animation-delay: calc(11 * var(--stagger-delay));
+}
+
+.pgn {
+    margin: auto;
+    grid-area: e;
     animation-delay: calc(9 * var(--stagger-delay));
 }
 
