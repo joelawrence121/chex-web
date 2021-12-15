@@ -9,7 +9,6 @@ import ProgressBar from "@ramonak/react-progress-bar";
 
 interface AutoBoardProps {
     id: string
-    boardWidth: number
     interval: number
 }
 
@@ -60,7 +59,6 @@ function AutoBoard(props: AutoBoardProps) {
     return (
         <>
             <MainBoard
-                boardWidth={props.boardWidth}
                 position={playData ? playData.fen : Utils.INITIAL_FEN}
                 boardOrientation={"white"}
                 onPieceDrop={onDrop}

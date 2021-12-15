@@ -3,7 +3,6 @@ import React, {CSSProperties} from "react";
 import {Chess} from "chess.ts";
 
 interface BoardProps {
-    boardWidth: number
     position: string | undefined;
     boardOrientation: string | undefined;
     onPieceDrop: (sourceSquare: any, targetSquare: any, piece: any) => boolean
@@ -16,7 +15,6 @@ function MainBoard(props: BoardProps) {
 
     return (
         <Chessboard
-            boardWidth={props.boardWidth}
             position={props.position}
             boardOrientation={getBoardOrientation(props.boardOrientation)}
             customArrows={props.arrows}

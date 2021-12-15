@@ -175,7 +175,6 @@ const MatePuzzle: React.FC = () => {
             <div className="card-no-shadow c"></div>
             <div className="main">
                 <MainBoard
-                    boardWidth={500}
                     position={fen}
                     boardOrientation={puzzle?.to_move as string}
                     onPieceDrop={onDrop}
