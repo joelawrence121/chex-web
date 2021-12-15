@@ -1,0 +1,237 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans&display=swap');
+
+html {
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
+
+body {
+    background: rgb(19, 19, 19);
+    color: #fff;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+img {
+    max-width: 80%;
+    max-height: 80%;
+}
+
+img.smaller {
+    max-width: 65%;
+    max-height: 65%;
+}
+
+.text {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-size: 3rem;
+    color: #fff;
+    height: 100%;
+    width: 100%;
+}
+
+.opening-card {
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-size: 3rem;
+    color: #fff;
+    box-shadow: rgba(3, 8, 20, 0.1) 0 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0 0.075rem 0.175rem;
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    transition: all 500ms;
+    overflow: hidden;
+    background-size: cover;
+    background: #353535 no-repeat center;
+}
+
+.Collapsible {
+    text-align: left;
+    list-style: none;
+
+    max-height: 100%;
+    font-size: large;
+    font-weight: bold;
+}
+
+.Collapsible__contentInner {
+    padding: 10px;
+    border: 1px solid #eceaea;
+    border-top: 0;
+}
+
+.Collapsible__contentInner.p {
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.Collapsible__contentInner.p:last-child {
+    margin-bottom: 0;
+}
+
+.Collapsible__trigger {
+    display: block;
+    font-weight: 400;
+    text-decoration: none;
+    position: relative;
+    padding: 10px;
+    border: 1px ridge white;
+}
+
+.Collapsible__trigger:after {
+    content: '\25be';
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: block;
+    transition: transform 300ms;
+}
+
+.Collapsible__trigger.is-open:after {
+    transform: rotateZ(180deg);
+}
+
+.Collapsible:nth-child(odd) {
+    color: #262626;
+    background: #a1c3f5;
+}
+
+.Collapsible:nth-child(even) {
+    background: #365992;
+}
+
+p {
+    font-weight: normal;
+    text-align: center;
+    font-size: medium;
+}
+
+a {
+    font-weight: normal;
+    text-align: center;
+}
+
+.difficulty-bar {
+    width: 90%;
+}
+
+.opening-card {
+    background-color: rgb(44, 44, 44);
+    animation: cardEntrance 700ms ease-out;
+    animation-fill-mode: backwards;
+    user-select: none;
+}
+
+.opening-main {
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-size: 3rem;
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    transition: all 500ms;
+    overflow: hidden;
+    background-size: cover;
+    grid-area: b;
+}
+
+.opening-card.no-background {
+    background-color: #131313FF;
+    animation: cardEntrance 700ms ease-out;
+    animation-fill-mode: backwards;
+    user-select: none;
+}
+
+.opening-card.no-background.click:hover {
+    box-shadow: rgba(2, 8, 20, 0.1) 0 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0 0.175em 0.5em;
+    transform: translateY(-3px) scale(1.05);
+}
+
+.opening-animated-grid {
+    height: 85vh;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+
+    display: grid;
+    gap: 1rem;
+
+    /* Explicit grid */
+    grid-template-areas:
+    'a  a  a  a  e  e  e'
+    'b  b  b  b  f  f  f'
+    'b  b  b  b  f  f  f'
+    'b  b  b  b  f  f  f'
+    'c  c  d  d  f  f  f';
+
+    grid-template-columns: auto auto auto auto auto auto;
+    grid-template-rows: 15% auto auto auto 10%;
+
+    --stagger-delay: 100ms;
+}
+
+.opening-card.description {
+    grid-area: a;
+    animation-delay: calc(1 * var(--stagger-delay));
+}
+
+.opening-card.no-background.random {
+    grid-area: c;
+    animation-delay: calc(5 * var(--stagger-delay));
+}
+
+.opening-card.no-background.play {
+    grid-area: d;
+    animation-delay: calc(7 * var(--stagger-delay));
+}
+
+.opening-card.no-background.pgn {
+    grid-area: e;
+    animation-delay: calc(9 * var(--stagger-delay));
+}
+
+.opening-card.no-background.g {
+    grid-area: g;
+    animation-delay: calc(9 * var(--stagger-delay));
+}
+
+.variation-list {
+    font-size: 2rem;
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    transition: all 500ms;
+    overflow: scroll;
+    background-size: cover;
+    background: #131313FF no-repeat center;
+    grid-area: f;
+}
+
+@keyframes cardEntrance {
+    from {
+        opacity: 0;
+        transform: scale(0.3);
+        filter: hue-rotate(180deg);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+        filter: hue-rotate(0deg);
+    }
+}
