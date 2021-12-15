@@ -147,7 +147,7 @@ const CommentaryBox: React.FC = () => {
                 fen: chess.fen(),
                 difficulty: stockfishLevel,
                 time_limit: 0.5,
-                wait: true
+                wait: !stockfishTakeoverEnabled
             })
                 .then(response => {
                     const stockfishResult = (response.data as unknown as PlayData)
@@ -204,13 +204,6 @@ const CommentaryBox: React.FC = () => {
         return true
     }
 
-    function sliceMove(move: string | undefined) {
-        if (move) {
-            return [[move.slice(0, 2) as string, move.slice(2, 5) as string]]
-        }
-        return [['', '']]
-    }
-
     function generateHint() {
         if (!hintEnabled) {
             ChapiService.getStockfishMove({
@@ -222,7 +215,7 @@ const CommentaryBox: React.FC = () => {
             })
                 .then(response => {
                     console.log(response)
-                    setArrows(sliceMove((response.data as unknown as PlayData).move))
+                    setArrows(Utils.sliceMove((response.data as unknown as PlayData).move))
                 })
                 .catch(e => {
                     console.log(e)
@@ -238,7 +231,7 @@ const CommentaryBox: React.FC = () => {
     }
 
     function onCollapsibleOpen(index: number) {
-        let arrows = sliceMove(moveStack[index])
+        let arrows = Utils.sliceMove(moveStack[index])
         setArrows(arrows)
     }
 
@@ -268,6 +261,7 @@ const CommentaryBox: React.FC = () => {
                 <RecentDescription
                     descDataStack={descDataStack}
                     moveStack={moveStack}
+                    fenStack={fenStack}
                     aggregationEnabled={aggregationEnabled}
                 />
             </div>
@@ -282,6 +276,7 @@ const CommentaryBox: React.FC = () => {
                 <CommentaryList
                     descDataStack={descDataStack}
                     moveStack={moveStack}
+                    fenStack={fenStack}
                     onOpening={onCollapsibleOpening}
                     onOpen={onCollapsibleOpen}
                     onClosing={onCollapsibleClosing}

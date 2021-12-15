@@ -5,6 +5,7 @@ import Utils from "../service/Utils";
 interface RecentDescriptionProps {
     descDataStack: DescriptionData[]
     moveStack: string[]
+    fenStack: string[]
     aggregationEnabled: boolean
 }
 
@@ -24,9 +25,9 @@ function RecentDescription(props: RecentDescriptionProps) {
 
     function getTrigger(lastIndex: number) {
         if (props.aggregationEnabled) {
-            return <b>{Utils.getTrigger(lastIndex, props.moveStack[lastIndex])}</b>
+            return <b>{Utils.getTrigger(lastIndex, props.moveStack, props.fenStack)}</b>
         }
-        return Utils.getTrigger(lastIndex, props.moveStack[lastIndex])
+        return Utils.getTrigger(lastIndex, props.moveStack, props.fenStack)
     }
 
     function getBackgroundColour() {
