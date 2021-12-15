@@ -5,6 +5,8 @@ import Utils from "../service/Utils";
 interface RecentDescriptionProps {
     descDataStack: DescriptionData[]
     moveStack: string[]
+    fenStack: string[]
+    aggregationEnabled: boolean
 }
 
 function RecentDescription(props: RecentDescriptionProps) {
@@ -13,12 +15,19 @@ function RecentDescription(props: RecentDescriptionProps) {
         const lastIndex = props.descDataStack.length - 1
         if (props.descDataStack.length > 0) {
             return <p style={{color: props.moveStack.length % 2 == 1 ? "#a1c3f5" : "#131313FF"}}>
-                {Utils.getTrigger(lastIndex, props.moveStack[lastIndex])}
+                {getTrigger(lastIndex)}
                 {props.descDataStack[lastIndex].descriptions.map((description: string) =>
                     Utils.formatDescription(description, props.descDataStack[lastIndex])
                 )}
             </p>
         }
+    }
+
+    function getTrigger(lastIndex: number) {
+        if (props.aggregationEnabled) {
+            return <b>{Utils.getTrigger(lastIndex, props.moveStack, props.fenStack)}</b>
+        }
+        return Utils.getTrigger(lastIndex, props.moveStack, props.fenStack)
     }
 
     function getBackgroundColour() {

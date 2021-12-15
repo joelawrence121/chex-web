@@ -1,5 +1,6 @@
 export default interface DescriptionData {
     descriptions: string[],
     link: string | null,
-    opening: string
+    opening: string,
+    score: number | undefined
 }

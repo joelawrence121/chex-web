@@ -100,7 +100,13 @@ const SingleMovePuzzle: React.FC = () => {
         })
         if (move == null) return false;
         setFen(chess.fen())
-        setCorrect(move.from + move.to == puzzle?.move)
+
+        if (puzzle?.type === PuzzleType.MATE) {
+            setCorrect(chess.inCheckmate())
+        } else {
+            setCorrect(move.from + move.to === puzzle?.move)
+        }
+
         return true
     }
 

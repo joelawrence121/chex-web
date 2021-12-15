@@ -1,17 +1,39 @@
 import DescriptionData from "../types/DescriptionData";
 import React from "react";
 import BoardHighlight from "../types/BoardHighlight";
+import {Chess} from "chess.ts";
 
-function getTrigger(index: number, item: string): string {
-    // 1. e2e4  1. b7b6   2. c2c4  2. d7d6
-    return (Math.ceil((index + 1) / 2)).toString() + ": " + item;
+const WHITE = "white"
+const BLACK = "black"
+const INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+
+function getOtherUser(user: string) {
+    if (user === WHITE) {
+        return BLACK
+    }
+    return WHITE
+}
+
+function sliceMove(move: string | undefined): [string[]] {
+    if (move) {
+        return [[move.slice(0, 2) as string, move.slice(2, 5) as string]]
+    }
+    return [['', '']]
+}
+
+function getTrigger(index: number, moveStack: string[], fenStack: string[]): string {
+    // Create san notation move headers
+    // 1. e3  1. h7   2. Bd4  2. a4
+    let chess = new Chess(fenStack[index])
+    let move = chess.move({from: sliceMove(moveStack[index])[0][0], to: sliceMove(moveStack[index])[0][1]})
+    return (Math.ceil((index + 1) / 2)).toString() + ": " + move?.san;
 }
 
 function formatDescription(description: string, descData: DescriptionData) {
     if (descData.opening && description.includes(descData.opening) && descData.link) {
         // replace any occurrences of 'opening' with link to opening
         const link = <a href={descData.link}>{descData.opening}</a>;
-        description = description.replaceAll(descData.opening, "$")
+        description = description.replace(descData.opening, "$")
         const index = description.indexOf("$");
         return <p>{description.substr(0, index)}{link}{description.substr(index + 1)}</p>
     }
@@ -22,19 +44,27 @@ function getBoardHighlight(winner: string | undefined) {
     if (!winner) {
         return BoardHighlight.normal();
     }
-    if (winner == 'white') {
+    if (winner === 'white') {
         return BoardHighlight.userWinner();
     }
-    if (winner == 'black') {
+    if (winner === 'black') {
         return BoardHighlight.stockfishWinner();
+    }
+    if (winner === 'stale') {
+        return BoardHighlight.stalemate()
     }
     return BoardHighlight.normal();
 }
 
 const Utils = {
+    WHITE,
+    BLACK,
+    INITIAL_FEN,
     getTrigger,
     formatDescription,
-    getBoardHighlight
+    getBoardHighlight,
+    getOtherUser,
+    sliceMove
 }
 
 export default Utils;

@@ -6,6 +6,7 @@ import Utils from "../service/Utils";
 interface CommentaryListProps {
     descDataStack: DescriptionData[]
     moveStack: string[],
+    fenStack: string[],
     onOpening: (index: number) => void,
     onOpen: (index: number) => void,
     onClosing: () => void
@@ -19,7 +20,7 @@ function CommentaryList(props: CommentaryListProps) {
                 <Collapsible
                     key={index}
                     easing={"ease-in"}
-                    trigger={Utils.getTrigger(index, props.moveStack[index])}
+                    trigger={Utils.getTrigger(index, props.moveStack, props.fenStack)}
                     onOpening={() => props.onOpening(index)}
                     onOpen={() => props.onOpen(index)}
                     onClosing={() => props.onClosing()}>

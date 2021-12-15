@@ -1,14 +1,29 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans&display=swap');
 
+html {
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
+
 body {
     background: rgb(19, 19, 19);
     color: #fff;
     font-family: 'Noto Sans', sans-serif;
 }
 
-img.smaller {
+img {
     max-width: 80%;
     max-height: 80%;
+}
+
+img.smaller {
+    max-width: 65%;
+    max-height: 65%;
 }
 
 .text {
@@ -50,13 +65,13 @@ img.smaller {
     overflow: scroll;
     background-size: cover;
     background: #131313FF no-repeat center;
-    grid-area: e;
+    grid-area: c;
 }
 
 .Collapsible {
     text-align: left;
     list-style: none;
-    user-select: none;
+
     max-height: 100%;
     font-size: large;
     font-weight: bold;
@@ -132,6 +147,65 @@ a:visited {
     width: 90%;
 }
 
+.commentary-card:hover {
+    box-shadow: rgba(2, 8, 20, 0.1) 0 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0 0.175em 0.5em;
+    transform: translateY(-3px) scale(1.05);
+}
+
+.commentary-animated-grid {
+    height: 85vh;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+
+    display: grid;
+    gap: 1rem;
+
+    /* Explicit grid */
+    grid-template-areas:
+    'e  e  e  g  g  g  g  d  d'
+    'c  c  c  m  m  m  m  m  h'
+    'c  c  c  m  m  m  m  m  r'
+    'c  c  c  m  m  m  m  m  u'
+    'c  c  c  m  m  m  m  m  x';
+
+    grid-template-columns: 11% 11% 11% auto auto auto auto auto auto;
+    grid-template-rows: 15% auto auto auto auto;
+
+    --stagger-delay: 100ms;
+}
+
+.commentary-card.no-background.graph {
+    grid-area: g;
+    animation-delay: calc(1 * var(--stagger-delay));
+}
+
+.commentary-card.difficulty {
+    background-color: #131313FF;
+    grid-area: d;
+    animation-delay: calc(3 * var(--stagger-delay));
+}
+
+.commentary-card.no-background.hint {
+    grid-area: h;
+    animation-delay: calc(5 * var(--stagger-delay));
+}
+
+.commentary-card.no-background.restart {
+    grid-area: r;
+    animation-delay: calc(7 * var(--stagger-delay));
+}
+
+.commentary-card.no-background.undo {
+    grid-area: u;
+    animation-delay: calc(9 * var(--stagger-delay));
+}
+
+.commentary-card.no-background.x {
+    grid-area: x;
+    animation-delay: calc(11 * var(--stagger-delay));
+}
+
 .commentary-main {
     resize: both;
     display: flex;
@@ -146,8 +220,7 @@ a:visited {
     transition: all 500ms;
     overflow: hidden;
     background-size: cover;
-
-    grid-area: d;
+    grid-area: m;
 }
 
 .commentary-main-desc {
@@ -162,31 +235,7 @@ a:visited {
     border-radius: 4px;
     transition: all 500ms;
     background-size: cover;
-    grid-area: x;
-}
-
-.commentary-card:hover {
-    box-shadow: rgba(2, 8, 20, 0.1) 0 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0 0.175em 0.5em;
-    transform: translateY(-3px) scale(1.05);
-}
-
-.commentary-animated-grid {
-    height: 85vh;
-    margin-bottom: 20px;
-
-    display: grid;
-    gap: 1rem;
-
-    /* Explicit grid */
-    grid-template-areas:
-    'x  a  b  c'
-    'e  d  d  d'
-    'e  d  d  d';
-
-    grid-template-rows: 100px auto auto;
-    grid-template-columns: 30% auto auto auto;
-
-    --stagger-delay: 100ms;
+    grid-area: e;
 }
 
 @keyframes cardEntrance {
@@ -217,26 +266,21 @@ a:visited {
 }
 
 .commentary-card:nth-child(1) {
-    grid-area: a;
     animation-delay: calc(1 * var(--stagger-delay));
 }
 
 .commentary-card:nth-child(2) {
-    grid-area: b;
     animation-delay: calc(2 * var(--stagger-delay));
 }
 
 .commentary-card:nth-child(3) {
-    grid-area: c;
     animation-delay: calc(3 * var(--stagger-delay));
 }
 
 .commentary-card:nth-child(4) {
-    grid-area: d;
     animation-delay: calc(4 * var(--stagger-delay));
 }
 
 .commentary-card:last-child {
-    grid-area: e;
     animation-delay: calc(5 * var(--stagger-delay));
 }

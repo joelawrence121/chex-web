@@ -7,46 +7,72 @@ import ChapiService from "../service/ChapiService";
 import PlayData from "../types/PlayData";
 import ProgressBar from "@ramonak/react-progress-bar";
 import refresh from './icons/refresh.png';
+import undo from './icons/undo.png';
 import lightFilled from './icons/light-filled.png';
 import lightUnfilled from './icons/light-unfilled.png';
+import autoFilled from './icons/auto-filled.png';
+import autoUnfilled from './icons/auto-unfilled.png';
 import DescriptionData from "../types/DescriptionData";
 import RecentDescription from "./RecentDescription";
 import Utils from "../service/Utils";
+import AdvantageGraph from "./AdvantageGraph";
+import AggregationData from "../types/AggregationData";
 
 const CommentaryBox: React.FC = () => {
 
     const BOARD_ID = "commentaryBox"
-    const INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-    const [stockfishLevel, setStockfishLevel] = useState(6)
+    const [stockfishLevel, setStockfishLevel] = useState(2)
     const [chess, setChess] = useState(new Chess())
     const [fen, setFen] = useState(chess.fen())
-    const [arrow, setArrow] = useState([['', '']])
+    const [arrows, setArrows] = useState([['', '']])
     const [moveStack, setMoveStack] = useState<string[]>([])
-    const [fenStack, setFenStack] = useState<string[]>([INITIAL_FEN])
+    const [winner, setWinner] = useState<string | undefined>()
+    const [fenStack, setFenStack] = useState<string[]>([Utils.INITIAL_FEN])
     const [descDataStack, setDescDataStack] = useState<DescriptionData[]>([])
     const [turn, setTurn] = useState(false)
+    const [trigger, setTrigger] = useState(false)
     const [isStart, setIsStart] = useState(true)
-    const [showHint, setShowHint] = useState(false)
-    const [winner, setWinner] = useState<string | undefined>()
+    const [stockfishTakeoverEnabled, setStockfishTakeoverEnabled] = useState(false)
+    const [hintEnabled, setHintEnabled] = useState(false)
+    const [aggregationEnabled, setAggregationEnabled] = useState<boolean>(true)
+    const [aggregationData, setAggregationData] = useState<AggregationData>()
+    const [aggregationChange, setAggregationChange] = useState<boolean>(false)
 
     function resetBoard() {
         setChess(new Chess())
-        setFen(INITIAL_FEN)
-        setArrow([['', '']])
+        setFen(Utils.INITIAL_FEN)
+        setArrows([['', '']])
         setMoveStack([])
-        setFenStack([INITIAL_FEN])
+        setFenStack([Utils.INITIAL_FEN])
         setDescDataStack([])
         setTurn(false)
         setIsStart(true)
-        setShowHint(false)
+        setHintEnabled(false)
         setWinner(undefined)
+    }
+
+    function undoMove() {
+        setArrows([['', '']])
+        setHintEnabled(false)
+        setTurn(false)
+        const newMoveStack = moveStack.slice(0, -2)
+        setMoveStack(newMoveStack)
+        const newFenStack = fenStack.slice(0, -2)
+        setFenStack(newFenStack)
+        const newFen = newFenStack[newFenStack.length - 1]
+        setFen(newFen)
+        setIsStart(true)
+        setWinner(undefined)
+        setChess(new Chess(newFen))
+        const newDescDataStack = descDataStack.slice(0, -2)
+        setDescDataStack(newDescDataStack)
     }
 
     function getUser() {
         if (chess.turn() === 'b') {
-            return 'human'
+            return Utils.WHITE
         } else {
-            return 'stockfish'
+            return Utils.BLACK
         }
     }
 
@@ -59,14 +85,18 @@ const CommentaryBox: React.FC = () => {
             ChapiService.getMoveDescription({
                 user: user,
                 moveStack: moveStack,
-                move: move,
-                fen: chess.fen()
+                uci: move,
+                fen: chess.fen(),
+                fenStack: fenStack
             })
                 .then(response => {
                     let descriptionData = response.data as unknown as DescriptionData
-                    let newDescDataStack = descDataStack.slice()
-                    newDescDataStack.push(descriptionData)
-                    setDescDataStack(newDescDataStack)
+                    if (descriptionData) {
+                        let newDescDataStack = descDataStack.slice()
+                        newDescDataStack.push(descriptionData)
+                        setDescDataStack(newDescDataStack)
+                        setAggregationChange(true)
+                    }
                 })
                 .catch(e => {
                     console.log(e)
@@ -74,19 +104,55 @@ const CommentaryBox: React.FC = () => {
         }
     }, [moveStack])
 
+    // move aggregation hook
+    useEffect(() => {
+        if (aggregationChange && aggregationEnabled) {
+            let index = descDataStack.length - 1
+            if (index > -1 && index) {
+                let original = descDataStack[index].descriptions[0]
+                console.log(original)
+                ChapiService.getDescriptionAggregation({
+                    index: index,
+                    original: original,
+                })
+                    .then(response => {
+                        console.log(response)
+                        let aggregationData = response.data as unknown as AggregationData
+                        if (aggregationData) {
+                            setAggregationData(aggregationData)
+                        }
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
+            }
+        }
+    }, [descDataStack, aggregationChange, aggregationEnabled])
+
+    // move aggregation update hook
+    useEffect(() => {
+        if (aggregationData && aggregationData.index < descDataStack.length) {
+            let newDescDataStack = descDataStack.slice()
+            newDescDataStack[aggregationData.index].descriptions.push(aggregationData.aggregation)
+            setDescDataStack(newDescDataStack)
+            setAggregationChange(false)
+        }
+    }, [aggregationData])
+
     // stockfish move hook
     useEffect(() => {
-        if (!isStart) {
+        if ((!isStart || stockfishTakeoverEnabled) && !winner) {
             ChapiService.getStockfishMove({
                 id: BOARD_ID,
                 fen: chess.fen(),
-                difficulty: stockfishLevel
+                difficulty: stockfishLevel,
+                time_limit: 0.5,
+                wait: !stockfishTakeoverEnabled
             })
                 .then(response => {
                     const stockfishResult = (response.data as unknown as PlayData)
                     setFen(stockfishResult.fen)
                     setChess(new Chess(stockfishResult.fen))
-
                     // move will be null when game is over
                     if (stockfishResult.move) {
                         const newMoveStack = moveStack.slice()
@@ -94,7 +160,6 @@ const CommentaryBox: React.FC = () => {
                         setMoveStack(newMoveStack)
                     }
                     setWinner(stockfishResult.winner)
-
                     const newFenStack = fenStack.slice()
                     newFenStack.push(stockfishResult.fen)
                     setFenStack(newFenStack)
@@ -103,7 +168,16 @@ const CommentaryBox: React.FC = () => {
                     console.log(e)
                 })
         }
-    }, [turn])
+    }, [turn, trigger])
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (stockfishTakeoverEnabled) {
+                setTurn(!turn)
+            }
+        }, 2000);
+        return () => clearInterval(interval);
+    }, [turn]);
 
     function onDrop(sourceSquare: string, targetSquare: string): boolean {
         let move = chess.move({
@@ -123,41 +197,33 @@ const CommentaryBox: React.FC = () => {
         const newFenStack = fenStack.slice()
         newFenStack.push(chess.fen())
         setFenStack(newFenStack)
+        setHintEnabled(false)
 
         // trigger stockfish's turn
         setTurn(!turn)
         return true
     }
 
-    function sliceMove(move: string | undefined) {
-        if (move) {
-            return [[move.slice(0, 2) as string, move.slice(2, 5) as string]]
-        }
-        return [['', '']]
-    }
-
     function generateHint() {
-        if (!showHint) {
+        if (!hintEnabled) {
             ChapiService.getStockfishMove({
                 id: BOARD_ID,
                 fen: chess.fen(),
-                difficulty: stockfishLevel
+                difficulty: 9,
+                time_limit: 1.5,
+                wait: false
             })
                 .then(response => {
                     console.log(response)
-                    setArrow(sliceMove((response.data as unknown as PlayData).move))
+                    setArrows(Utils.sliceMove((response.data as unknown as PlayData).move))
                 })
                 .catch(e => {
                     console.log(e)
                 })
         } else {
-            setArrow([['', '']])
+            setArrows([['', '']])
         }
-        setShowHint(!showHint)
-    }
-
-    function changeStockfishLevel() {
-        setStockfishLevel((stockfishLevel % 10 + 1))
+        setHintEnabled(!hintEnabled)
     }
 
     function onCollapsibleOpening(index: number) {
@@ -165,55 +231,82 @@ const CommentaryBox: React.FC = () => {
     }
 
     function onCollapsibleOpen(index: number) {
-        let arrows = sliceMove(moveStack[index])
-        setArrow(arrows)
+        let arrows = Utils.sliceMove(moveStack[index])
+        setArrows(arrows)
     }
 
     function onCollapsibleClosing() {
-        setArrow([['', '']])
+        setArrows([['', '']])
         let latestFen = fenStack[fenStack.length - 1]
         setChess(new Chess(latestFen))
         fenStack.forEach(fen => setFen(fen))
     }
 
-    function getHintIcon() {
-        return showHint ? lightFilled : lightUnfilled;
+    function triggerStockfishTakeover() {
+        if (!stockfishTakeoverEnabled) {
+            setStockfishTakeoverEnabled(true)
+            setTurn(!turn)
+        } else {
+            setStockfishTakeoverEnabled(false)
+            if (turn) {
+                setTrigger(!trigger)
+            }
+            setTurn(true)
+        }
     }
 
     return (
         <section className="commentary-animated-grid">
-            <div className="commentary-card no-background" onClick={generateHint}>
-                <img className={"smaller"} src={getHintIcon()} alt="Hint"/>
+            <div className="commentary-main-desc" onClick={() => setAggregationEnabled(!aggregationEnabled)}>
+                <RecentDescription
+                    descDataStack={descDataStack}
+                    moveStack={moveStack}
+                    fenStack={fenStack}
+                    aggregationEnabled={aggregationEnabled}
+                />
             </div>
-            <div className="commentary-card" onClick={changeStockfishLevel}>
+            <div className="commentary-card no-background graph">
+                <AdvantageGraph moveStack={moveStack} dataStack={descDataStack} playStack={undefined} width={600}/>
+            </div>
+            <div className="commentary-card difficulty" onClick={() => setStockfishLevel((stockfishLevel % 10 + 1))}>
                 Difficulty
                 <ProgressBar className="difficulty-bar" completed={stockfishLevel * 10} bgColor="#365992"/>
-            </div>
-            <div className="commentary-card no-background" onClick={resetBoard}>
-                <img className={"smaller"} src={refresh} alt="Refresh"/>
-            </div>
-            <div className="commentary-main">
-                <MainBoard
-                    boardWidth={500}
-                    position={fen}
-                    boardOrientation={"white"}
-                    onPieceDrop={onDrop}
-                    arrows={arrow}
-                    alternateArrows={true}
-                    boardHighlight={Utils.getBoardHighlight(winner)}
-                />
             </div>
             <div className="commentary-list">
                 <CommentaryList
                     descDataStack={descDataStack}
                     moveStack={moveStack}
+                    fenStack={fenStack}
                     onOpening={onCollapsibleOpening}
                     onOpen={onCollapsibleOpen}
                     onClosing={onCollapsibleClosing}
                 />
             </div>
-            <div className="commentary-main-desc">
-                <RecentDescription descDataStack={descDataStack} moveStack={moveStack}/>
+            <div className="commentary-main">
+                <MainBoard
+                    boardWidth={600}
+                    position={fen}
+                    boardOrientation={"white"}
+                    onPieceDrop={onDrop}
+                    arrows={arrows}
+                    alternateArrows={true}
+                    boardHighlight={Utils.getBoardHighlight(winner)}
+                />
+            </div>
+            <div className="commentary-card no-background hint" onClick={generateHint}>
+                <img className={"smaller"} src={hintEnabled ? lightFilled : lightUnfilled} alt="Hint"/>
+            </div>
+            <div className="commentary-card no-background restart" onClick={resetBoard}>
+                <img className={"smaller"} src={refresh} alt="Restart"/>
+            </div>
+            <div className="commentary-card no-background undo" onClick={undoMove}>
+                <img src={undo} alt="Undo"/>
+            </div>
+            <div className="commentary-card no-background x" onClick={triggerStockfishTakeover}>
+                <img
+                    className={"smaller"}
+                    src={stockfishTakeoverEnabled ? autoFilled : autoUnfilled}
+                    alt="Stockfish Takeover"/>
             </div>
         </section>
     );

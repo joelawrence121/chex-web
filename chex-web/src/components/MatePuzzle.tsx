@@ -45,7 +45,9 @@ const MatePuzzle: React.FC = () => {
                 ChapiService.getStockfishMove({
                     id: BOARD_ID,
                     fen: chess.fen(),
-                    difficulty: 9
+                    difficulty: 9,
+                    time_limit: 1.0,
+                    wait: false
                 })
                     .then(response => {
                         const stockfishResult = (response.data as unknown as PlayData)
@@ -65,7 +67,9 @@ const MatePuzzle: React.FC = () => {
         ChapiService.getStockfishMove({
             id: BOARD_ID,
             fen: fen ? fen : chess.fen(),
-            difficulty: 9
+            difficulty: 9,
+            time_limit: 1.5,
+            wait: false
         })
             .then(response => {
                 const stockfishResult = (response.data as unknown as PlayData)
@@ -82,7 +86,9 @@ const MatePuzzle: React.FC = () => {
             ChapiService.getStockfishMove({
                 id: BOARD_ID,
                 fen: chess.fen(),
-                difficulty: 1
+                difficulty: 1,
+                time_limit: 0.3,
+                wait: false
             })
                 .then(response => {
                     const stockfishResult = (response.data as unknown as PlayData)
