@@ -44,6 +44,10 @@ const getRandomOpening = () => {
     return http.get("/random_opening", headers);
 };
 
+const getOpening = (id: number) => {
+    return http.get("/opening/" + id, headers);
+};
+
 const ChapiService = {
     getSingleMatePuzzle,
     getMoveDescription,
@@ -51,7 +55,8 @@ const ChapiService = {
     getStatistics,
     getMateInNPuzzle,
     getDescriptionAggregation,
-    getRandomOpening
+    getRandomOpening,
+    getOpening
 }
 
 export default ChapiService;

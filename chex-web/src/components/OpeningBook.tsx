@@ -18,6 +18,7 @@ const OpeningBook: React.FC = () => {
     const [openingData, setOpeningData] = useState<OpeningData>();
     const [refresh, setRefresh] = useState<boolean>(false)
     const [arrows, setArrows] = useState([['', '']])
+    const [variationId, setVariationId] = useState<number>()
 
     useEffect(() => {
         ChapiService.getRandomOpening()
@@ -29,6 +30,19 @@ const OpeningBook: React.FC = () => {
                 console.log(e)
             })
     }, [refresh])
+
+    useEffect(() => {
+        if (variationId) {
+            ChapiService.getOpening(variationId)
+                .then(response => {
+                    setOpeningData(response.data as OpeningData);
+                    console.log(response.data)
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+        }
+    }, [variationId])
 
     function onDrop(sourceSquare: string, targetSquare: string): boolean {
         return false;
@@ -54,6 +68,10 @@ const OpeningBook: React.FC = () => {
             return <h4><a href={openingData?.opening.wiki_link}>{openingData?.opening.name}</a></h4>
         }
         return <h4>{openingData?.opening.name}</h4>
+    }
+
+    function onSelection(index: number) {
+        setVariationId(openingData?.variations[index].id)
     }
 
     return (
@@ -94,6 +112,8 @@ const OpeningBook: React.FC = () => {
                         <Variation
                             original={openingData?.opening}
                             variation={variation}
+                            index={index}
+                            onSelection={onSelection}
                         />
                     </Collapsible>
                 )}

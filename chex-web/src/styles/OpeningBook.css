@@ -20,6 +20,34 @@ h3 {
     color: white;
 }
 
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+button {
+    background: none!important;
+    border: none;
+    font-size: x-large;
+    padding: 0!important;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+a.variation {
+    font-weight: bold;
+    text-align: center;
+    color: #000000;
+}
+
+a.variation:link {
+    color: #000000;
+}
+
+a.variation:visited {
+    color: #000000;
+}
+
 a {
     font-weight: normal;
     text-align: center;
@@ -203,7 +231,7 @@ a {
     'b  b  b  b  b  f  f  f'
     'x  c  t  d  v  f  f  f';
 
-    grid-template-columns: 12% 10% 5% 10% 12% auto auto auto;
+    grid-template-columns: 15% 10% 5% 10% 15% auto auto auto;
     grid-template-rows: 15% 5% auto auto auto 10%;
 
     --stagger-delay: 100ms;
