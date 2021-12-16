@@ -26,10 +26,10 @@ ul {
 }
 
 button {
-    background: none!important;
+    background: none !important;
     border: none;
     font-size: x-large;
-    padding: 0!important;
+    padding: 0 !important;
     text-decoration: underline;
     cursor: pointer;
 }
@@ -106,7 +106,7 @@ img.smaller {
     background: #353535 no-repeat center;
 }
 
-.Collapsible {
+.OpeningCollapsible {
     text-align: left;
     list-style: none;
     margin-bottom: 5px;
@@ -115,23 +115,23 @@ img.smaller {
     font-weight: bold;
 }
 
-.Collapsible__contentInner {
+.OpeningCollapsible__contentInner {
     padding: 10px;
     border: 1px solid #eceaea;
     border-top: 0;
 }
 
-.Collapsible__contentInner.p {
+.OpeningCollapsible__contentInner.p {
     margin-bottom: 10px;
     font-size: 14px;
     line-height: 20px;
 }
 
-.Collapsible__contentInner.p:last-child {
+.OpeningCollapsible__contentInner.p:last-child {
     margin-bottom: 0;
 }
 
-.Collapsible__trigger {
+.OpeningCollapsible__trigger {
     display: block;
     font-weight: 400;
     text-decoration: none;
@@ -140,7 +140,7 @@ img.smaller {
     border: 1px ridge white;
 }
 
-.Collapsible__trigger:after {
+.OpeningCollapsible__trigger:after {
     content: '\25be';
     position: absolute;
     right: 10px;
@@ -149,27 +149,27 @@ img.smaller {
     transition: transform 300ms;
 }
 
-.Collapsible__trigger.is-open:after {
+.OpeningCollapsible__trigger.is-open:after {
     transform: rotateZ(180deg);
 }
 
-.Collapsible:nth-child(odd) {
+.OpeningCollapsible:nth-child(odd) {
     color: #262626;
     background: rgba(255, 255, 255, 0.96);
 }
 
-.Collapsible:nth-child(even) {
+.OpeningCollapsible:nth-child(even) {
     color: #262626;
     background: rgba(255, 255, 255, 0.96);
 }
 
-p {
+p.opening {
     font-weight: normal;
     text-align: center;
     font-size: x-large;
 }
 
-a {
+a.opening {
     font-weight: normal;
     text-align: center;
 }

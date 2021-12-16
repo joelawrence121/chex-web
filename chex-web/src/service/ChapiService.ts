@@ -3,6 +3,7 @@ import DescriptionRequest from "../types/DescriptionRequest";
 import PlayRequest from "../types/PlayRequest";
 import AggregationRequest from "../types/AggregationRequest";
 import axios from "axios";
+import OpeningMoveStackRequest from "../types/OpeningMoveStackRequest";
 
 const headers = {
     headers: {
@@ -15,7 +16,6 @@ const getSingleMatePuzzle = (puzzle_type: string) => {
 };
 
 const getMoveDescription = (request: DescriptionRequest) => {
-    console.log(request)
     return http.post("/description", request, headers)
 }
 
@@ -44,8 +44,13 @@ const getRandomOpening = () => {
     return http.get("/random_opening", headers);
 };
 
-const getOpening = (id: number) => {
+const getOpeningById = (id: number) => {
     return http.get("/opening/" + id, headers);
+};
+
+const getOpeningByMoveStack = (openingByMoveStackRequest: OpeningMoveStackRequest) => {
+    console.log(openingByMoveStackRequest)
+    return http.post("/opening", openingByMoveStackRequest, headers);
 };
 
 const ChapiService = {
@@ -56,7 +61,8 @@ const ChapiService = {
     getMateInNPuzzle,
     getDescriptionAggregation,
     getRandomOpening,
-    getOpening
+    getOpeningById,
+    getOpeningByMoveStack
 }
 
 export default ChapiService;

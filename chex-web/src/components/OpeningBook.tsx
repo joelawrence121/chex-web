@@ -19,24 +19,33 @@ const OpeningBook: React.FC = () => {
     const [refresh, setRefresh] = useState<boolean>(false)
     const [arrows, setArrows] = useState([['', '']])
     const [variationId, setVariationId] = useState<number>()
+    const [chess, setChess] = useState(new Chess(Utils.INITIAL_FEN))
+    const [isStart, setIsStart] = useState(true)
+    const [moveStackString, setMoveStackString] = useState<string>("")
 
     useEffect(() => {
-        ChapiService.getRandomOpening()
-            .then(response => {
-                setOpeningData(response.data as OpeningData);
-                console.log(response.data)
-            })
-            .catch(e => {
-                console.log(e)
-            })
+        if (!isStart) {
+            ChapiService.getRandomOpening()
+                .then(response => {
+                    let openingDataResponse = response.data as OpeningData
+                    setOpeningData(openingDataResponse);
+                    let newChess = new Chess(openingDataResponse.opening.epd)
+                    setChess(newChess)
+                    setMoveStackString(openingDataResponse.opening.move_stack)
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+        }
     }, [refresh])
 
     useEffect(() => {
         if (variationId) {
-            ChapiService.getOpening(variationId)
+            ChapiService.getOpeningById(variationId)
                 .then(response => {
-                    setOpeningData(response.data as OpeningData);
-                    console.log(response.data)
+                    let openingDataResponse = response.data as OpeningData
+                    setOpeningData(openingDataResponse);
+                    setMoveStackString(openingDataResponse.opening.move_stack)
                 })
                 .catch(e => {
                     console.log(e)
@@ -44,8 +53,42 @@ const OpeningBook: React.FC = () => {
         }
     }, [variationId])
 
+    useEffect(() => {
+        if (moveStackString) {
+            console.log(moveStackString)
+            ChapiService.getOpeningByMoveStack({move_stack: moveStackString})
+                .then(response => {
+                    let openingDataResponse = response.data as unknown as OpeningData
+                    console.log(openingDataResponse)
+                    if (openingDataResponse.opening) {
+                        setOpeningData(openingDataResponse);
+                        setMoveStackString(openingDataResponse.opening.move_stack)
+                    }
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+        }
+    }, [moveStackString])
+
     function onDrop(sourceSquare: string, targetSquare: string): boolean {
-        return false;
+        let newChess = new Chess(chess.fen())
+        let move = newChess.move({
+            to: targetSquare,
+            from: sourceSquare,
+        })
+        if (move != null) {
+            setChess(newChess)
+            let newMoveStackString = ""
+            if (moveStackString.length == 0) {
+                newMoveStackString = sourceSquare + targetSquare
+            } else {
+                newMoveStackString = moveStackString + " " + sourceSquare + targetSquare
+            }
+            setMoveStackString(newMoveStackString)
+            return true
+        }
+        return false
     }
 
     function getToMove() {
@@ -81,7 +124,7 @@ const OpeningBook: React.FC = () => {
             </div>
             <div className="opening-main">
                 <MainBoard
-                    position={openingData?.opening.epd}
+                    position={chess.fen()}
                     boardOrientation={"white"}
                     onPieceDrop={onDrop}
                     arrows={arrows}
@@ -90,7 +133,10 @@ const OpeningBook: React.FC = () => {
                 />
             </div>
             <div className="opening-card no-background click random">
-                <img className={"smaller"} src={refreshImg} alt="Restart" onClick={() => setRefresh(!refresh)}/>
+                <img className={"smaller"} src={refreshImg} alt="Restart" onClick={() => {
+                    setRefresh(!refresh);
+                    setIsStart(false)
+                }}/>
             </div>
             <div className="opening-card no-background turn">
                 <img className={"bigger"} src={getToMove()} alt={"to move"}/>
@@ -104,6 +150,7 @@ const OpeningBook: React.FC = () => {
             <div className="variation-list">
                 {openingData?.variations.map((variation: Opening, index: number) =>
                     <Collapsible
+                        classParentString="OpeningCollapsible"
                         key={index}
                         easing={"ease-in"}
                         trigger={variation.name}
