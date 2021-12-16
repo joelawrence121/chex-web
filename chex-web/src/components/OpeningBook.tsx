@@ -9,14 +9,15 @@ import blackPawn from "./icons/black-pawn.png";
 import {Chess} from "chess.ts";
 import refreshImg from "./icons/refresh.png";
 import rightArrow from "./icons/right-arrow.png";
-import DescriptionData from "../types/DescriptionData";
 import Collapsible from "react-collapsible";
 import Opening from "../types/Opening";
+import Variation from "./Variation";
 
 const OpeningBook: React.FC = () => {
 
     const [openingData, setOpeningData] = useState<OpeningData>();
     const [refresh, setRefresh] = useState<boolean>(false)
+    const [arrows, setArrows] = useState([['', '']])
 
     useEffect(() => {
         ChapiService.getRandomOpening()
@@ -38,17 +39,34 @@ const OpeningBook: React.FC = () => {
         return (chess.turn() === 'w' ? whitePawn : blackPawn)
     }
 
+    function onCollapsibleOpening(index: number) {
+        let variation = openingData!.variations[index]
+        let moves = variation.move_stack.replace(openingData!.opening.move_stack + ' ', '').split(" ")
+        setArrows(Utils.sliceMove(moves[0]))
+    }
+
+    function onCollapsibleClosing() {
+        setArrows([])
+    }
+
+    function formatTitle() {
+        if (openingData && openingData.opening.wiki_link) {
+            return <h4><a href={openingData?.opening.wiki_link}>{openingData?.opening.name}</a></h4>
+        }
+        return <h4>{openingData?.opening.name}</h4>
+    }
+
     return (
         <section className="opening-animated-grid">
             <div className="opening-card no-background description">
-                {openingData?.opening.name}
+                {openingData ? formatTitle() : <h4></h4>}
             </div>
             <div className="opening-main">
                 <MainBoard
                     position={openingData?.opening.epd}
                     boardOrientation={"white"}
                     onPieceDrop={onDrop}
-                    arrows={[['', '']]}
+                    arrows={arrows}
                     alternateArrows={true}
                     boardHighlight={Utils.getBoardHighlight(undefined)}
                 />
@@ -66,12 +84,17 @@ const OpeningBook: React.FC = () => {
                 <p>{openingData?.opening.pgn}</p>
             </div>
             <div className="variation-list">
-                {openingData?.variations.map((opening: Opening, index: number) =>
+                {openingData?.variations.map((variation: Opening, index: number) =>
                     <Collapsible
                         key={index}
                         easing={"ease-in"}
-                        trigger={opening.name}>
-                        {opening.move_stack}
+                        trigger={variation.name}
+                        onOpening={() => onCollapsibleOpening(index)}
+                        onClosing={() => onCollapsibleClosing()}>
+                        <Variation
+                            original={openingData?.opening}
+                            variation={variation}
+                        />
                     </Collapsible>
                 )}
             </div>

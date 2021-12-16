@@ -16,6 +16,24 @@ body {
     font-family: 'Noto Sans', sans-serif;
 }
 
+h3 {
+    color: white;
+}
+
+a {
+    font-weight: normal;
+    text-align: center;
+    color: white;
+}
+
+a:link {
+    color: #ffffff;
+}
+
+a:visited {
+    color: #ffffff;
+}
+
 img {
     max-width: 80%;
     max-height: 80%;
@@ -63,9 +81,9 @@ img.smaller {
 .Collapsible {
     text-align: left;
     list-style: none;
-
+    margin-bottom: 5px;
     max-height: 100%;
-    font-size: large;
+    font-size: x-large;
     font-weight: bold;
 }
 
