@@ -43,9 +43,13 @@ const OpeningBook: React.FC = () => {
         if (variationId) {
             ChapiService.getOpeningById(variationId)
                 .then(response => {
+                    console.log(response)
                     let openingDataResponse = response.data as OpeningData
                     setOpeningData(openingDataResponse);
+                    let newChess = new Chess(openingDataResponse.opening.epd)
+                    setChess(newChess)
                     setMoveStackString(openingDataResponse.opening.move_stack)
+                    setArrows([])
                 })
                 .catch(e => {
                     console.log(e)
@@ -77,8 +81,8 @@ const OpeningBook: React.FC = () => {
             to: targetSquare,
             from: sourceSquare,
         })
+        setChess(newChess)
         if (move != null) {
-            setChess(newChess)
             let newMoveStackString = ""
             if (moveStackString.length == 0) {
                 newMoveStackString = sourceSquare + targetSquare
