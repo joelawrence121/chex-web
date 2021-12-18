@@ -16,13 +16,17 @@ import Variation from "./Variation";
 const OpeningBook: React.FC = () => {
 
     const [openingData, setOpeningData] = useState<OpeningData>();
-    const [refresh, setRefresh] = useState<boolean>(false)
+    const [refresh, setRefresh] = useState(false)
+    const [isStart, setIsStart] = useState(true)
+    const [showAnimation, setShowAnimation] = useState(false)
+    const [isBeginning, setIsBeginning] = useState(false)
     const [arrows, setArrows] = useState([['', '']])
     const [variationId, setVariationId] = useState<number>()
     const [chess, setChess] = useState(new Chess(Utils.INITIAL_FEN))
-    const [isStart, setIsStart] = useState(true)
+    const [animationMoveQueue, setAnimationMoveQueue] = useState<string[]>()
     const [moveStackString, setMoveStackString] = useState<string>("")
 
+    // random opening hook
     useEffect(() => {
         if (!isStart) {
             ChapiService.getRandomOpening()
@@ -39,6 +43,7 @@ const OpeningBook: React.FC = () => {
         }
     }, [refresh])
 
+    // retrieve variation information hook (from variation click)
     useEffect(() => {
         if (variationId) {
             ChapiService.getOpeningById(variationId)
@@ -57,8 +62,9 @@ const OpeningBook: React.FC = () => {
         }
     }, [variationId])
 
+    // look up move stack variation hook (from piece moves)
     useEffect(() => {
-        if (moveStackString) {
+        if (moveStackString && !showAnimation) {
             console.log(moveStackString)
             ChapiService.getOpeningByMoveStack({move_stack: moveStackString})
                 .then(response => {
@@ -74,6 +80,41 @@ const OpeningBook: React.FC = () => {
                 })
         }
     }, [moveStackString])
+
+    // trigger path animation hook
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (animationMoveQueue && showAnimation) {
+                let newChess;
+                // if at start of animation, refresh board
+                if (isBeginning) {
+                    newChess = new Chess()
+                    setChess(newChess)
+                    setIsBeginning(false)
+                }
+                else {
+                    newChess = new Chess(chess.fen())
+                    // stop animation on empty move stack
+                    if (animationMoveQueue.length == 0) {
+                        setShowAnimation(false)
+                    }
+                    else {
+                        // get next move to display out of queue and show it
+                        let move = animationMoveQueue[0]
+                        let newAnimationMoveQueue = animationMoveQueue.slice(1)
+                        setAnimationMoveQueue(newAnimationMoveQueue)
+                        let moveSlice = Utils.sliceMove(move)[0]
+                        newChess.move({
+                            to: moveSlice[1],
+                            from: moveSlice[0]
+                        })
+                        setChess(newChess)
+                    }
+                }
+            }
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [isBeginning, showAnimation, animationMoveQueue, chess])
 
     function onDrop(sourceSquare: string, targetSquare: string): boolean {
         let newChess = new Chess(chess.fen())
@@ -142,8 +183,13 @@ const OpeningBook: React.FC = () => {
                     setIsStart(false)
                 }}/>
             </div>
-            <div className="opening-card no-background turn">
-                <img className={"bigger"} src={getToMove()} alt={"to move"}/>
+            <div className="opening-card no-background click turn">
+                <img className={"bigger"} src={getToMove()} alt={"to move"} onClick={() => {
+                    let moveStack = moveStackString.split(' ')
+                    setShowAnimation(!showAnimation)
+                    setAnimationMoveQueue(moveStack)
+                    setIsBeginning(true)
+                }}/>
             </div>
             <div className="opening-card no-background click play">
                 <img className={"smaller"} src={rightArrow} alt="Next"/>
