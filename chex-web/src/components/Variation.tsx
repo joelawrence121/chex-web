@@ -36,7 +36,7 @@ function Variation(props: VariationProps) {
     }
 
     function formatPGN(pgn: string) {
-        let pgn_move = pgn.replace(props.original.pgn, "...").replace(/[0-9]./g, '')
+        let pgn_move = pgn.replace(props.original.pgn, "...").replace(/[0-9][.]/g, ' ')
         if (props.variation.wiki_link) {
             return <a className="a opening variation" href={props.variation.wiki_link}>{pgn_move}</a>
         }

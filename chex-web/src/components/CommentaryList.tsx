@@ -16,21 +16,21 @@ interface CommentaryListProps {
 function CommentaryList(props: CommentaryListProps) {
 
     return (
-        <div>
+        <>
             {props.descDataStack.map((descData: DescriptionData, index: number) =>
                 <Collapsible className="opening-collapsible"
-                    key={index}
-                    easing={"ease-in"}
-                    trigger={Utils.getTrigger(index, props.moveStack, props.fenStack)}
-                    onOpening={() => props.onOpening(index)}
-                    onOpen={() => props.onOpen(index)}
-                    onClosing={() => props.onClosing()}>
+                             key={index}
+                             easing={"ease-in"}
+                             trigger={Utils.getTrigger(index, props.moveStack, props.fenStack)}
+                             onOpening={() => props.onOpening(index)}
+                             onOpen={() => props.onOpen(index)}
+                             onClosing={() => props.onClosing()}>
                     {descData.descriptions.map((description: string) =>
                         Utils.formatDescription(description, descData)
                     )}
                 </Collapsible>
             )}
-        </div>
+        </>
     )
 }
 
