@@ -91,14 +91,12 @@ const OpeningBook: React.FC = () => {
                     newChess = new Chess()
                     setChess(newChess)
                     setIsBeginning(false)
-                }
-                else {
+                } else {
                     newChess = new Chess(chess.fen())
                     // stop animation on empty move stack
                     if (animationMoveQueue.length == 0) {
                         setShowAnimation(false)
-                    }
-                    else {
+                    } else {
                         // get next move to display out of queue and show it
                         let move = animationMoveQueue[0]
                         let newAnimationMoveQueue = animationMoveQueue.slice(1)
@@ -142,9 +140,11 @@ const OpeningBook: React.FC = () => {
     }
 
     function onCollapsibleOpening(index: number) {
-        let variation = openingData!.variations[index]
-        let moves = variation.move_stack.replace(openingData!.opening.move_stack + ' ', '').split(" ")
-        setArrows(Utils.sliceMove(moves[0]))
+        if (!showAnimation) {
+            let variation = openingData!.variations[index]
+            let moves = variation.move_stack.replace(openingData!.opening.move_stack + ' ', '').split(" ")
+            setArrows(Utils.sliceMove(moves[0]))
+        }
     }
 
     function onCollapsibleClosing() {

@@ -77,6 +77,11 @@ img.smaller {
     max-height: 65%;
 }
 
+.statistic {
+    font-weight: normal;
+    font-size: medium;
+}
+
 .text {
     flex-direction: column;
     justify-content: center;

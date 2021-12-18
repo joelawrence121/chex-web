@@ -6,4 +6,7 @@ export default interface Opening {
     wiki_link: string,
     epd: string,
     eco_classification: string
+    white: number
+    draws: number
+    black: number
 }
