@@ -16,7 +16,10 @@ function getPercentage(count: number, totalCount: number) {
 function Variation(props: VariationProps) {
 
     function getStatistics() {
-        let totalCount = props.variation.white + props.variation.draws + props.variation.black
+        let totalCount = 0
+        if (props.variation.white && props.variation.draws && props.variation.black) {
+            totalCount = props.variation.white + props.variation.draws + props.variation.black
+        }
         if (totalCount > 0) {
             return <>
                 <li className={"statistic"}>
