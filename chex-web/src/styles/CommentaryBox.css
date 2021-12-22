@@ -75,6 +75,9 @@ img.smaller {
     max-height: 100%;
     font-size: large;
     font-weight: bold;
+
+    animation: commentaryEntrance 700ms ease-out;
+    animation-fill-mode: backwards;
 }
 
 .Collapsible__contentInner {
@@ -116,11 +119,13 @@ img.smaller {
 }
 
 .Collapsible:nth-child(odd) {
+    animation-delay: calc(3 * var(--stagger-delay));
     color: #262626;
     background: #a1c3f5;
 }
 
 .Collapsible:nth-child(even) {
+    animation-delay: calc(3 * var(--stagger-delay));
     background: #365992;
 }
 
@@ -235,7 +240,23 @@ a:visited {
     border-radius: 4px;
     transition: all 500ms;
     background-size: cover;
+    animation: commentaryEntrance 700ms ease-out;
+    animation-fill-mode: backwards;
+    animation-delay: calc(2 * var(--stagger-delay));
     grid-area: e;
+}
+
+@keyframes commentaryEntrance {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+        filter: hue-rotate(180deg);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+        filter: hue-rotate(0deg);
+    }
 }
 
 @keyframes cardEntrance {

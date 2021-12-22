@@ -164,7 +164,7 @@ const MatePuzzle: React.FC = () => {
                 <img className={"smaller"} src={refresh} alt="Refresh"/>
             </div>
             <div className="card t" onClick={switchPuzzleType}>
-                <h1 className="text">Mate in {n}</h1>
+                <h1 className="text mate-type">Mate in {n}</h1>
             </div>
             <div className="card-no-shadow n" onClick={reRender}>
                 <img className={"smaller"} src={rightArrow} alt="Next"/>
@@ -175,7 +175,6 @@ const MatePuzzle: React.FC = () => {
             <div className="card-no-shadow c"></div>
             <div className="main">
                 <MainBoard
-                    boardWidth={500}
                     position={fen}
                     boardOrientation={puzzle?.to_move as string}
                     onPieceDrop={onDrop}

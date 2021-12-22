@@ -284,7 +284,6 @@ const CommentaryBox: React.FC = () => {
             </div>
             <div className="commentary-main">
                 <MainBoard
-                    boardWidth={600}
                     position={fen}
                     boardOrientation={"white"}
                     onPieceDrop={onDrop}

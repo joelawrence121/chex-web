@@ -9,13 +9,13 @@ import ProgressBar from "@ramonak/react-progress-bar";
 
 interface AutoBoardProps {
     id: string
-    boardWidth: number
     interval: number
 }
 
 function AutoBoard(props: AutoBoardProps) {
 
     const stockfishLevel = 8
+    const GRAPH_WIDTH = 500
     const [playData, setPlayData] = useState<PlayData>()
     const [prevScore, setPrevScore] = useState(0)
     const [playDataStack, setPlayDataStack] = useState<PlayData[]>([])
@@ -60,7 +60,6 @@ function AutoBoard(props: AutoBoardProps) {
     return (
         <>
             <MainBoard
-                boardWidth={props.boardWidth}
                 position={playData ? playData.fen : Utils.INITIAL_FEN}
                 boardOrientation={"white"}
                 onPieceDrop={onDrop}
@@ -72,7 +71,7 @@ function AutoBoard(props: AutoBoardProps) {
             <AdvantageGraph moveStack={undefined}
                             dataStack={undefined}
                             playStack={playDataStack}
-                            width={500}/>
+                            width={GRAPH_WIDTH}/>
         </>
     )
 }

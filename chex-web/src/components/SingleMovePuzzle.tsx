@@ -13,11 +13,18 @@ import blackPawn from './icons/black-pawn.png';
 import whitePawn from './icons/white-pawn.png';
 import BoardHighlight from "../types/BoardHighlight";
 
-const PUZZLE_TYPE_DESCRIPTIONS = new Map([
+const PUZZLE_TYPE_NAMES = new Map([
     [PuzzleType.MATE.valueOf(), "MATE IN 1"],
     [PuzzleType.GAIN.valueOf(), "GAIN"],
     [PuzzleType.SWING.valueOf(), "SWING"],
     [PuzzleType.PIN.valueOf(), "PIN"]
+])
+
+const PUZZLE_TYPE_DESCRIPTIONS = new Map([
+    [PuzzleType.MATE.valueOf(), "Find the checkmate move."],
+    [PuzzleType.GAIN.valueOf(), "Find the best move."],
+    [PuzzleType.SWING.valueOf(), "Find the move that swings the advantage."],
+    [PuzzleType.PIN.valueOf(), "Find the move that pins the king."]
 ])
 
 const SingleMovePuzzle: React.FC = () => {
@@ -74,6 +81,13 @@ const SingleMovePuzzle: React.FC = () => {
     }
 
     function getMoveType(key: string | undefined) {
+        if (PUZZLE_TYPE_NAMES.has(key as string)) {
+            return PUZZLE_TYPE_NAMES.get(key as string)
+        }
+        return ""
+    }
+
+    function getTypeDescription(key: string | undefined) {
         if (PUZZLE_TYPE_DESCRIPTIONS.has(key as string)) {
             return PUZZLE_TYPE_DESCRIPTIONS.get(key as string)
         }
@@ -127,7 +141,8 @@ const SingleMovePuzzle: React.FC = () => {
                 <img className={"smaller"} src={refresh} alt="Refresh"/>
             </div>
             <div className="card t" onClick={switchPuzzleType}>
-                <h1 className="text">{getMoveType(puzzle?.type)}</h1>
+                <h1 className="text type">{getMoveType(puzzle?.type)}</h1>
+                <h1 className="text description">{getTypeDescription(puzzle?.type)}</h1>
             </div>
             <div className="card-no-shadow n" onClick={reRender}>
                 <img className={"smaller"} src={rightArrow} alt="Next"/>
@@ -138,7 +153,6 @@ const SingleMovePuzzle: React.FC = () => {
             <div className="card-no-shadow c"></div>
             <div className="main">
                 <MainBoard
-                    boardWidth={500}
                     position={correct ? puzzle?.ending_fen : fen}
                     boardOrientation={puzzle?.to_move as string}
                     onPieceDrop={onDrop}

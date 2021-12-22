@@ -4,7 +4,6 @@ import AutoBoard from "./AutoBoard";
 
 const Home: React.FC = () => {
 
-    const BOARD_WIDTH = 500
     const INTERVAL = 1000
 
     return (
@@ -13,13 +12,13 @@ const Home: React.FC = () => {
                 <h1>Welcome to Chexplanations!</h1>
             </div>
             <div className="home-stationary b">
-                <AutoBoard id={"board1"} boardWidth={BOARD_WIDTH} interval={INTERVAL}/>
+                <AutoBoard id={"board1"} interval={INTERVAL}/>
             </div>
             <div className="home-stationary c">
-                <AutoBoard id={"board2"} boardWidth={BOARD_WIDTH} interval={INTERVAL}/>
+                <AutoBoard id={"board2"} interval={INTERVAL}/>
             </div>
             <div className="home-stationary d">
-                <AutoBoard id={"board3"} boardWidth={BOARD_WIDTH} interval={INTERVAL}/>
+                <AutoBoard id={"board3"} interval={INTERVAL}/>
             </div>
             <div className="home-stationary"></div>
         </section>
