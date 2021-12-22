@@ -111,66 +111,6 @@ img.smaller {
     background: #353535 no-repeat center;
 }
 
-.OpeningCollapsible {
-    text-align: left;
-    list-style: none;
-    margin-bottom: 5px;
-    max-height: 100%;
-    font-size: x-large;
-    font-weight: bold;
-    animation: cardEntrance 700ms ease-out;
-    animation-fill-mode: backwards;
-}
-
-.OpeningCollapsible__contentInner {
-    padding: 10px;
-    border: 1px solid #eceaea;
-    border-top: 0;
-}
-
-.OpeningCollapsible__contentInner.p {
-    margin-bottom: 10px;
-    font-size: 14px;
-    line-height: 20px;
-}
-
-.OpeningCollapsible__contentInner.p:last-child {
-    margin-bottom: 0;
-}
-
-.OpeningCollapsible__trigger {
-    display: block;
-    font-weight: 400;
-    text-decoration: none;
-    position: relative;
-    padding: 10px;
-    border: 1px ridge white;
-    animation-delay: calc(6 * var(--stagger-delay));
-}
-
-.OpeningCollapsible__trigger:after {
-    content: '\25be';
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    display: block;
-    transition: transform 300ms;
-}
-
-.OpeningCollapsible__trigger.is-open:after {
-    transform: rotateZ(180deg);
-}
-
-.OpeningCollapsible:nth-child(odd) {
-    color: #262626;
-    background: rgba(255, 255, 255, 0.96);
-}
-
-.OpeningCollapsible:nth-child(even) {
-    color: #262626;
-    background: rgba(255, 255, 255, 0.96);
-}
-
 p.opening {
     font-weight: normal;
     text-align: center;
@@ -182,14 +122,14 @@ a.opening {
     text-align: center;
 }
 
-.opening-card {
+.multiplayer-card {
     background-color: rgb(44, 44, 44);
     animation: cardEntrance 700ms ease-out;
     animation-fill-mode: backwards;
     user-select: none;
 }
 
-.opening-main {
+.multiplayer-main {
     resize: both;
     display: flex;
     flex-direction: column;
@@ -205,19 +145,19 @@ a.opening {
     grid-area: b;
 }
 
-.opening-card.no-background {
+.multiplayer-card.no-background {
     background-color: #131313FF;
     animation: cardEntrance 700ms ease-out;
     animation-fill-mode: backwards;
     user-select: none;
 }
 
-.opening-card.no-background.click:hover {
+.multiplayer-card.no-background.click:hover {
     box-shadow: rgba(2, 8, 20, 0.1) 0 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0 0.175em 0.5em;
     transform: translateY(-3px) scale(1.05);
 }
 
-.opening-animated-grid {
+.multiplayer-animated-grid {
     height: 85vh;
     margin-bottom: 15px;
     margin-left: 20px;
@@ -228,60 +168,61 @@ a.opening {
 
     /* Explicit grid */
     grid-template-areas:
-    'a  a  a  a  a  n  n  n'
-    'e  e  e  e  e  n  n  n'
-    'b  b  b  b  b  f  f  f'
-    'b  b  b  b  b  f  f  f'
-    'b  b  b  b  b  f  f  f'
-    'x  c  t  d  v  f  f  f';
+    'n  n  n  n  t'
+    'j  b  b  b  l'
+    'c  b  b  b  l'
+    'k  g  g  g  m';
 
-    grid-template-columns: 15% 10% 5% 10% 15% auto auto auto;
-    grid-template-rows: 15% 5% auto auto auto 10%;
+    grid-template-columns: 15% auto auto auto 15%;
+    grid-template-rows: 15% auto auto 15%;
 
     --stagger-delay: 100ms;
 }
 
-.opening-card.description {
-    grid-area: a;
+.multiplayer-card.no-background.n {
+    grid-area: n;
     animation-delay: calc(1 * var(--stagger-delay));
 }
 
-.opening-card.no-background.random {
-    grid-area: c;
-    animation-delay: calc(5 * var(--stagger-delay));
-}
-
-.opening-card.no-background.turn {
+.multiplayer-card.no-background.time {
     grid-area: t;
     animation-delay: calc(3 * var(--stagger-delay));
 }
 
-.opening-card.no-background.play {
-    grid-area: d;
+.multiplayer-card.no-background.join {
+    grid-area: j;
+    animation-delay: calc(5 * var(--stagger-delay));
+}
+
+.multiplayer-card.no-background.chat {
+    grid-area: c;
     animation-delay: calc(7 * var(--stagger-delay));
 }
 
-.opening-card.no-background.g {
-    grid-area: g;
+.multiplayer-card.no-background.list {
+    grid-area: l;
     animation-delay: calc(11 * var(--stagger-delay));
+}
+
+.multiplayer-card.no-background.k {
+    grid-area: k;
+    animation-delay: calc(13 * var(--stagger-delay));
+}
+
+.multiplayer-card.no-background.graph {
+    grid-area: g;
+    animation-delay: calc(15 * var(--stagger-delay));
+}
+
+.multiplayer-card.no-background.turn {
+    grid-area: m;
+    animation-delay: calc(17 * var(--stagger-delay));
 }
 
 .pgn {
     margin: auto;
     grid-area: e;
     animation-delay: calc(9 * var(--stagger-delay));
-}
-
-.variation-list {
-    font-size: 2rem;
-    height: 100%;
-    width: 100%;
-    border-radius: 4px;
-    transition: all 500ms;
-    overflow: scroll;
-    background-size: cover;
-    background: #131313FF no-repeat center;
-    grid-area: f;
 }
 
 @keyframes cardEntrance {

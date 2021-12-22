@@ -7,6 +7,7 @@ import About from "./About";
 import MatePuzzle from "./MatePuzzle";
 import Home from "./Home";
 import OpeningBook from "./OpeningBook";
+import MultiplayerBoard from "./MultiplayerBoard";
 
 const navigation = {
     brand: {name: "Chexplanations", to: "/"},
@@ -15,7 +16,8 @@ const navigation = {
         {name: "Commentary", to: "/commentary"},
         {name: "Single Move Puzzles", to: "/puzzles"},
         {name: "Mate in N", to: "/mate"},
-        {name: "Openings", to: "/openings"}
+        {name: "Openings", to: "/openings"},
+        {name: "Multiplayer", to: "/multiplayer"}
     ]
 }
 
@@ -43,6 +45,10 @@ const App: React.FC = () => {
                 <Route path="/openings">
                     <NavbarScroller brand={brand} links={links}/>
                     <OpeningBook/>
+                </Route>
+                <Route path="/multiplayer">
+                    <NavbarScroller brand={brand} links={links}/>
+                    <MultiplayerBoard/>
                 </Route>
                 <Route path="/">
                     <NavbarScroller brand={brand} links={links}/>
