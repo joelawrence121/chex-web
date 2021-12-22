@@ -32,6 +32,7 @@ const MultiplayerBoard: React.FC = () => {
             <div className="multiplayer-card no-background k"></div>
             <div className="multiplayer-card no-background graph">Graph</div>
             <div className="multiplayer-card no-background turn">Turn</div>
+            <div className="multiplayer-card no-background x"></div>
         </section>
     );
 }

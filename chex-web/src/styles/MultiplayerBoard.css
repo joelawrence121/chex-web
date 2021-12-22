@@ -168,10 +168,10 @@ a.opening {
 
     /* Explicit grid */
     grid-template-areas:
-    'n  n  n  n  t'
+    'n  m  m  m  g'
     'j  b  b  b  l'
     'c  b  b  b  l'
-    'k  g  g  g  m';
+    'k  t  t  t  x';
 
     grid-template-columns: 15% auto auto auto 15%;
     grid-template-rows: 15% auto auto 15%;
@@ -217,6 +217,11 @@ a.opening {
 .multiplayer-card.no-background.turn {
     grid-area: m;
     animation-delay: calc(17 * var(--stagger-delay));
+}
+
+.multiplayer-card.no-background.x {
+    grid-area: x;
+    animation-delay: calc(20 * var(--stagger-delay));
 }
 
 .pgn {
