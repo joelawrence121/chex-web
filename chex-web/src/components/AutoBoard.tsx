@@ -15,6 +15,7 @@ interface AutoBoardProps {
 function AutoBoard(props: AutoBoardProps) {
 
     const stockfishLevel = 8
+    const GRAPH_WIDTH = 500
     const [playData, setPlayData] = useState<PlayData>()
     const [prevScore, setPrevScore] = useState(0)
     const [playDataStack, setPlayDataStack] = useState<PlayData[]>([])
@@ -70,7 +71,7 @@ function AutoBoard(props: AutoBoardProps) {
             <AdvantageGraph moveStack={undefined}
                             dataStack={undefined}
                             playStack={playDataStack}
-                            width={500}/>
+                            width={GRAPH_WIDTH}/>
         </>
     )
 }

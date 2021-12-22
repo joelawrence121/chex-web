@@ -4,7 +4,6 @@ import AutoBoard from "./AutoBoard";
 
 const Home: React.FC = () => {
 
-    const BOARD_WIDTH = 500
     const INTERVAL = 1000
 
     return (

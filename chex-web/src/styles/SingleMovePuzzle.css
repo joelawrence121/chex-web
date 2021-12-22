@@ -1,20 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans&display=swap');
 
 body {
-    background: rgb(19, 19, 19);
     color: #fff;
     font-family: 'Noto Sans', sans-serif;
-}
-
-.text {
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    font-size: 3rem;
-    color: #fff;
-    height: 100%;
-    width: 100%;
 }
 
 h2 {
@@ -31,6 +19,46 @@ img.bigger {
     max-height: 100%;
 }
 
+.text.mate-type {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-size: xxx-large;
+    font-family: 'Noto Sans', sans-serif;
+    color: rgb(0, 0, 0);
+    height: 100%;
+    width: 100%;
+}
+
+.text.type {
+    margin-top: 3%;
+    margin-bottom: 0;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-size: xx-large;
+    font-family: 'Noto Sans', sans-serif;
+    color: rgb(0, 0, 0);
+    height: 100%;
+    width: 100%;
+}
+
+.text.description {
+    font-style: italic;
+    margin: auto;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-size: x-large;
+    font-family: 'Noto Sans', sans-serif;
+    color: rgb(0, 0, 0);
+    height: 100%;
+    width: 100%;
+}
+
 .card {
     resize: both;
     display: flex;
@@ -39,15 +67,17 @@ img.bigger {
     text-align: center;
     align-items: center;
     font-size: 3rem;
-    color: #fff;
-    box-shadow: rgba(3, 8, 20, 0.1) 0 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0 0.075rem 0.175rem;
+    box-shadow: rgba(3, 8, 20, 0.1) 0 0.15rem 0.5rem, rgba(137, 144, 159, 0.1) 0 0.075rem 0.175rem;
     height: 100%;
     width: 100%;
     border-radius: 4px;
     transition: all 500ms;
     overflow: hidden;
     background-size: cover;
-    background: #353535 no-repeat center;
+    background: #9fb9dc no-repeat center;
+    animation: cardEntrance 700ms ease-out;
+    animation-fill-mode: backwards;
+    user-select: none;
 }
 
 h2 {
@@ -168,13 +198,6 @@ h2 {
         transform: scale(1);
         filter: hue-rotate(0deg);
     }
-}
-
-.card {
-    background-color: rgba(141, 141, 141, 0.11);
-    animation: cardEntrance 700ms ease-out;
-    animation-fill-mode: backwards;
-    user-select: none;
 }
 
 .card:nth-child(1) {
