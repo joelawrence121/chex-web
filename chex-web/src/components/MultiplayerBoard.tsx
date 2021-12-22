@@ -5,6 +5,8 @@ import Utils from "../service/Utils";
 import {Chess} from "chess.ts";
 import ChapiService from "../service/ChapiService";
 import GameData, {Message} from "../types/MultiplayerTypes";
+import whitePawn from "./icons/white-pawn.png";
+import blackPawn from "./icons/black-pawn.png";
 
 const MultiplayerBoard: React.FC = () => {
 
@@ -60,6 +62,7 @@ const MultiplayerBoard: React.FC = () => {
         }
     }, [joinGame])
 
+    // polling hook
     useEffect(() => {
         const interval = setInterval(() => {
             if (gameData) {
@@ -89,27 +92,45 @@ const MultiplayerBoard: React.FC = () => {
         setInputPlayerName(e.target.value)
     }
 
-    return (
-        <section className="multiplayer-animated-grid">
-            <div className="multiplayer-card no-background n"></div>
-            <div className="multiplayer-card no-background time">Time</div>
-            <div className="multiplayer-card no-background join">
-                <h1 style={{alignSelf: "center"}}>{gameStatus}</h1>
-                <input
-                    className="App-Textarea"
-                    placeholder="Type your name here..."
-                    onChange={updatePlayerName}
-                    value={inputPlayerName}
-                />
+    function getOnlineComponent() {
+        if (!gameData) {
+            return <><h1 style={{alignSelf: "center"}}>{gameStatus}</h1><input
+                className="App-Textarea"
+                placeholder="Type your name here..."
+                onChange={updatePlayerName}
+                value={inputPlayerName}/>
                 <button className="multiplayer-button" onClick={() => setCreateNew(true)}>Create new game</button>
                 <input
                     className="App-Textarea"
                     placeholder="Type your game id here..."
                     onChange={updateGameId}
-                    value={inputGameId}
-                />
+                    value={inputGameId}/>
                 <button className="multiplayer-button" onClick={() => setJoinGame(true)}>Join game</button>
-            </div>
+            </>
+        }
+        return <h1 style={{alignSelf: "center"}}>{gameStatus}</h1>
+    }
+
+    function getBoardOrientation() {
+        if (!gameData || !playerName) {
+            return "WHITE"
+        }
+        if (playerName === gameData.player_one) {
+            return "WHITE"
+        }
+        return "BLACK"
+    }
+
+    function getToMove() {
+        let chess = new Chess(gameData?.fen)
+        return (chess.turn() === 'w' ? whitePawn : blackPawn)
+    }
+
+    return (
+        <section className="multiplayer-animated-grid">
+            <div className="multiplayer-card no-background n"></div>
+            <div className="multiplayer-card no-background time">Time</div>
+            <div className="multiplayer-card no-background join">{getOnlineComponent()}</div>
             <div className="multiplayer-card no-background chat">
                 {gameData?.messages.map((message: Message, index: number) =>
                     <p>{message.player}: {message.message}</p>
@@ -118,7 +139,7 @@ const MultiplayerBoard: React.FC = () => {
             <div className="multiplayer-main">
                 <MainBoard
                     position={chess.fen()}
-                    boardOrientation={"white"}
+                    boardOrientation={getBoardOrientation()}
                     onPieceDrop={onDrop}
                     arrows={[]}
                     alternateArrows={true}
@@ -128,7 +149,8 @@ const MultiplayerBoard: React.FC = () => {
             <div className="multiplayer-card no-background list">Moves</div>
             <div className="multiplayer-card no-background k"></div>
             <div className="multiplayer-card no-background graph">Graph</div>
-            <div className="multiplayer-card no-background turn">Turn</div>
+            <div className="multiplayer-card no-background turn">
+                <img className={"img turn_img"} src={getToMove()} alt={"to move"}/></div>
             <div className="multiplayer-card no-background x"></div>
         </section>
     );
