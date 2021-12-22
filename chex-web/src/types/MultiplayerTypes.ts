@@ -1,0 +1,29 @@
+export interface MultiplayerCreateRequest {
+    player_name: string
+}
+
+export interface MultiplayerJoinRequest {
+    player_name: string,
+    game_id: string,
+}
+
+export interface MultiplayerMessageRequest {
+    player_name: string,
+    game_id: string,
+    message: string
+}
+
+export interface Message {
+    player: string,
+    message: string
+}
+
+export default interface GameData {
+    game_id: string,
+    state: string,
+    player_one: string,
+    player_two: string,
+    fen: string,
+    turn: string,
+    messages: Message[],
+}
