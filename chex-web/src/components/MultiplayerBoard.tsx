@@ -12,7 +12,7 @@ const MultiplayerBoard: React.FC = () => {
 
     const POLL_INTERVAL = 500
 
-    const [chess, setChess] = useState(new Chess(Utils.INITIAL_FEN))
+    const [fen, setFen] = useState(Utils.INITIAL_FEN)
     const [gameStatus, setGameStatus] = useState("No game created.")
     const [inputPlayerName, setInputPlayerName] = useState('')
     const [inputGameId, setInputGameId] = useState('')
@@ -20,10 +20,7 @@ const MultiplayerBoard: React.FC = () => {
     const [gameData, setGameData] = useState<GameData>()
     const [createNew, setCreateNew] = useState(false)
     const [joinGame, setJoinGame] = useState(false)
-
-    function onDrop(sourceSquare: string, targetSquare: string): boolean {
-        return false
-    }
+    const [move, setMove] = useState<string>()
 
     // create new game hook
     useEffect(() => {
@@ -73,8 +70,11 @@ const MultiplayerBoard: React.FC = () => {
                 })
                     .then(response => {
                         let gameDataResponse = response.data as unknown as GameData
-                        setGameData(gameDataResponse);
-                        setGameStatus(gameDataResponse.state)
+                        if(gameDataResponse.fen != fen) {
+                            setGameData(gameDataResponse);
+                            setGameStatus(gameDataResponse.state)
+                            setFen(gameDataResponse.fen)
+                        }
                     })
                     .catch(e => {
                         console.log(e)
@@ -83,6 +83,27 @@ const MultiplayerBoard: React.FC = () => {
         }, POLL_INTERVAL);
         return () => clearInterval(interval);
     }, [gameData]);
+
+    // push new move
+    useEffect(() => {
+        if (move && gameData) {
+            console.log(move)
+            ChapiService.playMultiplayerMove({
+                game_id: gameData?.game_id,
+                move: move
+            })
+                .then(response => {
+                    console.log(response)
+                    let gameDataResponse = response.data as unknown as GameData
+                    setGameData(gameDataResponse);
+                    setGameStatus(gameDataResponse.state)
+                    setFen(gameDataResponse.fen)
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+        }
+    }, [move])
 
     const updateGameId = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setInputGameId(e.target.value)
@@ -126,6 +147,18 @@ const MultiplayerBoard: React.FC = () => {
         return (chess.turn() === 'w' ? whitePawn : blackPawn)
     }
 
+    function onDrop(sourceSquare: string, targetSquare: string): boolean {
+        let chess = new Chess(fen)
+        let move = chess.move({
+            to: targetSquare,
+            from: sourceSquare,
+        })
+        if (move == null) return false;
+        setMove(move.from + move.to)
+        setFen(chess.fen())
+        return true
+    }
+
     return (
         <section className="multiplayer-animated-grid">
             <div className="multiplayer-card no-background n"></div>
@@ -138,7 +171,7 @@ const MultiplayerBoard: React.FC = () => {
             </div>
             <div className="multiplayer-main">
                 <MainBoard
-                    position={chess.fen()}
+                    position={fen}
                     boardOrientation={getBoardOrientation()}
                     onPieceDrop={onDrop}
                     arrows={[]}

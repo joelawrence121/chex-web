@@ -13,6 +13,11 @@ export interface MultiplayerMessageRequest {
     message: string
 }
 
+export interface MultiplayerPlayRequest {
+    game_id: string,
+    move: string
+}
+
 export interface Message {
     player: string,
     message: string

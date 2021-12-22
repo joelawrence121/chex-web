@@ -4,7 +4,12 @@ import PlayRequest from "../types/PlayRequest";
 import AggregationRequest from "../types/AggregationRequest";
 import axios from "axios";
 import OpeningMoveStackRequest from "../types/OpeningMoveStackRequest";
-import {MultiplayerCreateRequest, MultiplayerJoinRequest, MultiplayerMessageRequest} from "../types/MultiplayerTypes";
+import {
+    MultiplayerCreateRequest,
+    MultiplayerJoinRequest,
+    MultiplayerMessageRequest,
+    MultiplayerPlayRequest
+} from "../types/MultiplayerTypes";
 
 const headers = {
     headers: {
@@ -69,6 +74,10 @@ const pollMultiplayerGame = (multiplayerPollRequest: MultiplayerJoinRequest) => 
     return http.post("/multiplayer/poll", multiplayerPollRequest, headers);
 };
 
+const playMultiplayerMove = (multiplayerPlayRequest: MultiplayerPlayRequest) => {
+    return http.post("/multiplayer/play", multiplayerPlayRequest, headers);
+};
+
 const ChapiService = {
     getSingleMatePuzzle,
     getMoveDescription,
@@ -82,7 +91,8 @@ const ChapiService = {
     createNewMultiplayerGame,
     joinMultiplayerGame,
     postMultiplayerMessage,
-    pollMultiplayerGame
+    pollMultiplayerGame,
+    playMultiplayerMove
 }
 
 export default ChapiService;
