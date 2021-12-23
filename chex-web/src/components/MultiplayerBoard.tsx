@@ -12,6 +12,7 @@ import MultiplayerChat from "./MultiplayerChat";
 const MultiplayerBoard: React.FC = () => {
 
     const POLL_INTERVAL = 500
+    const IN_PROGRESS = "IN PROGRESS";
 
     const [fen, setFen] = useState(Utils.INITIAL_FEN)
     const [gameStatus, setGameStatus] = useState("No game created.")
@@ -161,6 +162,7 @@ const MultiplayerBoard: React.FC = () => {
     }
 
     function onDrop(sourceSquare: string, targetSquare: string): boolean {
+        if (gameStatus != IN_PROGRESS) return false
         let chess = new Chess(fen)
         let move = chess.move({
             to: targetSquare,
@@ -174,11 +176,19 @@ const MultiplayerBoard: React.FC = () => {
 
     function getGameStatus() {
         let chess = new Chess(gameData?.fen)
-        if (gameData && gameStatus === "IN PROGRESS") {
+        if (gameData && gameStatus === IN_PROGRESS) {
             if ((chess.turn() === 'w' && playerName === gameData?.player_one) || chess.turn() === 'b' && playerName === gameData?.player_two) {
                 return "Your turn"
             }
             return "Waiting"
+        }
+        return gameStatus
+    }
+
+    function getOtherPlayer() {
+        if (gameData) {
+            if (playerName === gameData.player_one) return gameData.player_two
+            return gameData.player_one
         }
     }
 
@@ -188,7 +198,12 @@ const MultiplayerBoard: React.FC = () => {
             <div className="multiplayer-card no-background time">Time</div>
             <div className="multiplayer-card no-background join">{getOnlineComponent()}</div>
             <div className="multiplayer-card no-background chat">
-                <MultiplayerChat messages={newMessages} player={playerName} gameId={gameData?.game_id}/>
+                {gameData ? <MultiplayerChat
+                    messages={newMessages}
+                    player={playerName}
+                    gameId={gameData?.game_id}
+                    otherPlayer={getOtherPlayer()}
+                /> : <></>}
             </div>
             <div className="multiplayer-main">
                 <MainBoard

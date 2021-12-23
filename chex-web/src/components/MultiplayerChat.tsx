@@ -10,6 +10,7 @@ import ChapiService from "../service/ChapiService";
 interface ChatProps {
     messages: Message[]
     player: string
+    otherPlayer: string | undefined
     gameId: string | undefined
 }
 
@@ -49,7 +50,7 @@ function MultiplayerChat(props: ChatProps) {
     return (
         <>
             <Widget
-                title={"Chat"}
+                title={props.otherPlayer ? props.otherPlayer : "Chat"}
                 subtitle={''}
                 showTimeStamp={false}
                 handleNewUserMessage={handleNewUserMessage}

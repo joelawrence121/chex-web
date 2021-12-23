@@ -28,6 +28,10 @@ h1 {
     --stagger-delay: 100ms;
 }
 
+.navlink:hover {
+    color: #b0d1fc !important;
+}
+
 .home-stationary {
     display: flex;
     flex-direction: column;

@@ -7,8 +7,8 @@ const NavbarScroller = (props: {
     links: Array<{ name: string, to: string }>
 }) => {
     const {brand, links} = props;
-    const NavLinks: any = () => links.map((link: { name: string, to: string }) => <Li key={link.name}><a
-        href={link.to}>{link.name}</a></Li>);
+    const NavLinks: any = () => links.map((link: { name: string, to: string }) =>
+        <Li key={link.name}><a className="navlink" href={link.to}>{link.name}</a></Li>);
     return (
         <Navbar>
             <Brand href={brand.to}>{brand.name}</Brand>

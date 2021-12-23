@@ -9,7 +9,7 @@ const Home: React.FC = () => {
     return (
         <section className="home-animated-grid">
             <div className="home-stationary a">
-                <h1>Welcome to Chexplanations!</h1>
+                <h1 style={{userSelect: "none"}}>Welcome to Chexplanations!</h1>
             </div>
             <div className="home-stationary b">
                 <AutoBoard id={"board1"} interval={INTERVAL}/>
