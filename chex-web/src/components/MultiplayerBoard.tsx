@@ -7,6 +7,7 @@ import ChapiService from "../service/ChapiService";
 import GameData, {Message} from "../types/MultiplayerTypes";
 import whitePawn from "./icons/white-pawn.png";
 import blackPawn from "./icons/black-pawn.png";
+import MultiplayerChat from "./MultiplayerChat";
 
 const MultiplayerBoard: React.FC = () => {
 
@@ -18,6 +19,7 @@ const MultiplayerBoard: React.FC = () => {
     const [inputGameId, setInputGameId] = useState('')
     const [playerName, setPlayerName] = useState('')
     const [gameData, setGameData] = useState<GameData>()
+    const [newMessages, setNewMessages] = useState<Message[]>([])
     const [createNew, setCreateNew] = useState(false)
     const [joinGame, setJoinGame] = useState(false)
     const [move, setMove] = useState<string>()
@@ -33,6 +35,9 @@ const MultiplayerBoard: React.FC = () => {
                     setGameData(gameDataResponse);
                     setGameStatus(gameDataResponse.state)
                     setPlayerName(gameDataResponse.player_one)
+                    if (gameData) {
+                        setNewMessages(gameDataResponse.messages.filter(x => gameData.messages.includes(x)))
+                    }
                 })
                 .catch(e => {
                     console.log(e)
@@ -52,6 +57,9 @@ const MultiplayerBoard: React.FC = () => {
                     setGameData(gameDataResponse);
                     setGameStatus(gameDataResponse.state)
                     setPlayerName(gameDataResponse.player_two)
+                    if (gameData) {
+                        setNewMessages(gameDataResponse.messages.filter(x => !gameData.messages.includes(x)))
+                    }
                 })
                 .catch(e => {
                     console.log(e)
@@ -70,9 +78,10 @@ const MultiplayerBoard: React.FC = () => {
                 })
                     .then(response => {
                         let gameDataResponse = response.data as unknown as GameData
-                        if(gameDataResponse.fen != fen) {
-                            setGameData(gameDataResponse);
-                            setGameStatus(gameDataResponse.state)
+                        setGameData(gameDataResponse);
+                        setGameStatus(gameDataResponse.state)
+                        setNewMessages(gameDataResponse.messages)
+                        if (gameDataResponse.fen != fen) {
                             setFen(gameDataResponse.fen)
                         }
                     })
@@ -87,7 +96,6 @@ const MultiplayerBoard: React.FC = () => {
     // push new move
     useEffect(() => {
         if (move && gameData) {
-            console.log(move)
             ChapiService.playMultiplayerMove({
                 game_id: gameData?.game_id,
                 move: move
@@ -98,6 +106,9 @@ const MultiplayerBoard: React.FC = () => {
                     setGameData(gameDataResponse);
                     setGameStatus(gameDataResponse.state)
                     setFen(gameDataResponse.fen)
+                    if (gameData) {
+                        setNewMessages(gameDataResponse.messages.filter(x => gameData.messages.includes(x)))
+                    }
                 })
                 .catch(e => {
                     console.log(e)
@@ -115,21 +126,23 @@ const MultiplayerBoard: React.FC = () => {
 
     function getOnlineComponent() {
         if (!gameData) {
-            return <><h1 style={{alignSelf: "center"}}>{gameStatus}</h1><input
-                className="App-Textarea"
-                placeholder="Type your name here..."
-                onChange={updatePlayerName}
-                value={inputPlayerName}/>
-                <button className="multiplayer-button" onClick={() => setCreateNew(true)}>Create new game</button>
+            return <>
                 <input
-                    className="App-Textarea"
+                    className="input-box"
+                    placeholder="Type your name here..."
+                    onChange={updatePlayerName}
+                    value={inputPlayerName}/>
+                <button className="multiplayer-button" onClick={() => setCreateNew(true)}>Create new game</button>
+                <br/><br/>
+                <input
+                    className="input-box"
                     placeholder="Type your game id here..."
                     onChange={updateGameId}
                     value={inputGameId}/>
                 <button className="multiplayer-button" onClick={() => setJoinGame(true)}>Join game</button>
             </>
         }
-        return <h1 style={{alignSelf: "center"}}>{gameStatus}</h1>
+        return <h2>Game Id: {gameData.game_id}</h2>
     }
 
     function getBoardOrientation() {
@@ -159,15 +172,23 @@ const MultiplayerBoard: React.FC = () => {
         return true
     }
 
+    function getGameStatus() {
+        let chess = new Chess(gameData?.fen)
+        if (gameData && gameStatus === "IN PROGRESS") {
+            if ((chess.turn() === 'w' && playerName === gameData?.player_one) || chess.turn() === 'b' && playerName === gameData?.player_two) {
+                return "Your turn"
+            }
+            return "Waiting"
+        }
+    }
+
     return (
         <section className="multiplayer-animated-grid">
             <div className="multiplayer-card no-background n"></div>
             <div className="multiplayer-card no-background time">Time</div>
             <div className="multiplayer-card no-background join">{getOnlineComponent()}</div>
             <div className="multiplayer-card no-background chat">
-                {gameData?.messages.map((message: Message, index: number) =>
-                    <p>{message.player}: {message.message}</p>
-                )}
+                <MultiplayerChat messages={newMessages} player={playerName} gameId={gameData?.game_id}/>
             </div>
             <div className="multiplayer-main">
                 <MainBoard
@@ -183,7 +204,9 @@ const MultiplayerBoard: React.FC = () => {
             <div className="multiplayer-card no-background k"></div>
             <div className="multiplayer-card no-background graph">Graph</div>
             <div className="multiplayer-card no-background turn">
-                <img className={"img turn_img"} src={getToMove()} alt={"to move"}/></div>
+                <img className={"img turn_img"} src={getToMove()} alt={"to move"}/>
+                <h1 style={{textAlign: "center"}}>{getGameStatus()}</h1>
+            </div>
             <div className="multiplayer-card no-background x"></div>
         </section>
     );

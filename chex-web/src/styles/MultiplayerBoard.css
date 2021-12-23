@@ -29,14 +29,65 @@ p {
     text-align: left;
 }
 
+input.input-box {
+    width: 100%;
+    padding: 5px 5px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    background-color: #bed4f3;
+    color: #000000;
+    font-size: large;
+}
+
 .multiplayer-button {
-    background: none !important;
-    color: white;
     border: thin;
     font-size: large;
     padding: 10px;
     text-decoration: none;
     cursor: pointer;
+    text-align: center;
+    width: 100%;
+    background: #a1c3f5;
+    color: black;
+}
+
+.rcw-conversation-container .rcw-header {
+    background-color: #365992 !important;
+    border-radius: 10px 10px 0 0;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 15px 0 25px
+}
+
+.quick-button {
+    background: none;
+    border-radius: 15px;
+    border: 2px solid #365992 !important;
+    font-weight: 700;
+    padding: 5px 10px;
+    cursor: pointer;
+    outline: 0
+}
+
+.rcw-launcher {
+    background-color: #365992 !important;
+    right: 0 !important;
+}
+
+.quick-button:active {
+    background: #365992 !important;
+    color: #fff
+}
+
+.rcw-conversation-container {
+    color: black;
+    background-color: black;
+}
+
+.rcw-message > .rcw-response {
+    color: #000000;
 }
 
 a.variation {
@@ -70,8 +121,8 @@ a:visited {
 img.turn_img {
     max-width: 100%;
     height: auto;
-    display:block;
-    margin:auto;
+    display: block;
+    margin: auto;
 }
 
 img.bigger {
