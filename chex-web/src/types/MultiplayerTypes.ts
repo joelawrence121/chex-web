@@ -30,5 +30,6 @@ export default interface GameData {
     player_two: string,
     fen: string,
     turn: string,
+    winner: string
     messages: Message[],
 }

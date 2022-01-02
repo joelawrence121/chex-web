@@ -7,13 +7,6 @@ const WHITE = "white"
 const BLACK = "black"
 const INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-function getOtherUser(user: string) {
-    if (user === WHITE) {
-        return BLACK
-    }
-    return WHITE
-}
-
 function sliceMove(move: string | undefined): [string[]] {
     if (move) {
         return [[move.slice(0, 2) as string, move.slice(2, 5) as string]]
@@ -63,7 +56,6 @@ const Utils = {
     getTrigger,
     formatDescription,
     getBoardHighlight,
-    getOtherUser,
     sliceMove
 }
 

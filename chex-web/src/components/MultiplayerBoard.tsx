@@ -8,6 +8,7 @@ import GameData, {Message} from "../types/MultiplayerTypes";
 import whitePawn from "./icons/white-pawn.png";
 import blackPawn from "./icons/black-pawn.png";
 import MultiplayerChat from "./MultiplayerChat";
+import BoardHighlight from "../types/BoardHighlight";
 
 const MultiplayerBoard: React.FC = () => {
 
@@ -24,6 +25,7 @@ const MultiplayerBoard: React.FC = () => {
     const [createNew, setCreateNew] = useState(false)
     const [joinGame, setJoinGame] = useState(false)
     const [move, setMove] = useState<string>()
+    const [winner, setWinner] = useState<string>()
 
     // create new game hook
     useEffect(() => {
@@ -82,9 +84,8 @@ const MultiplayerBoard: React.FC = () => {
                         setGameData(gameDataResponse);
                         setGameStatus(gameDataResponse.state)
                         setNewMessages(gameDataResponse.messages)
-                        if (gameDataResponse.fen != fen) {
-                            setFen(gameDataResponse.fen)
-                        }
+                        if (gameDataResponse.fen !== fen) setFen(gameDataResponse.fen)
+                        if (gameDataResponse.winner) setWinner(gameDataResponse.winner)
                     })
                     .catch(e => {
                         console.log(e)
@@ -110,6 +111,7 @@ const MultiplayerBoard: React.FC = () => {
                     if (gameData) {
                         setNewMessages(gameDataResponse.messages.filter(x => gameData.messages.includes(x)))
                     }
+                    if (gameDataResponse.winner) setWinner(gameDataResponse.winner)
                 })
                 .catch(e => {
                     console.log(e)
@@ -143,7 +145,6 @@ const MultiplayerBoard: React.FC = () => {
                 <button className="multiplayer-button" onClick={() => setJoinGame(true)}>Join game</button>
             </>
         }
-        return <h2>Game Id: {gameData.game_id}</h2>
     }
 
     function getBoardOrientation() {
@@ -162,7 +163,7 @@ const MultiplayerBoard: React.FC = () => {
     }
 
     function onDrop(sourceSquare: string, targetSquare: string): boolean {
-        if (gameStatus != IN_PROGRESS) return false
+        if (gameStatus !== IN_PROGRESS) return false
         let chess = new Chess(fen)
         let move = chess.move({
             to: targetSquare,
@@ -176,8 +177,9 @@ const MultiplayerBoard: React.FC = () => {
 
     function getGameStatus() {
         let chess = new Chess(gameData?.fen)
+        if (chess.inCheckmate()) return "Checkmate"
         if (gameData && gameStatus === IN_PROGRESS) {
-            if ((chess.turn() === 'w' && playerName === gameData?.player_one) || chess.turn() === 'b' && playerName === gameData?.player_two) {
+            if ((chess.turn() === 'w' && playerName === gameData?.player_one) || (chess.turn() === 'b' && playerName === gameData?.player_two)) {
                 return "Your turn"
             }
             return "Waiting"
@@ -192,9 +194,31 @@ const MultiplayerBoard: React.FC = () => {
         }
     }
 
+    function getGameId() {
+        if (gameData) {
+            return <>
+                <h2 className="game">Player: {playerName}</h2>
+                <h2 className="game">Game Id: {gameData.game_id}</h2>
+            </>
+        }
+    }
+
+    function getBoardHighlight(winner: string | undefined) {
+        if (!winner) {
+            return BoardHighlight.normal();
+        }
+        if (winner === getBoardOrientation().toLowerCase()) {
+            return BoardHighlight.userWinner();
+        }
+        if (winner === 'stale') {
+            return BoardHighlight.stalemate()
+        }
+        return BoardHighlight.stockfishWinner();
+    }
+
     return (
         <section className="multiplayer-animated-grid">
-            <div className="multiplayer-card no-background n"></div>
+            <div className="multiplayer-card no-background n">{getGameId()}</div>
             <div className="multiplayer-card no-background time">Time</div>
             <div className="multiplayer-card no-background join">{getOnlineComponent()}</div>
             <div className="multiplayer-card no-background chat">
@@ -212,7 +236,7 @@ const MultiplayerBoard: React.FC = () => {
                     onPieceDrop={onDrop}
                     arrows={[]}
                     alternateArrows={true}
-                    boardHighlight={Utils.getBoardHighlight(undefined)}
+                    boardHighlight={getBoardHighlight(winner)}
                 />
             </div>
             <div className="multiplayer-card no-background list">Moves</div>
