@@ -18,6 +18,11 @@ export interface MultiplayerPlayRequest {
     move: string
 }
 
+export interface MultiplayerDrawRequest {
+    game_id: string,
+    draw_accepted: boolean
+}
+
 export interface Message {
     player: string,
     message: string
@@ -35,5 +40,8 @@ export default interface GameData {
     move_stack: string[],
     score_stack: number[],
     messages: Message[],
-    message: string
+    message: string,
+    draw_offered: boolean
+    draw_accepted: boolean
+    retired: boolean
 }

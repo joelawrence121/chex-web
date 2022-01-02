@@ -34,12 +34,12 @@ const MultiplayerBoard: React.FC = () => {
     const [move, setMove] = useState<string>()
     const [winner, setWinner] = useState<string>()
     const [turnTime, setTurnTime] = useState<number>(600)
+    const [drawOffered, setDrawOffered] = useState(false)
 
     function setNewGameData(gameDataResponse: GameData) {
         setGameData(gameDataResponse);
         setGameStatus(gameDataResponse.state)
         if ((gameDataResponse.state === WAITING || gameDataResponse.state === IN_PROGRESS) && gameData) {
-            setMenuState(MenuState.DONE)
             setNewMessages(gameDataResponse.messages.filter(x => gameData.messages.includes(x)))
         } else if (gameDataResponse.message) {
             setMenuState(MenuState.ERROR)
@@ -50,6 +50,7 @@ const MultiplayerBoard: React.FC = () => {
 
     // multiplayer menu hook
     useEffect(() => {
+        console.log(menuState.valueOf())
         if (menuState === MenuState.CREATE) {
             ChapiService.createNewMultiplayerGame({
                 player_name: inputPlayerName
@@ -58,6 +59,7 @@ const MultiplayerBoard: React.FC = () => {
                     let gameDataResponse = response.data as unknown as GameData
                     setPlayerName(gameDataResponse.player_one)
                     setNewGameData(gameDataResponse)
+                    setMenuState(MenuState.PLAYING)
                 })
                 .catch(e => {
                     console.log(e)
@@ -72,12 +74,52 @@ const MultiplayerBoard: React.FC = () => {
                     let gameDataResponse = response.data as unknown as GameData
                     setPlayerName(gameDataResponse.player_two)
                     setNewGameData(gameDataResponse)
+                    setMenuState(MenuState.PLAYING)
                 })
                 .catch(e => {
                     console.log(e)
                 })
         }
-    }, [menuState])
+        if (menuState === MenuState.DRAW_OFFERED) {
+            ChapiService.offerMultiplayerDraw({
+                player_name: inputPlayerName,
+                game_id: gameData!.game_id
+            })
+                .then(response => {
+                    let gameDataResponse = response.data as unknown as GameData
+                    setNewGameData(gameDataResponse)
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+        }
+        if (menuState === MenuState.DRAW_ACCEPTED || menuState === MenuState.DRAW_REJECTED) {
+            ChapiService.answerMultiplayerDraw({
+                draw_accepted: menuState === MenuState.DRAW_ACCEPTED,
+                game_id: gameData!.game_id
+            })
+                .then(response => {
+                    let gameDataResponse = response.data as unknown as GameData
+                    setNewGameData(gameDataResponse)
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+        }
+        if (menuState === MenuState.RETIRE) {
+            ChapiService.retireFromMultiplayer({
+                game_id: gameData!.game_id,
+                player_name: playerName
+            })
+                .then(response => {
+                    let gameDataResponse = response.data as unknown as GameData
+                    setNewGameData(gameDataResponse)
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+        }
+    }, [menuState, inputGameId, inputPlayerName])
 
     // turn time hook
     useEffect(() => {
@@ -104,6 +146,7 @@ const MultiplayerBoard: React.FC = () => {
                 })
                     .then(response => {
                         let gameDataResponse = response.data as unknown as GameData
+                        console.log(gameDataResponse)
                         setGameData(gameDataResponse);
                         setGameStatus(gameDataResponse.state)
                         setNewMessages(gameDataResponse.messages)
@@ -116,7 +159,16 @@ const MultiplayerBoard: React.FC = () => {
                             let newScoreStack = gameDataResponse.score_stack.slice()
                             setScoreStack(transformScoreStack(newScoreStack))
                         }
-                        if (gameDataResponse.winner) setWinner(gameDataResponse.winner)
+                        if (gameDataResponse.winner && menuState !== MenuState.FINISHED) setWinner(gameDataResponse.winner)
+                        if (menuState === MenuState.PLAYING && gameDataResponse.draw_offered) setMenuState(MenuState.DRAW_RECEIVED)
+                        if (menuState === MenuState.DRAW_OFFERED && gameDataResponse.draw_accepted) {
+                            setMenuState(MenuState.FINISHED)
+                            setWinner('stale')
+                        }
+                        if (gameDataResponse.retired) {
+                            setMenuState(MenuState.FINISHED)
+                            setWinner(playerName === gameData!.player_one ? Utils.WHITE : Utils.BLACK)
+                        }
                     })
                     .catch(e => {
                         console.log(e)
@@ -217,6 +269,7 @@ const MultiplayerBoard: React.FC = () => {
             if (playerName === gameData.player_one) return gameData.player_two
             return gameData.player_one
         }
+        return ''
     }
 
     function setOtherPlayerWinner() {
@@ -248,13 +301,28 @@ const MultiplayerBoard: React.FC = () => {
         return BoardHighlight.stockfishWinner();
     }
 
-    function getTimer(turnTime : number) {
+    function getTimer(turnTime: number) {
         if (gameStatus !== IN_PROGRESS) {
             return <></>
         }
         let seconds = String("0" + Math.ceil((turnTime % 120) / 2)).slice(-2)
         seconds = seconds === "60" ? "00" : seconds
         return <h1>{Math.floor(turnTime / 120)}:{seconds}</h1>
+    }
+
+    function handleRetirement() {
+        setMenuState(MenuState.RETIRE)
+        setOtherPlayerWinner()
+    }
+
+    function handleDrawAccepted() {
+        setMenuState(MenuState.DRAW_ACCEPTED)
+        setGameStatus('Draw')
+        setWinner('stale')
+    }
+
+    function handleDrawRejected() {
+        setMenuState(MenuState.DRAW_REJECTED)
     }
 
     return (
@@ -266,7 +334,9 @@ const MultiplayerBoard: React.FC = () => {
             <div className="multiplayer-card no-background join">
                 <MultiplayerMenu menuState={menuState} setMenuState={setMenuState} inputGameId={inputGameId}
                                  inputPlayerName={inputPlayerName} setInputGameId={setInputGameId}
-                                 setInputPlayerName={setInputPlayerName} errorMessage={errorMessage}/>
+                                 setInputPlayerName={setInputPlayerName} errorMessage={errorMessage}
+                                 handleRetirement={handleRetirement} handleDrawAccepted={handleDrawAccepted}
+                                 otherPlayer={getOtherPlayer()} handleDrawRejected={handleDrawRejected}/>
             </div>
             <div className="multiplayer-card no-background chat">
                 {gameData ? <MultiplayerChat

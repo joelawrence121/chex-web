@@ -5,7 +5,8 @@ import 'react-chat-widget/lib/styles.css';
 import '../styles/MultiplayerBoard.css'
 
 export enum MenuState {
-    START, CREATING, JOINING, CREATE, JOIN, DONE, ERROR
+    START, CREATING, JOINING, CREATE, JOIN, PLAYING, ERROR,
+    DRAW_OFFERED, DRAW_RECEIVED, DRAW_ACCEPTED, DRAW_REJECTED, RETIRE, FINISHED
 }
 
 interface MenuProps {
@@ -13,6 +14,10 @@ interface MenuProps {
     setMenuState: (menuState: MenuState) => void
     setInputGameId: (gameId: string) => void
     setInputPlayerName: (playerName: string) => void
+    handleRetirement: () => void
+    handleDrawAccepted: () => void
+    handleDrawRejected: () => void
+    otherPlayer: string
     inputGameId: string
     inputPlayerName: string
     errorMessage: string | undefined
@@ -68,14 +73,45 @@ function MultiplayerMenu(props: MenuProps) {
                     </button>
                 </>
             case MenuState.ERROR:
+                props.setInputGameId("")
                 return <>
                     <h2>{props.errorMessage}</h2>
                     <button className="multiplayer-button" onClick={() => props.setMenuState(MenuState.START)}>
                         Try again
                     </button>
                 </>
-            case MenuState.DONE:
-                return <></>
+            case MenuState.PLAYING:
+                return <>
+                    <button className="multiplayer-button" onClick={() => props.handleRetirement()}>
+                        Retire
+                    </button>
+                    <br/>
+                    <button className="multiplayer-button" onClick={() => props.setMenuState(MenuState.DRAW_OFFERED)}>
+                        Offer Draw
+                    </button>
+                </>
+            case MenuState.DRAW_OFFERED:
+                return <>
+                    <button className="multiplayer-button" onClick={() => props.handleRetirement()}>
+                        Retire
+                    </button>
+                    <h2>Draw offered...</h2>
+                </>
+            case MenuState.DRAW_RECEIVED:
+                return <>
+                    <button className="multiplayer-button" onClick={() => props.handleRetirement()}>
+                        Retire
+                    </button>
+                    <h2>{props.otherPlayer} offers a draw</h2>
+                    <h2>Accept?</h2>
+                    <button className="multiplayer-button" onClick={() => props.handleDrawAccepted()}>
+                        Accept
+                    </button>
+                    <br/>
+                    <button className="multiplayer-button" onClick={() => props.handleDrawRejected()}>
+                        Reject
+                    </button>
+                </>
         }
     }
 

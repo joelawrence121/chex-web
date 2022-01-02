@@ -5,7 +5,7 @@ import AggregationRequest from "../types/AggregationRequest";
 import axios from "axios";
 import OpeningMoveStackRequest from "../types/OpeningMoveStackRequest";
 import {
-    MultiplayerCreateRequest,
+    MultiplayerCreateRequest, MultiplayerDrawRequest,
     MultiplayerJoinRequest,
     MultiplayerMessageRequest,
     MultiplayerPlayRequest
@@ -78,6 +78,18 @@ const playMultiplayerMove = (multiplayerPlayRequest: MultiplayerPlayRequest) => 
     return http.post("/multiplayer/play", multiplayerPlayRequest, headers);
 };
 
+const offerMultiplayerDraw = (multiplayerPlayRequest: MultiplayerJoinRequest) => {
+    return http.post("/multiplayer/offer_draw", multiplayerPlayRequest, headers);
+};
+
+const answerMultiplayerDraw = (multiplayerDrawRequest: MultiplayerDrawRequest) => {
+    return http.post("/multiplayer/answer_draw", multiplayerDrawRequest, headers);
+};
+
+const retireFromMultiplayer = (multiplayerRetireRequest: MultiplayerJoinRequest) => {
+    return http.post("/multiplayer/retire", multiplayerRetireRequest, headers);
+};
+
 const ChapiService = {
     getSingleMatePuzzle,
     getMoveDescription,
@@ -92,7 +104,10 @@ const ChapiService = {
     joinMultiplayerGame,
     postMultiplayerMessage,
     pollMultiplayerGame,
-    playMultiplayerMove
+    playMultiplayerMove,
+    offerMultiplayerDraw,
+    answerMultiplayerDraw,
+    retireFromMultiplayer
 }
 
 export default ChapiService;
