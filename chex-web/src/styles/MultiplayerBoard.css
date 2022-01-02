@@ -16,6 +16,11 @@ body {
     font-family: 'Noto Sans', sans-serif;
 }
 
+h2.game {
+    margin: 2px;
+    color: white;
+}
+
 h3 {
     color: white;
 }
@@ -149,35 +154,6 @@ img.smaller {
     color: #fff;
     height: 100%;
     width: 100%;
-}
-
-.opening-card {
-    resize: both;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    font-size: 3rem;
-    color: #fff;
-    box-shadow: rgba(3, 8, 20, 0.1) 0 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0 0.075rem 0.175rem;
-    height: 100%;
-    width: 100%;
-    border-radius: 4px;
-    transition: all 500ms;
-    background-size: cover;
-    background: #353535 no-repeat center;
-}
-
-p.opening {
-    font-weight: normal;
-    text-align: center;
-    font-size: x-large;
-}
-
-a.opening {
-    font-weight: normal;
-    text-align: center;
 }
 
 .multiplayer-card {
