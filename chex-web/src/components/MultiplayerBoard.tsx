@@ -9,6 +9,8 @@ import whitePawn from "./icons/white-pawn.png";
 import blackPawn from "./icons/black-pawn.png";
 import MultiplayerChat from "./MultiplayerChat";
 import BoardHighlight from "../types/BoardHighlight";
+import DescriptionData from "../types/DescriptionData";
+import Collapsible from "react-collapsible";
 
 const MultiplayerBoard: React.FC = () => {
 
@@ -16,6 +18,9 @@ const MultiplayerBoard: React.FC = () => {
     const IN_PROGRESS = "IN PROGRESS";
 
     const [fen, setFen] = useState(Utils.INITIAL_FEN)
+    const [fenStack, setFenStack] = useState<string[]>([Utils.INITIAL_FEN])
+    const [moveStack, setMoveStack] = useState<string[]>([])
+    const [descDataStack, setDescDataStack] = useState<DescriptionData[]>([])
     const [gameStatus, setGameStatus] = useState("No game created.")
     const [inputPlayerName, setInputPlayerName] = useState('')
     const [inputGameId, setInputGameId] = useState('')
@@ -84,7 +89,13 @@ const MultiplayerBoard: React.FC = () => {
                         setGameData(gameDataResponse);
                         setGameStatus(gameDataResponse.state)
                         setNewMessages(gameDataResponse.messages)
-                        if (gameDataResponse.fen !== fen) setFen(gameDataResponse.fen)
+                        if (gameDataResponse.fen !== fen) {
+                            setFen(gameDataResponse.fen)
+                            let newFenStack = gameDataResponse.fen_stack.slice()
+                            setFenStack(newFenStack)
+                            let newMoveStack = gameDataResponse.move_stack.slice()
+                            setMoveStack(newMoveStack)
+                        }
                         if (gameDataResponse.winner) setWinner(gameDataResponse.winner)
                     })
                     .catch(e => {
@@ -239,7 +250,14 @@ const MultiplayerBoard: React.FC = () => {
                     boardHighlight={getBoardHighlight(winner)}
                 />
             </div>
-            <div className="multiplayer-card no-background list">Moves</div>
+            <div className="multiplayer-card no-background list">
+                {moveStack.map((move: string, index: number) =>
+                    <Collapsible className="opening-collapsible" key={index} easing={"ease-in"}
+                                 trigger={Utils.getTrigger(index, moveStack, fenStack)}>
+                        {moveStack[index]}
+                    </Collapsible>
+                )}
+            </div>
             <div className="multiplayer-card no-background k"></div>
             <div className="multiplayer-card no-background graph">Graph</div>
             <div className="multiplayer-card no-background turn">
