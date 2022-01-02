@@ -33,6 +33,7 @@ const MultiplayerBoard: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState<string>()
     const [move, setMove] = useState<string>()
     const [winner, setWinner] = useState<string>()
+    const [turnTime, setTurnTime] = useState<number>(600)
 
     function setNewGameData(gameDataResponse: GameData) {
         setGameData(gameDataResponse);
@@ -78,7 +79,21 @@ const MultiplayerBoard: React.FC = () => {
         }
     }, [menuState])
 
-    // polling hook
+    // turn time hook
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (gameData) {
+                let chess = new Chess(gameData?.fen)
+                if ((chess.turn() === 'w' && playerName === gameData?.player_one) || (chess.turn() === 'b' && playerName === gameData?.player_two)) {
+                    console.log("deducing: " + turnTime)
+                    setTurnTime(turnTime - 1)
+                }
+            }
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [turnTime]);
+
+    // polling and clock hook
     useEffect(() => {
         const interval = setInterval(() => {
             if (gameData) {
@@ -106,6 +121,11 @@ const MultiplayerBoard: React.FC = () => {
                     .catch(e => {
                         console.log(e)
                     })
+                // turn timing
+                if (isPlayersTurn() && gameStatus === IN_PROGRESS) {
+                    if (turnTime > 0) setTurnTime(turnTime - 1)
+                    else setOtherPlayerWinner()
+                }
             }
         }, POLL_INTERVAL);
         return () => clearInterval(interval);
@@ -137,6 +157,8 @@ const MultiplayerBoard: React.FC = () => {
                         setNewMessages(gameDataResponse.messages.filter(x => gameData.messages.includes(x)))
                         let newMoveStack = gameDataResponse.move_stack.slice()
                         setMoveStack(newMoveStack)
+                        let newFenStack = gameDataResponse.fen_stack.slice()
+                        setFenStack(newFenStack)
                         let newScoreStack = gameDataResponse.score_stack.slice()
                         setScoreStack(transformScoreStack(newScoreStack))
                     }
@@ -176,14 +198,16 @@ const MultiplayerBoard: React.FC = () => {
         return true
     }
 
+    function isPlayersTurn() {
+        let chess = new Chess(gameData?.fen)
+        return (chess.turn() === 'w' && playerName === gameData?.player_one) || (chess.turn() === 'b' && playerName === gameData?.player_two)
+    }
+
     function getGameStatus() {
         let chess = new Chess(gameData?.fen)
         if (chess.inCheckmate()) return "Checkmate"
         if (gameData && gameStatus === IN_PROGRESS) {
-            if ((chess.turn() === 'w' && playerName === gameData?.player_one) || (chess.turn() === 'b' && playerName === gameData?.player_two)) {
-                return "Your turn"
-            }
-            return "Waiting"
+            return isPlayersTurn() ? "Your turn" : "Waiting"
         }
         return gameStatus
     }
@@ -192,6 +216,13 @@ const MultiplayerBoard: React.FC = () => {
         if (gameData) {
             if (playerName === gameData.player_one) return gameData.player_two
             return gameData.player_one
+        }
+    }
+
+    function setOtherPlayerWinner() {
+        if (gameData) {
+            if (playerName === gameData.player_one) setWinner(Utils.BLACK)
+            else setWinner(Utils.BLACK)
         }
     }
 
@@ -217,10 +248,21 @@ const MultiplayerBoard: React.FC = () => {
         return BoardHighlight.stockfishWinner();
     }
 
+    function getTimer(turnTime : number) {
+        if (gameStatus !== IN_PROGRESS) {
+            return <></>
+        }
+        let seconds = String("0" + Math.ceil((turnTime % 120) / 2)).slice(-2)
+        seconds = seconds === "60" ? "00" : seconds
+        return <h1>{Math.floor(turnTime / 120)}:{seconds}</h1>
+    }
+
     return (
         <section className="multiplayer-animated-grid">
             <div className="multiplayer-card no-background n">{getGameDescription()}</div>
-            <div className="multiplayer-card no-background time">Time</div>
+            <div className="multiplayer-card no-background time">
+                {getTimer(turnTime)}
+            </div>
             <div className="multiplayer-card no-background join">
                 <MultiplayerMenu menuState={menuState} setMenuState={setMenuState} inputGameId={inputGameId}
                                  inputPlayerName={inputPlayerName} setInputGameId={setInputGameId}

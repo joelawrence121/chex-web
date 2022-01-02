@@ -220,6 +220,11 @@ img.smaller {
 }
 
 .multiplayer-card.no-background.time {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    font-size: xxx-large !important;
     grid-area: t;
     animation-delay: calc(3 * var(--stagger-delay));
 }
