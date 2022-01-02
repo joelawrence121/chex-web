@@ -9,8 +9,8 @@ import whitePawn from "./icons/white-pawn.png";
 import blackPawn from "./icons/black-pawn.png";
 import MultiplayerChat from "./MultiplayerChat";
 import BoardHighlight from "../types/BoardHighlight";
-import DescriptionData from "../types/DescriptionData";
 import Collapsible from "react-collapsible";
+import AdvantageGraph from "./AdvantageGraph";
 
 const MultiplayerBoard: React.FC = () => {
 
@@ -20,7 +20,7 @@ const MultiplayerBoard: React.FC = () => {
     const [fen, setFen] = useState(Utils.INITIAL_FEN)
     const [fenStack, setFenStack] = useState<string[]>([Utils.INITIAL_FEN])
     const [moveStack, setMoveStack] = useState<string[]>([])
-    const [descDataStack, setDescDataStack] = useState<DescriptionData[]>([])
+    const [scoreStack, setScoreStack] = useState<number[]>([])
     const [gameStatus, setGameStatus] = useState("No game created.")
     const [inputPlayerName, setInputPlayerName] = useState('')
     const [inputGameId, setInputGameId] = useState('')
@@ -95,6 +95,8 @@ const MultiplayerBoard: React.FC = () => {
                             setFenStack(newFenStack)
                             let newMoveStack = gameDataResponse.move_stack.slice()
                             setMoveStack(newMoveStack)
+                            let newScoreStack = gameDataResponse.score_stack.slice()
+                            setScoreStack(transformScoreStack(newScoreStack))
                         }
                         if (gameDataResponse.winner) setWinner(gameDataResponse.winner)
                     })
@@ -105,6 +107,15 @@ const MultiplayerBoard: React.FC = () => {
         }, POLL_INTERVAL);
         return () => clearInterval(interval);
     }, [gameData]);
+
+    function transformScoreStack(newScoreStack: number[]) {
+        if (gameData && playerName === gameData.player_two) {
+            return newScoreStack.map(function (score) {
+                return score * -1
+            })
+        }
+        return newScoreStack
+    }
 
     // push new move
     useEffect(() => {
@@ -121,6 +132,10 @@ const MultiplayerBoard: React.FC = () => {
                     setFen(gameDataResponse.fen)
                     if (gameData) {
                         setNewMessages(gameDataResponse.messages.filter(x => gameData.messages.includes(x)))
+                        let newMoveStack = gameDataResponse.move_stack.slice()
+                        setMoveStack(newMoveStack)
+                        let newScoreStack = gameDataResponse.score_stack.slice()
+                        setScoreStack(transformScoreStack(newScoreStack))
                     }
                     if (gameDataResponse.winner) setWinner(gameDataResponse.winner)
                 })
@@ -259,7 +274,12 @@ const MultiplayerBoard: React.FC = () => {
                 )}
             </div>
             <div className="multiplayer-card no-background k"></div>
-            <div className="multiplayer-card no-background graph">Graph</div>
+            <div className="multiplayer-card no-background graph">
+                {gameData && moveStack.length > 0?
+                    <AdvantageGraph moveStack={moveStack} dataStack={undefined} playStack={undefined}
+                                    scoreStack={scoreStack} width={400}/> : <></>
+                }
+            </div>
             <div className="multiplayer-card no-background turn">
                 <img className={"img turn_img"} src={getToMove()} alt={"to move"}/>
                 <h1 style={{textAlign: "center"}}>{getGameStatus()}</h1>

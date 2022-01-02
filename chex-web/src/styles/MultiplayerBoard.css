@@ -207,7 +207,7 @@ img.smaller {
     'c  b  b  b  l'
     'k  t  t  t  x';
 
-    grid-template-columns: 15% auto auto auto 15%;
+    grid-template-columns: 22% auto auto auto 22%;
     grid-template-rows: 15% auto auto 15%;
 
     --stagger-delay: 100ms;

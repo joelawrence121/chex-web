@@ -77,6 +77,7 @@ function AutoBoard(props: AutoBoardProps) {
             <AdvantageGraph
                 moveStack={undefined}
                 dataStack={undefined}
+                scoreStack={undefined}
                 playStack={playDataStack}
                 width={GRAPH_WIDTH}
             />

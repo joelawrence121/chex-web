@@ -8,7 +8,8 @@ interface AdvantageGraphProps {
     moveStack: string[] | undefined
     dataStack: DescriptionData[] | undefined
     playStack: PlayData[] | undefined
-    width: number
+    scoreStack: number[] | undefined
+    width: number | undefined
 }
 
 function AdvantageGraph(props: AdvantageGraphProps) {
@@ -34,9 +35,16 @@ function AdvantageGraph(props: AdvantageGraphProps) {
                     uv: value.score ? Math.round(value.score * 100) / 100 : newData[newData.length - 1].uv
                 })
             }))
+        } else if (props.scoreStack) {
+            props.scoreStack.forEach(((value, index) => {
+                newData.push({
+                    name: props.moveStack![index]?.toString(),
+                    uv: value ? Math.round(value * 100) / 100 : newData[newData.length - 1].uv
+                })
+            }))
         }
         setData(newData)
-    }, [props.dataStack, props.moveStack, props.playStack])
+    }, [props.dataStack, props.moveStack, props.playStack, props.scoreStack])
 
     const CustomTooltip = ({active, payload}: any) => {
         if (active && payload) {
