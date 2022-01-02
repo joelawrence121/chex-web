@@ -33,6 +33,7 @@ export default interface GameData {
     winner: string,
     fen_stack: string[],
     move_stack: string[],
-    score_stack: number[]
-    messages: Message[]
+    score_stack: number[],
+    messages: Message[],
+    message: string
 }

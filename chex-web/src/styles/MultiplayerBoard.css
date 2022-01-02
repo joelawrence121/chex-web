@@ -54,6 +54,7 @@ input.input-box {
     width: 100%;
     background: #a1c3f5;
     color: black;
+    border-radius: 4px;
 }
 
 .rcw-conversation-container .rcw-header {

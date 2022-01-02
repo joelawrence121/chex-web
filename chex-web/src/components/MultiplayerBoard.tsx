@@ -11,11 +11,13 @@ import MultiplayerChat from "./MultiplayerChat";
 import BoardHighlight from "../types/BoardHighlight";
 import Collapsible from "react-collapsible";
 import AdvantageGraph from "./AdvantageGraph";
+import MultiplayerMenu, {MenuState} from "./MultiplayerMenu";
 
 const MultiplayerBoard: React.FC = () => {
 
     const POLL_INTERVAL = 500
     const IN_PROGRESS = "IN PROGRESS";
+    const WAITING = "'WAITING'";
 
     const [fen, setFen] = useState(Utils.INITIAL_FEN)
     const [fenStack, setFenStack] = useState<string[]>([Utils.INITIAL_FEN])
@@ -27,53 +29,54 @@ const MultiplayerBoard: React.FC = () => {
     const [playerName, setPlayerName] = useState('')
     const [gameData, setGameData] = useState<GameData>()
     const [newMessages, setNewMessages] = useState<Message[]>([])
-    const [createNew, setCreateNew] = useState(false)
-    const [joinGame, setJoinGame] = useState(false)
+    const [menuState, setMenuState] = useState<MenuState>(MenuState.START)
+    const [errorMessage, setErrorMessage] = useState<string>()
     const [move, setMove] = useState<string>()
     const [winner, setWinner] = useState<string>()
 
-    // create new game hook
+    function setNewGameData(gameDataResponse: GameData) {
+        setGameData(gameDataResponse);
+        setGameStatus(gameDataResponse.state)
+        if ((gameDataResponse.state === WAITING || gameDataResponse.state === IN_PROGRESS) && gameData) {
+            setMenuState(MenuState.DONE)
+            setNewMessages(gameDataResponse.messages.filter(x => gameData.messages.includes(x)))
+        } else if (gameDataResponse.message) {
+            setMenuState(MenuState.ERROR)
+            setGameData(undefined)
+            setErrorMessage(gameDataResponse.message)
+        }
+    }
+
+    // multiplayer menu hook
     useEffect(() => {
-        if (createNew) {
+        if (menuState === MenuState.CREATE) {
             ChapiService.createNewMultiplayerGame({
                 player_name: inputPlayerName
             })
                 .then(response => {
                     let gameDataResponse = response.data as unknown as GameData
-                    setGameData(gameDataResponse);
-                    setGameStatus(gameDataResponse.state)
                     setPlayerName(gameDataResponse.player_one)
-                    if (gameData) {
-                        setNewMessages(gameDataResponse.messages.filter(x => gameData.messages.includes(x)))
-                    }
+                    setNewGameData(gameDataResponse)
                 })
                 .catch(e => {
                     console.log(e)
                 })
         }
-    }, [createNew])
-
-    // join new game hook
-    useEffect(() => {
-        if (joinGame) {
+        if (menuState === MenuState.JOIN) {
             ChapiService.joinMultiplayerGame({
                 player_name: inputPlayerName,
                 game_id: inputGameId
             })
                 .then(response => {
                     let gameDataResponse = response.data as unknown as GameData
-                    setGameData(gameDataResponse);
-                    setGameStatus(gameDataResponse.state)
                     setPlayerName(gameDataResponse.player_two)
-                    if (gameData) {
-                        setNewMessages(gameDataResponse.messages.filter(x => !gameData.messages.includes(x)))
-                    }
+                    setNewGameData(gameDataResponse)
                 })
                 .catch(e => {
                     console.log(e)
                 })
         }
-    }, [joinGame])
+    }, [menuState])
 
     // polling hook
     useEffect(() => {
@@ -145,34 +148,6 @@ const MultiplayerBoard: React.FC = () => {
         }
     }, [move])
 
-    const updateGameId = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        setInputGameId(e.target.value)
-    }
-
-    const updatePlayerName = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        setInputPlayerName(e.target.value)
-    }
-
-    function getOnlineComponent() {
-        if (!gameData) {
-            return <>
-                <input
-                    className="input-box"
-                    placeholder="Type your name here..."
-                    onChange={updatePlayerName}
-                    value={inputPlayerName}/>
-                <button className="multiplayer-button" onClick={() => setCreateNew(true)}>Create new game</button>
-                <br/><br/>
-                <input
-                    className="input-box"
-                    placeholder="Type your game id here..."
-                    onChange={updateGameId}
-                    value={inputGameId}/>
-                <button className="multiplayer-button" onClick={() => setJoinGame(true)}>Join game</button>
-            </>
-        }
-    }
-
     function getBoardOrientation() {
         if (!gameData || !playerName) {
             return "WHITE"
@@ -220,8 +195,8 @@ const MultiplayerBoard: React.FC = () => {
         }
     }
 
-    function getGameId() {
-        if (gameData) {
+    function getGameDescription() {
+        if (gameData && menuState !== MenuState.ERROR) {
             return <>
                 <h2 className="game">Player: {playerName}</h2>
                 <h2 className="game">Game Id: {gameData.game_id}</h2>
@@ -244,9 +219,13 @@ const MultiplayerBoard: React.FC = () => {
 
     return (
         <section className="multiplayer-animated-grid">
-            <div className="multiplayer-card no-background n">{getGameId()}</div>
+            <div className="multiplayer-card no-background n">{getGameDescription()}</div>
             <div className="multiplayer-card no-background time">Time</div>
-            <div className="multiplayer-card no-background join">{getOnlineComponent()}</div>
+            <div className="multiplayer-card no-background join">
+                <MultiplayerMenu menuState={menuState} setMenuState={setMenuState} inputGameId={inputGameId}
+                                 inputPlayerName={inputPlayerName} setInputGameId={setInputGameId}
+                                 setInputPlayerName={setInputPlayerName} errorMessage={errorMessage}/>
+            </div>
             <div className="multiplayer-card no-background chat">
                 {gameData ? <MultiplayerChat
                     messages={newMessages}
@@ -275,7 +254,7 @@ const MultiplayerBoard: React.FC = () => {
             </div>
             <div className="multiplayer-card no-background k"></div>
             <div className="multiplayer-card no-background graph">
-                {gameData && moveStack.length > 0?
+                {gameData && moveStack.length > 0 ?
                     <AdvantageGraph moveStack={moveStack} dataStack={undefined} playStack={undefined}
                                     scoreStack={scoreStack} width={400}/> : <></>
                 }
