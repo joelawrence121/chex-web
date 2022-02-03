@@ -17,7 +17,7 @@ const MultiplayerBoard: React.FC = () => {
 
     const POLL_INTERVAL = 500
     const IN_PROGRESS = "IN PROGRESS";
-    const WAITING = "'WAITING'";
+    const WAITING = "WAITING";
 
     const [fen, setFen] = useState(Utils.INITIAL_FEN)
     const [fenStack, setFenStack] = useState<string[]>([Utils.INITIAL_FEN])
@@ -34,7 +34,6 @@ const MultiplayerBoard: React.FC = () => {
     const [move, setMove] = useState<string>()
     const [winner, setWinner] = useState<string>()
     const [turnTime, setTurnTime] = useState<number>(600)
-    const [drawOffered, setDrawOffered] = useState(false)
 
     function setNewGameData(gameDataResponse: GameData) {
         setGameData(gameDataResponse);
@@ -105,6 +104,21 @@ const MultiplayerBoard: React.FC = () => {
                 .catch(e => {
                     console.log(e)
                 })
+            if (menuState == MenuState.DRAW_REJECTED) setMenuState(MenuState.RESET_DRAW)
+        }
+        if (menuState === MenuState.RESET_DRAW) {
+            ChapiService.resetMultiplayerDraw({
+                draw_accepted: false,
+                game_id: gameData!.game_id
+            })
+                .then(response => {
+                    let gameDataResponse = response.data as unknown as GameData
+                    setNewGameData(gameDataResponse)
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+            setMenuState(MenuState.PLAYING)
         }
         if (menuState === MenuState.RETIRE) {
             ChapiService.retireFromMultiplayer({
@@ -161,10 +175,12 @@ const MultiplayerBoard: React.FC = () => {
                         }
                         if (gameDataResponse.winner && menuState !== MenuState.FINISHED) setWinner(gameDataResponse.winner)
                         if (menuState === MenuState.PLAYING && gameDataResponse.draw_offered) setMenuState(MenuState.DRAW_RECEIVED)
-                        if (menuState === MenuState.DRAW_OFFERED && gameDataResponse.draw_accepted) {
+                        if (menuState === MenuState.DRAW_OFFERED && gameDataResponse.draw_response == 'ACCEPTED') {
                             setMenuState(MenuState.FINISHED)
                             setWinner('stale')
                         }
+                        if (menuState == MenuState.DRAW_OFFERED && !gameDataResponse.draw_offered) setMenuState(MenuState.PLAYING)
+                        if (menuState === MenuState.DRAW_OFFERED && gameDataResponse.draw_response == 'REJECTED') setMenuState(MenuState.PLAYING)
                         if (gameDataResponse.retired) {
                             setMenuState(MenuState.FINISHED)
                             setWinner(playerName === gameData!.player_one ? Utils.WHITE : Utils.BLACK)
@@ -255,13 +271,21 @@ const MultiplayerBoard: React.FC = () => {
         return (chess.turn() === 'w' && playerName === gameData?.player_one) || (chess.turn() === 'b' && playerName === gameData?.player_two)
     }
 
-    function getGameStatus() {
+    function getGameStatus(gameStatus: string) {
         let chess = new Chess(gameData?.fen)
-        if (chess.inCheckmate()) return "Checkmate"
-        if (gameData && gameStatus === IN_PROGRESS) {
-            return isPlayersTurn() ? "Your turn" : "Waiting"
+        if (chess.inCheckmate()) return <h1 style={{textAlign: "center"}}>Checkmate</h1>
+        if (gameData && gameStatus == IN_PROGRESS) {
+            return isPlayersTurn() ? <h1 style={{textAlign: "center"}}>{"Your turn " + getTimer(turnTime)}</h1>
+                : <h1 style={{textAlign: "center"}}>{"Waiting"}</h1>
         }
-        return gameStatus
+        return <h1 style={{textAlign: "center"}}>{gameStatus}</h1>
+    }
+
+    function getTimer(turnTime: number) {
+        if (gameStatus !== IN_PROGRESS) return <></>
+        let seconds = String("0" + Math.ceil((turnTime % 120) / 2)).slice(-2)
+        seconds = seconds === "60" ? "00" : seconds
+        return Math.floor(turnTime / 120).toString() + ":" + seconds
     }
 
     function getOtherPlayer() {
@@ -301,15 +325,6 @@ const MultiplayerBoard: React.FC = () => {
         return BoardHighlight.stockfishWinner();
     }
 
-    function getTimer(turnTime: number) {
-        if (gameStatus !== IN_PROGRESS) {
-            return <></>
-        }
-        let seconds = String("0" + Math.ceil((turnTime % 120) / 2)).slice(-2)
-        seconds = seconds === "60" ? "00" : seconds
-        return <h1>{Math.floor(turnTime / 120)}:{seconds}</h1>
-    }
-
     function handleRetirement() {
         setMenuState(MenuState.RETIRE)
         setOtherPlayerWinner()
@@ -328,9 +343,7 @@ const MultiplayerBoard: React.FC = () => {
     return (
         <section className="multiplayer-animated-grid">
             <div className="multiplayer-card no-background n">{getGameDescription()}</div>
-            <div className="multiplayer-card no-background time">
-                {getTimer(turnTime)}
-            </div>
+            <div className="multiplayer-card no-background time"></div>
             <div className="multiplayer-card no-background join">
                 <MultiplayerMenu menuState={menuState} setMenuState={setMenuState} inputGameId={inputGameId}
                                  inputPlayerName={inputPlayerName} setInputGameId={setInputGameId}
@@ -373,7 +386,7 @@ const MultiplayerBoard: React.FC = () => {
             </div>
             <div className="multiplayer-card no-background turn">
                 <img className={"img turn_img"} src={getToMove()} alt={"to move"}/>
-                <h1 style={{textAlign: "center"}}>{getGameStatus()}</h1>
+                {getGameStatus(gameStatus)}
             </div>
             <div className="multiplayer-card no-background x"></div>
         </section>

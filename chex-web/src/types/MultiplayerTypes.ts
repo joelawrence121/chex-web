@@ -42,6 +42,6 @@ export default interface GameData {
     messages: Message[],
     message: string,
     draw_offered: boolean
-    draw_accepted: boolean
+    draw_response: string
     retired: boolean
 }

@@ -86,6 +86,10 @@ const answerMultiplayerDraw = (multiplayerDrawRequest: MultiplayerDrawRequest) =
     return http.post("/multiplayer/answer_draw", multiplayerDrawRequest, headers);
 };
 
+const resetMultiplayerDraw = (multiplayerDrawRequest: MultiplayerDrawRequest) => {
+    return http.post("/multiplayer/reset_draw", multiplayerDrawRequest, headers);
+};
+
 const retireFromMultiplayer = (multiplayerRetireRequest: MultiplayerJoinRequest) => {
     return http.post("/multiplayer/retire", multiplayerRetireRequest, headers);
 };
@@ -107,7 +111,8 @@ const ChapiService = {
     playMultiplayerMove,
     offerMultiplayerDraw,
     answerMultiplayerDraw,
-    retireFromMultiplayer
+    retireFromMultiplayer,
+    resetMultiplayerDraw
 }
 
 export default ChapiService;
