@@ -44,4 +44,5 @@ export default interface GameData {
     draw_offered: boolean
     draw_response: string
     retired: boolean
+    player_retired: string
 }

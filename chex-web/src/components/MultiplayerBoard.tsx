@@ -183,7 +183,7 @@ const MultiplayerBoard: React.FC = () => {
                         if (menuState === MenuState.DRAW_OFFERED && gameDataResponse.draw_response == 'REJECTED') setMenuState(MenuState.PLAYING)
                         if (gameDataResponse.retired) {
                             setMenuState(MenuState.FINISHED)
-                            setWinner(playerName === gameData!.player_one ? Utils.WHITE : Utils.BLACK)
+                            playerName == gameData!.player_retired ? setOtherPlayerWinner() : setPlayerWinner()
                         }
                     })
                     .catch(e => {
@@ -299,6 +299,13 @@ const MultiplayerBoard: React.FC = () => {
     function setOtherPlayerWinner() {
         if (gameData) {
             if (playerName === gameData.player_one) setWinner(Utils.BLACK)
+            else setWinner(Utils.WHITE)
+        }
+    }
+
+    function setPlayerWinner() {
+        if (gameData) {
+            if (playerName === gameData.player_one) setWinner(Utils.WHITE)
             else setWinner(Utils.BLACK)
         }
     }
