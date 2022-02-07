@@ -82,6 +82,7 @@ img.smaller {
 
 .Collapsible__contentInner {
     padding: 10px;
+    margin-top: 3%;
     border: 1px solid #eceaea;
     border-top: 0;
 }
@@ -130,6 +131,7 @@ img.smaller {
 }
 
 p {
+    margin-top: auto;
     font-weight: normal;
     text-align: center;
     font-size: medium;
@@ -168,7 +170,7 @@ a:visited {
 
     /* Explicit grid */
     grid-template-areas:
-    'e  e  e  g  g  g  g  d  d'
+    'e  e  e  g  g  g  g  g  d'
     'c  c  c  m  m  m  m  m  h'
     'c  c  c  m  m  m  m  m  r'
     'c  c  c  m  m  m  m  m  u'
@@ -228,7 +230,12 @@ a:visited {
     grid-area: m;
 }
 
+.recent-description {
+    margin-top: 2%;
+}
+
 .commentary-main-desc {
+    margin-top: 3%;
     resize: both;
     display: flex;
     flex-direction: column;
