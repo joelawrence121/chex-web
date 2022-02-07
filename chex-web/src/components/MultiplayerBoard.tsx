@@ -9,9 +9,10 @@ import whitePawn from "./icons/white-pawn.png";
 import blackPawn from "./icons/black-pawn.png";
 import MultiplayerChat from "./MultiplayerChat";
 import BoardHighlight from "../types/BoardHighlight";
-import Collapsible from "react-collapsible";
 import AdvantageGraph from "./AdvantageGraph";
 import MultiplayerMenu, {MenuState} from "./MultiplayerMenu";
+import DescriptionData from "../types/DescriptionData";
+import CommentaryList from "./CommentaryList";
 
 const MultiplayerBoard: React.FC = () => {
 
@@ -34,6 +35,7 @@ const MultiplayerBoard: React.FC = () => {
     const [move, setMove] = useState<string>()
     const [winner, setWinner] = useState<string>()
     const [turnTime, setTurnTime] = useState<number>(600)
+    const [descDataStack, setDescDataStack] = useState<DescriptionData[]>([])
 
     function setNewGameData(gameDataResponse: GameData) {
         setGameData(gameDataResponse);
@@ -49,7 +51,6 @@ const MultiplayerBoard: React.FC = () => {
 
     // multiplayer menu hook
     useEffect(() => {
-        console.log(menuState.valueOf())
         if (menuState === MenuState.CREATE) {
             ChapiService.createNewMultiplayerGame({
                 player_name: inputPlayerName
@@ -58,7 +59,7 @@ const MultiplayerBoard: React.FC = () => {
                     let gameDataResponse = response.data as unknown as GameData
                     setPlayerName(gameDataResponse.player_one)
                     setNewGameData(gameDataResponse)
-                    setMenuState(MenuState.PLAYING)
+                    setMenuState(MenuState.WAITING)
                 })
                 .catch(e => {
                     console.log(e)
@@ -153,14 +154,12 @@ const MultiplayerBoard: React.FC = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             if (gameData) {
-                console.log("polling")
                 ChapiService.pollMultiplayerGame({
                     player_name: playerName,
                     game_id: gameData?.game_id
                 })
                     .then(response => {
                         let gameDataResponse = response.data as unknown as GameData
-                        console.log(gameDataResponse)
                         setGameData(gameDataResponse);
                         setGameStatus(gameDataResponse.state)
                         setNewMessages(gameDataResponse.messages)
@@ -172,7 +171,20 @@ const MultiplayerBoard: React.FC = () => {
                             setMoveStack(newMoveStack)
                             let newScoreStack = gameDataResponse.score_stack.slice()
                             setScoreStack(transformScoreStack(newScoreStack))
+
+                            // update description data stacks
+                            if (playerName === gameDataResponse.player_one && gameDataResponse.white_descriptions) {
+                                let newDescDataStack = descDataStack.slice()
+                                newDescDataStack.push(gameDataResponse.white_descriptions[gameDataResponse.white_descriptions.length - 1])
+                                setDescDataStack(newDescDataStack)
+                            }
+                            if (playerName === gameDataResponse.player_two && gameDataResponse.black_descriptions) {
+                                let newDescDataStack = descDataStack.slice()
+                                newDescDataStack.push(gameDataResponse.black_descriptions[gameDataResponse.black_descriptions.length - 1])
+                                setDescDataStack(newDescDataStack)
+                            }
                         }
+                        if (menuState === MenuState.WAITING && gameDataResponse.player_two) setMenuState(MenuState.PLAYING)
                         if (gameDataResponse.winner && menuState !== MenuState.FINISHED) setWinner(gameDataResponse.winner)
                         if (menuState === MenuState.PLAYING && gameDataResponse.draw_offered) setMenuState(MenuState.DRAW_RECEIVED)
                         if (menuState === MenuState.DRAW_OFFERED && gameDataResponse.draw_response == 'ACCEPTED') {
@@ -199,24 +211,15 @@ const MultiplayerBoard: React.FC = () => {
         return () => clearInterval(interval);
     }, [gameData]);
 
-    function transformScoreStack(newScoreStack: number[]) {
-        if (gameData && playerName === gameData.player_two) {
-            return newScoreStack.map(function (score) {
-                return score * -1
-            })
-        }
-        return newScoreStack
-    }
-
     // push new move
     useEffect(() => {
         if (move && gameData) {
             ChapiService.playMultiplayerMove({
                 game_id: gameData?.game_id,
-                move: move
+                move: move,
+                descriptions_on: true
             })
                 .then(response => {
-                    console.log(response)
                     let gameDataResponse = response.data as unknown as GameData
                     setGameData(gameDataResponse);
                     setGameStatus(gameDataResponse.state)
@@ -237,6 +240,15 @@ const MultiplayerBoard: React.FC = () => {
                 })
         }
     }, [move])
+
+    function transformScoreStack(newScoreStack: number[]) {
+        if (gameData && playerName === gameData.player_two) {
+            return newScoreStack.map(function (score) {
+                return score * -1
+            })
+        }
+        return newScoreStack
+    }
 
     function getBoardOrientation() {
         if (!gameData || !playerName) {
@@ -377,12 +389,13 @@ const MultiplayerBoard: React.FC = () => {
                 />
             </div>
             <div className="multiplayer-card no-background list">
-                {moveStack.map((move: string, index: number) =>
-                    <Collapsible className="opening-collapsible" key={index} easing={"ease-in"}
-                                 trigger={Utils.getTrigger(index, moveStack, fenStack)}>
-                        {moveStack[index]}
-                    </Collapsible>
-                )}
+                <CommentaryList
+                    descDataStack={descDataStack} moveStack={moveStack} fenStack={fenStack}
+                    onOpening={() => {
+                    }} onOpen={() => {
+                }} onClosing={() => {
+                }}
+                />
             </div>
             <div className="multiplayer-card no-background k"></div>
             <div className="multiplayer-card no-background graph">

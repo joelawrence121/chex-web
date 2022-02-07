@@ -5,7 +5,7 @@ import 'react-chat-widget/lib/styles.css';
 import '../styles/MultiplayerBoard.css'
 
 export enum MenuState {
-    START, CREATING, JOINING, CREATE, JOIN, PLAYING, ERROR,
+    START, CREATING, JOINING, CREATE, JOIN, WAITING, PLAYING, ERROR,
     DRAW_OFFERED, DRAW_RECEIVED, DRAW_ACCEPTED, DRAW_REJECTED, RETIRE, RESET_DRAW, FINISHED
 }
 
@@ -80,12 +80,14 @@ function MultiplayerMenu(props: MenuProps) {
                         Try again
                     </button>
                 </>
+            case MenuState.WAITING:
+                return <></>
             case MenuState.PLAYING:
                 return <>
                     <button className="multiplayer-button" onClick={() => props.handleRetirement()}>
                         Retire
                     </button>
-                    <br/>
+                    <br/><br/>
                     <button className="multiplayer-button" onClick={() => props.setMenuState(MenuState.DRAW_OFFERED)}>
                         Offer Draw
                     </button>

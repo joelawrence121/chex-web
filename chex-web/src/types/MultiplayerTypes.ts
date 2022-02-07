@@ -1,3 +1,5 @@
+import DescriptionData from "./DescriptionData";
+
 export interface MultiplayerCreateRequest {
     player_name: string
 }
@@ -15,7 +17,8 @@ export interface MultiplayerMessageRequest {
 
 export interface MultiplayerPlayRequest {
     game_id: string,
-    move: string
+    move: string,
+    descriptions_on: boolean
 }
 
 export interface MultiplayerDrawRequest {
@@ -45,4 +48,6 @@ export default interface GameData {
     draw_response: string
     retired: boolean
     player_retired: string
+    white_descriptions: DescriptionData[] | undefined
+    black_descriptions: DescriptionData[] | undefined
 }

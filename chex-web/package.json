@@ -55,6 +55,7 @@
   "devDependencies": {
     "@types/react-mentions": "^4.1.5",
     "@types/styled-components": "^5.1.15",
+    "@types/uuid": "^8.3.4",
     "chessboardjsx": "^2.4.7",
     "gh-pages": "^3.2.3",
     "tslint-config-prettier": "^1.18.0"
