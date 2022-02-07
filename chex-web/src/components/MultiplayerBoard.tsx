@@ -171,15 +171,13 @@ const MultiplayerBoard: React.FC = () => {
                             setMoveStack(newMoveStack)
                             let newScoreStack = gameDataResponse.score_stack.slice()
                             setScoreStack(transformScoreStack(newScoreStack))
-
                             // update description data stacks
+                            let newDescDataStack = descDataStack.slice()
                             if (playerName === gameDataResponse.player_one && gameDataResponse.white_descriptions) {
-                                let newDescDataStack = descDataStack.slice()
                                 newDescDataStack.push(gameDataResponse.white_descriptions[gameDataResponse.white_descriptions.length - 1])
                                 setDescDataStack(newDescDataStack)
                             }
                             if (playerName === gameDataResponse.player_two && gameDataResponse.black_descriptions) {
-                                let newDescDataStack = descDataStack.slice()
                                 newDescDataStack.push(gameDataResponse.black_descriptions[gameDataResponse.black_descriptions.length - 1])
                                 setDescDataStack(newDescDataStack)
                             }

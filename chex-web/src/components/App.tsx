@@ -1,6 +1,5 @@
 import SingleMovePuzzle from "./SingleMovePuzzle";
 import React from "react";
-import NavbarScroller from "./NavbarScroller";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import CommentaryBox from "./CommentaryBox";
 import About from "./About";
@@ -8,50 +7,39 @@ import MatePuzzle from "./MatePuzzle";
 import Home from "./Home";
 import OpeningBook from "./OpeningBook";
 import MultiplayerBoard from "./MultiplayerBoard";
-
-const navigation = {
-    brand: {name: "Chexplanations", to: "/"},
-    links: [
-        {name: "About", to: "/about"},
-        {name: "Commentary", to: "/commentary"},
-        {name: "Single Move Puzzles", to: "/puzzles"},
-        {name: "Mate in N", to: "/mate"},
-        {name: "Openings", to: "/openings"},
-        {name: "Multiplayer", to: "/multiplayer"}
-    ]
-}
+import {Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
+import NavigationBar from "./NavigationBar";
 
 const App: React.FC = () => {
-    const {brand, links} = navigation;
     return (
         <Router>
             <Switch>
                 <Route path="/commentary">
-                    <NavbarScroller brand={brand} links={links}/>
+                    <NavigationBar />
                     <CommentaryBox/>
                 </Route>
                 <Route path="/puzzles">
-                    <NavbarScroller brand={brand} links={links}/>
+                    <NavigationBar />
                     <SingleMovePuzzle/>
                 </Route>
                 <Route path="/mate">
-                    <NavbarScroller brand={brand} links={links}/>
+                    <NavigationBar />
                     <MatePuzzle/>
                 </Route>
                 <Route path="/about">
-                    <NavbarScroller brand={brand} links={links}/>
+                    <NavigationBar />
                     <About/>
                 </Route>
                 <Route path="/openings">
-                    <NavbarScroller brand={brand} links={links}/>
+                    <NavigationBar />
                     <OpeningBook/>
                 </Route>
                 <Route path="/multiplayer">
-                    <NavbarScroller brand={brand} links={links}/>
+                    <NavigationBar />
                     <MultiplayerBoard/>
                 </Route>
                 <Route path="/">
-                    <NavbarScroller brand={brand} links={links}/>
+                    <NavigationBar />
                     <Home/>
                 </Route>
             </Switch>
