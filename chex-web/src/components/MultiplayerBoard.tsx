@@ -13,6 +13,7 @@ import AdvantageGraph from "./AdvantageGraph";
 import MultiplayerMenu, {MenuState} from "./MultiplayerMenu";
 import DescriptionData from "../types/DescriptionData";
 import CommentaryList from "./CommentaryList";
+import DrawResponse from "../types/DrawResponse";
 
 const MultiplayerBoard: React.FC = () => {
 
@@ -141,8 +142,8 @@ const MultiplayerBoard: React.FC = () => {
         const interval = setInterval(() => {
             if (gameData) {
                 let chess = new Chess(gameData?.fen)
-                if ((chess.turn() === 'w' && playerName === gameData?.player_one) || (chess.turn() === 'b' && playerName === gameData?.player_two)) {
-                    console.log("deducing: " + turnTime)
+                if ((chess.turn() === 'w' && playerName === gameData?.player_one)
+                    || (chess.turn() === 'b' && playerName === gameData?.player_two)) {
                     setTurnTime(turnTime - 1)
                 }
             }
@@ -150,7 +151,7 @@ const MultiplayerBoard: React.FC = () => {
         return () => clearInterval(interval);
     }, [turnTime]);
 
-    // polling and clock hook
+    // polling update and clock hook - there's probably a way this doesn't look incomprehensible
     useEffect(() => {
         const interval = setInterval(() => {
             if (gameData) {
@@ -163,6 +164,8 @@ const MultiplayerBoard: React.FC = () => {
                         setGameData(gameDataResponse);
                         setGameStatus(gameDataResponse.state)
                         setNewMessages(gameDataResponse.messages)
+
+                        // on other players move
                         if (gameDataResponse.fen !== fen) {
                             setFen(gameDataResponse.fen)
                             let newFenStack = gameDataResponse.fen_stack.slice()
@@ -171,6 +174,7 @@ const MultiplayerBoard: React.FC = () => {
                             setMoveStack(newMoveStack)
                             let newScoreStack = gameDataResponse.score_stack.slice()
                             setScoreStack(transformScoreStack(newScoreStack))
+
                             // update description data stacks
                             let newDescDataStack = descDataStack.slice()
                             if (playerName === gameDataResponse.player_one && gameDataResponse.white_descriptions) {
@@ -182,19 +186,22 @@ const MultiplayerBoard: React.FC = () => {
                                 setDescDataStack(newDescDataStack)
                             }
                         }
-                        if (menuState === MenuState.WAITING && gameDataResponse.player_two) setMenuState(MenuState.PLAYING)
-                        if (gameDataResponse.winner && menuState !== MenuState.FINISHED) setWinner(gameDataResponse.winner)
-                        if (menuState === MenuState.PLAYING && gameDataResponse.draw_offered) setMenuState(MenuState.DRAW_RECEIVED)
-                        if (menuState === MenuState.DRAW_OFFERED && gameDataResponse.draw_response == 'ACCEPTED') {
-                            setMenuState(MenuState.FINISHED)
-                            setWinner('stale')
-                        }
-                        if (menuState == MenuState.DRAW_OFFERED && !gameDataResponse.draw_offered) setMenuState(MenuState.PLAYING)
-                        if (menuState === MenuState.DRAW_OFFERED && gameDataResponse.draw_response == 'REJECTED') setMenuState(MenuState.PLAYING)
+
                         if (gameDataResponse.retired) {
                             setMenuState(MenuState.FINISHED)
                             playerName == gameData!.player_retired ? setOtherPlayerWinner() : setPlayerWinner()
                         }
+
+                        // menu state progression conditions
+                        if (menuState === MenuState.WAITING && gameDataResponse.player_two) setMenuState(MenuState.PLAYING)
+                        if (menuState !== MenuState.FINISHED && gameDataResponse.winner) setWinner(gameDataResponse.winner)
+                        if (menuState === MenuState.PLAYING && gameDataResponse.draw_offered) setMenuState(MenuState.DRAW_RECEIVED)
+                        if (menuState === MenuState.DRAW_OFFERED && gameDataResponse.draw_response == DrawResponse.ACCEPTED) {
+                            setMenuState(MenuState.FINISHED)
+                            setWinner('stale')
+                        }
+                        if (menuState == MenuState.DRAW_OFFERED && !gameDataResponse.draw_offered) setMenuState(MenuState.PLAYING)
+                        if (menuState === MenuState.DRAW_OFFERED && gameDataResponse.draw_response == DrawResponse.REJECTED) setMenuState(MenuState.PLAYING)
                     })
                     .catch(e => {
                         console.log(e)
@@ -202,7 +209,7 @@ const MultiplayerBoard: React.FC = () => {
                 // turn timing
                 if (isPlayersTurn() && gameStatus === IN_PROGRESS) {
                     if (turnTime > 0) setTurnTime(turnTime - 1)
-                    else setOtherPlayerWinner()
+                    else handleRetirement()
                 }
             }
         }, POLL_INTERVAL);
@@ -320,15 +327,6 @@ const MultiplayerBoard: React.FC = () => {
         }
     }
 
-    function getGameDescription() {
-        if (gameData && menuState !== MenuState.ERROR) {
-            return <>
-                <h2 className="game">Player: {playerName}</h2>
-                <h2 className="game">Game Id: {gameData.game_id}</h2>
-            </>
-        }
-    }
-
     function getBoardHighlight(winner: string | undefined) {
         if (!winner) {
             return BoardHighlight.normal();
@@ -355,6 +353,15 @@ const MultiplayerBoard: React.FC = () => {
 
     function handleDrawRejected() {
         setMenuState(MenuState.DRAW_REJECTED)
+    }
+
+    function getGameDescription() {
+        if (gameData && menuState !== MenuState.ERROR) {
+            return <>
+                <h2 className="game">Player: {playerName}</h2>
+                <h2 className="game">Game Id: {gameData.game_id}</h2>
+            </>
+        }
     }
 
     return (
