@@ -14,7 +14,7 @@ function RecentDescription(props: RecentDescriptionProps) {
     function getContent() {
         const lastIndex = props.descDataStack.length - 1
         if (props.descDataStack.length > 0) {
-            return <p className={"recent-description"}
+            return <p className="recent-description"
                       style={{color: props.moveStack.length % 2 == 1 ? "#a1c3f5" : "#131313FF"}}>
                 {getTrigger(lastIndex)}
                 {props.descDataStack[lastIndex].descriptions.map((description: string) =>

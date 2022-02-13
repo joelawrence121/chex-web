@@ -4,6 +4,12 @@ import PlayRequest from "../types/PlayRequest";
 import AggregationRequest from "../types/AggregationRequest";
 import axios from "axios";
 import OpeningMoveStackRequest from "../types/OpeningMoveStackRequest";
+import {
+    MultiplayerCreateRequest, MultiplayerDrawRequest,
+    MultiplayerJoinRequest,
+    MultiplayerMessageRequest,
+    MultiplayerPlayRequest
+} from "../types/MultiplayerTypes";
 
 const headers = {
     headers: {
@@ -49,8 +55,43 @@ const getOpeningById = (id: number) => {
 };
 
 const getOpeningByMoveStack = (openingByMoveStackRequest: OpeningMoveStackRequest) => {
-    console.log(openingByMoveStackRequest)
     return http.post("/opening", openingByMoveStackRequest, headers);
+};
+
+const createNewMultiplayerGame = (multiplayerCreateRequest: MultiplayerCreateRequest) => {
+    return http.post("/multiplayer/create", multiplayerCreateRequest, headers);
+};
+
+const joinMultiplayerGame = (multiplayerJoinRequest: MultiplayerJoinRequest) => {
+    return http.post("/multiplayer/join", multiplayerJoinRequest, headers);
+};
+
+const postMultiplayerMessage = (multiplayerMessageRequest: MultiplayerMessageRequest) => {
+    return http.post("/multiplayer/message", multiplayerMessageRequest, headers);
+};
+
+const pollMultiplayerGame = (multiplayerPollRequest: MultiplayerJoinRequest) => {
+    return http.post("/multiplayer/poll", multiplayerPollRequest, headers);
+};
+
+const playMultiplayerMove = (multiplayerPlayRequest: MultiplayerPlayRequest) => {
+    return http.post("/multiplayer/play", multiplayerPlayRequest, headers);
+};
+
+const offerMultiplayerDraw = (multiplayerPlayRequest: MultiplayerJoinRequest) => {
+    return http.post("/multiplayer/offer_draw", multiplayerPlayRequest, headers);
+};
+
+const answerMultiplayerDraw = (multiplayerDrawRequest: MultiplayerDrawRequest) => {
+    return http.post("/multiplayer/answer_draw", multiplayerDrawRequest, headers);
+};
+
+const resetMultiplayerDraw = (multiplayerDrawRequest: MultiplayerDrawRequest) => {
+    return http.post("/multiplayer/reset_draw", multiplayerDrawRequest, headers);
+};
+
+const retireFromMultiplayer = (multiplayerRetireRequest: MultiplayerJoinRequest) => {
+    return http.post("/multiplayer/retire", multiplayerRetireRequest, headers);
 };
 
 const ChapiService = {
@@ -62,7 +103,16 @@ const ChapiService = {
     getDescriptionAggregation,
     getRandomOpening,
     getOpeningById,
-    getOpeningByMoveStack
+    getOpeningByMoveStack,
+    createNewMultiplayerGame,
+    joinMultiplayerGame,
+    postMultiplayerMessage,
+    pollMultiplayerGame,
+    playMultiplayerMove,
+    offerMultiplayerDraw,
+    answerMultiplayerDraw,
+    retireFromMultiplayer,
+    resetMultiplayerDraw
 }
 
 export default ChapiService;

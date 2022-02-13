@@ -266,11 +266,13 @@ const CommentaryBox: React.FC = () => {
                 />
             </div>
             <div className="commentary-card no-background graph">
-                <AdvantageGraph moveStack={moveStack} dataStack={descDataStack} playStack={undefined} width={600}/>
+                <AdvantageGraph
+                    moveStack={moveStack} dataStack={descDataStack}
+                    playStack={undefined} scoreStack={undefined} width={600}
+                />
             </div>
             <div className="commentary-card difficulty" onClick={() => setStockfishLevel((stockfishLevel % 10 + 1))}>
-                Difficulty
-                <ProgressBar className="difficulty-bar" completed={stockfishLevel * 10} bgColor="#365992"/>
+                <ProgressBar className="difficulty-bar" completed={stockfishLevel * 10} bgColor="#365992" height={"100%"}/>
             </div>
             <div className="commentary-list">
                 <CommentaryList

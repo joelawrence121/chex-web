@@ -65,13 +65,22 @@ function AutoBoard(props: AutoBoardProps) {
                 onPieceDrop={onDrop}
                 arrows={[]}
                 alternateArrows={false}
-                boardHighlight={Utils.getBoardHighlight(winner)}/>
-            <ProgressBar className="advantage-bar" completed={50 - prevScore * 50} bgColor="#365992"
-                         isLabelVisible={false}/>
-            <AdvantageGraph moveStack={undefined}
-                            dataStack={undefined}
-                            playStack={playDataStack}
-                            width={GRAPH_WIDTH}/>
+                boardHighlight={Utils.getBoardHighlight(winner)}
+            />
+            <ProgressBar
+                className="advantage-bar"
+                completed={50 - prevScore * 50}
+                bgColor="#365992"
+                isLabelVisible={false}
+                width={"100%"}
+            />
+            <AdvantageGraph
+                moveStack={undefined}
+                dataStack={undefined}
+                scoreStack={undefined}
+                playStack={playDataStack}
+                width={GRAPH_WIDTH}
+            />
         </>
     )
 }
