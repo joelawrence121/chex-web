@@ -8,12 +8,15 @@ import whitePawn from "./icons/white-pawn.png";
 import blackPawn from "./icons/black-pawn.png";
 import {Chess} from "chess.ts";
 import refreshImg from "./icons/refresh.png";
-import rightArrow from "./icons/right-arrow.png";
 import Collapsible from "react-collapsible";
 import Opening from "../types/Opening";
 import Variation from "./Variation";
+import audio from "./icons/audio.png";
+import mute from "./icons/mute.png";
 
 const OpeningBook: React.FC = () => {
+
+    const synth = window.speechSynthesis;
 
     const [openingData, setOpeningData] = useState<OpeningData>();
     const [refresh, setRefresh] = useState(false)
@@ -25,6 +28,8 @@ const OpeningBook: React.FC = () => {
     const [chess, setChess] = useState(new Chess(Utils.INITIAL_FEN))
     const [animationMoveQueue, setAnimationMoveQueue] = useState<string[]>()
     const [moveStackString, setMoveStackString] = useState<string>("")
+    const [speechEnabled, setSpeechEnabled] = useState(false)
+    const [speechText, setSpeechText] = useState('')
 
     // random opening hook
     useEffect(() => {
@@ -36,6 +41,7 @@ const OpeningBook: React.FC = () => {
                     let newChess = new Chess(openingDataResponse.opening.epd)
                     setChess(newChess)
                     setMoveStackString(openingDataResponse.opening.move_stack)
+                    if (speechEnabled) setSpeechText(openingDataResponse.opening.name)
                 })
                 .catch(e => {
                     console.log(e)
@@ -65,14 +71,13 @@ const OpeningBook: React.FC = () => {
     // look up move stack variation hook (from piece moves)
     useEffect(() => {
         if (moveStackString && !showAnimation) {
-            console.log(moveStackString)
             ChapiService.getOpeningByMoveStack({move_stack: moveStackString})
                 .then(response => {
                     let openingDataResponse = response.data as unknown as OpeningData
-                    console.log(openingDataResponse)
                     if (openingDataResponse.opening) {
                         setOpeningData(openingDataResponse);
                         setMoveStackString(openingDataResponse.opening.move_stack)
+                        if (speechEnabled) setSpeechText(openingDataResponse.opening.name)
                     }
                 })
                 .catch(e => {
@@ -102,10 +107,11 @@ const OpeningBook: React.FC = () => {
                         let newAnimationMoveQueue = animationMoveQueue.slice(1)
                         setAnimationMoveQueue(newAnimationMoveQueue)
                         let moveSlice = Utils.sliceMove(move)[0]
-                        newChess.move({
+                        let newMove = newChess.move({
                             to: moveSlice[1],
                             from: moveSlice[0]
                         })
+                        if (speechEnabled) setSpeechText(newMove!.san)
                         setChess(newChess)
                     }
                 }
@@ -114,7 +120,14 @@ const OpeningBook: React.FC = () => {
         return () => clearInterval(interval);
     }, [isBeginning, showAnimation, animationMoveQueue, chess])
 
+    // speech synthesis hook
+    useEffect(() => {
+        const utterThis = new SpeechSynthesisUtterance(speechText);
+        synth.speak(utterThis);
+    }, [speechText])
+
     function onDrop(sourceSquare: string, targetSquare: string): boolean {
+        speechSynthesis.cancel()
         let newChess = new Chess(chess.fen())
         let move = newChess.move({
             to: targetSquare,
@@ -122,7 +135,8 @@ const OpeningBook: React.FC = () => {
         })
         setChess(newChess)
         if (move != null) {
-            let newMoveStackString = ""
+            if (speechEnabled) setSpeechText(move.san)
+            let newMoveStackString
             if (moveStackString.length == 0) {
                 newMoveStackString = sourceSquare + targetSquare
             } else {
@@ -181,6 +195,7 @@ const OpeningBook: React.FC = () => {
                 <img className={"smaller"} src={refreshImg} alt="Restart" onClick={() => {
                     setRefresh(!refresh);
                     setIsStart(false)
+                    speechSynthesis.cancel()
                 }}/>
             </div>
             <div className="opening-card no-background click turn">
@@ -192,7 +207,11 @@ const OpeningBook: React.FC = () => {
                 }}/>
             </div>
             <div className="opening-card no-background click play">
-                <img className={"smaller"} src={rightArrow} alt="Next"/>
+                <img onClick={() => {
+                    setSpeechEnabled(!speechEnabled)
+                    speechSynthesis.cancel()
+                }} className="tiny"
+                     src={speechEnabled ? audio : mute} alt="Enable Sound"/>
             </div>
             <div className="opening-card no-background pgn">
                 <p>{openingData?.opening.pgn}</p>

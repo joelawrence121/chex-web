@@ -8,8 +8,6 @@ import PlayData from "../types/PlayData";
 import ProgressBar from "@ramonak/react-progress-bar";
 import refresh from './icons/refresh.png';
 import undo from './icons/undo.png';
-import mute from './icons/mute.png';
-import audio from './icons/audio.png';
 import lightFilled from './icons/light-filled.png';
 import lightUnfilled from './icons/light-unfilled.png';
 import autoFilled from './icons/auto-filled.png';
@@ -20,6 +18,7 @@ import Utils from "../service/Utils";
 import AdvantageGraph from "./AdvantageGraph";
 import AggregationData from "../types/AggregationData";
 import SpeechMode from "../types/SpeechMode";
+import SpeechToggle from "./SpeechToggle";
 
 const CommentaryBox: React.FC = () => {
 
@@ -75,15 +74,6 @@ const CommentaryBox: React.FC = () => {
         setChess(new Chess(newFen))
         const newDescDataStack = descDataStack.slice(0, -2)
         setDescDataStack(newDescDataStack)
-    }
-
-    function toggleSpeechMode() {
-        const speechModes = [SpeechMode.OFF, SpeechMode.MOVES, SpeechMode.DESCRIPTIONS, SpeechMode.FULL];
-        const nextMode = speechModes[(speechModes.indexOf(speechMode) + 1) % speechModes.length]
-        if (nextMode != SpeechMode.OFF) {
-            setSpeechText(nextMode.valueOf())
-        }
-        setSpeechMode(nextMode)
     }
 
     function getUser() {
@@ -325,9 +315,8 @@ const CommentaryBox: React.FC = () => {
                     height="100%"
                 />
             </div>
-            <div className="commentary-card no-background s" onClick={toggleSpeechMode}>
-                <img className="tiny" src={speechMode != SpeechMode.OFF ? audio : mute} alt="Enable Sound"/>
-                <p className="config-desc">{speechMode.valueOf()}</p>
+            <div className="commentary-card no-background s">
+                <SpeechToggle speechMode={speechMode} setSpeechMode={setSpeechMode} setSpeechText={setSpeechText}/>
             </div>
             <div className="commentary-card no-background hint" onClick={generateHint}>
                 <img className="smaller" src={hintEnabled ? lightFilled : lightUnfilled} alt="Hint"/>
