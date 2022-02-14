@@ -24,7 +24,7 @@ function getTrigger(index: number, moveStack: string[], fenStack: string[]): str
 
 function formatDescription(description: string, descData: DescriptionData) {
     if (descData.opening && description.includes(descData.opening) && descData.link) {
-        // replace any occurrences of 'opening' with link to opening
+        // replace any occurrences of openings with their links
         const link = <a href={descData.link}>{descData.opening}</a>;
         description = description.replace(descData.opening, "$")
         const index = description.indexOf("$");

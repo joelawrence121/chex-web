@@ -26,6 +26,16 @@ img.smaller {
     max-height: 65%;
 }
 
+img.tiny {
+    max-width: 50%;
+    max-height: 50%;
+}
+
+.config-desc {
+    font-weight: bold;
+    font-size: large;
+}
+
 .text {
     flex-direction: column;
     justify-content: center;
@@ -176,13 +186,14 @@ a:visited {
     /* Explicit grid */
     grid-template-areas:
     'e  e  e  g  g  g  g  g  d'
+    'c  c  c  m  m  m  m  m  s'
     'c  c  c  m  m  m  m  m  h'
     'c  c  c  m  m  m  m  m  r'
     'c  c  c  m  m  m  m  m  u'
     'c  c  c  m  m  m  m  m  x';
 
-    grid-template-columns: 11% 11% 11% auto auto auto auto auto auto;
-    grid-template-rows: 15% auto auto auto auto;
+    grid-template-columns: 11% 11% 11% auto auto auto auto auto 12%;
+    grid-template-rows: 15% auto auto auto auto auto;
 
     --stagger-delay: 100ms;
 }
@@ -198,24 +209,29 @@ a:visited {
     animation-delay: calc(3 * var(--stagger-delay));
 }
 
+.commentary-card.no-background.s {
+    grid-area: s;
+    animation-delay: calc(5 * var(--stagger-delay));
+}
+
 .commentary-card.no-background.hint {
     grid-area: h;
-    animation-delay: calc(5 * var(--stagger-delay));
+    animation-delay: calc(7 * var(--stagger-delay));
 }
 
 .commentary-card.no-background.restart {
     grid-area: r;
-    animation-delay: calc(7 * var(--stagger-delay));
+    animation-delay: calc(9 * var(--stagger-delay));
 }
 
 .commentary-card.no-background.undo {
     grid-area: u;
-    animation-delay: calc(9 * var(--stagger-delay));
+    animation-delay: calc(11 * var(--stagger-delay));
 }
 
 .commentary-card.no-background.x {
     grid-area: x;
-    animation-delay: calc(11 * var(--stagger-delay));
+    animation-delay: calc(13 * var(--stagger-delay));
 }
 
 .commentary-main {

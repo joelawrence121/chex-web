@@ -8,6 +8,8 @@ import PlayData from "../types/PlayData";
 import ProgressBar from "@ramonak/react-progress-bar";
 import refresh from './icons/refresh.png';
 import undo from './icons/undo.png';
+import mute from './icons/mute.png';
+import audio from './icons/audio.png';
 import lightFilled from './icons/light-filled.png';
 import lightUnfilled from './icons/light-unfilled.png';
 import autoFilled from './icons/auto-filled.png';
@@ -17,11 +19,20 @@ import RecentDescription from "./RecentDescription";
 import Utils from "../service/Utils";
 import AdvantageGraph from "./AdvantageGraph";
 import AggregationData from "../types/AggregationData";
+import SpeechMode from "../types/SpeechMode";
 
 const CommentaryBox: React.FC = () => {
 
     const BOARD_ID = "commentaryBox"
-    const [stockfishLevel, setStockfishLevel] = useState(2)
+    const synth = window.speechSynthesis;
+
+    // -- CONFIG PARAMS --
+    const [stockfishLevel, setStockfishLevel] = useState(3)
+    const [stockfishTakeoverEnabled, setStockfishTakeoverEnabled] = useState(false)
+    const [hintEnabled, setHintEnabled] = useState(false)
+    const [aggregationEnabled, setAggregationEnabled] = useState<boolean>(true)
+    const [speechMode, setSpeechMode] = useState<SpeechMode>(SpeechMode.OFF)
+    // -------------------
     const [chess, setChess] = useState(new Chess())
     const [fen, setFen] = useState(chess.fen())
     const [arrows, setArrows] = useState([['', '']])
@@ -32,11 +43,9 @@ const CommentaryBox: React.FC = () => {
     const [turn, setTurn] = useState(false)
     const [trigger, setTrigger] = useState(false)
     const [isStart, setIsStart] = useState(true)
-    const [stockfishTakeoverEnabled, setStockfishTakeoverEnabled] = useState(false)
-    const [hintEnabled, setHintEnabled] = useState(false)
-    const [aggregationEnabled, setAggregationEnabled] = useState<boolean>(true)
     const [aggregationData, setAggregationData] = useState<AggregationData>()
     const [aggregationChange, setAggregationChange] = useState<boolean>(false)
+    const [speechText, setSpeechText] = useState('')
 
     function resetBoard() {
         setChess(new Chess())
@@ -68,6 +77,15 @@ const CommentaryBox: React.FC = () => {
         setDescDataStack(newDescDataStack)
     }
 
+    function toggleSpeechMode() {
+        const speechModes = [SpeechMode.OFF, SpeechMode.MOVES, SpeechMode.DESCRIPTIONS, SpeechMode.FULL];
+        const nextMode = speechModes[(speechModes.indexOf(speechMode) + 1) % speechModes.length]
+        if (nextMode != SpeechMode.OFF) {
+            setSpeechText(nextMode.valueOf())
+        }
+        setSpeechMode(nextMode)
+    }
+
     function getUser() {
         if (chess.turn() === 'b') {
             return Utils.WHITE
@@ -81,6 +99,7 @@ const CommentaryBox: React.FC = () => {
         let user = getUser();
         const moveStackCopy = moveStack.slice()
         const move = moveStackCopy.pop()
+        if (speechMode == SpeechMode.MOVES || speechMode == SpeechMode.FULL) setSpeechText(move!)
         if (!isStart) {
             ChapiService.getMoveDescription({
                 user: user,
@@ -95,6 +114,9 @@ const CommentaryBox: React.FC = () => {
                         let newDescDataStack = descDataStack.slice()
                         newDescDataStack.push(descriptionData)
                         setDescDataStack(newDescDataStack)
+                        if (speechMode == SpeechMode.DESCRIPTIONS || speechMode == SpeechMode.FULL) {
+                            setSpeechText(newDescDataStack[newDescDataStack.length - 1].descriptions[0])
+                        }
                         setAggregationChange(true)
                     }
                 })
@@ -169,6 +191,12 @@ const CommentaryBox: React.FC = () => {
                 })
         }
     }, [turn, trigger])
+
+    // speech synthesis hook
+    useEffect(() => {
+        const utterThis = new SpeechSynthesisUtterance(speechText);
+        synth.speak(utterThis);
+    }, [speechText])
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -271,9 +299,6 @@ const CommentaryBox: React.FC = () => {
                     playStack={undefined} scoreStack={undefined} width={600}
                 />
             </div>
-            <div className="commentary-card difficulty" onClick={() => setStockfishLevel((stockfishLevel % 10 + 1))}>
-                <ProgressBar className="difficulty-bar" completed={stockfishLevel * 10} bgColor="#365992" height={"100%"}/>
-            </div>
             <div className="commentary-list">
                 <CommentaryList
                     descDataStack={descDataStack}
@@ -287,27 +312,41 @@ const CommentaryBox: React.FC = () => {
             <div className="commentary-main">
                 <MainBoard
                     position={fen}
-                    boardOrientation={"white"}
+                    boardOrientation="white"
                     onPieceDrop={onDrop}
                     arrows={arrows}
                     alternateArrows={true}
                     boardHighlight={Utils.getBoardHighlight(winner)}
                 />
             </div>
+            <div className="commentary-card difficulty" onClick={() => setStockfishLevel((stockfishLevel % 10 + 1))}>
+                <ProgressBar
+                    className="difficulty-bar" completed={stockfishLevel * 10} bgColor="#365992"
+                    height="100%"
+                />
+            </div>
+            <div className="commentary-card no-background s" onClick={toggleSpeechMode}>
+                <img className="tiny" src={speechMode != SpeechMode.OFF ? audio : mute} alt="Enable Sound"/>
+                <p className="config-desc">{speechMode.valueOf()}</p>
+            </div>
             <div className="commentary-card no-background hint" onClick={generateHint}>
-                <img className={"smaller"} src={hintEnabled ? lightFilled : lightUnfilled} alt="Hint"/>
+                <img className="smaller" src={hintEnabled ? lightFilled : lightUnfilled} alt="Hint"/>
+                <p className="config-desc">Hint</p>
             </div>
             <div className="commentary-card no-background restart" onClick={resetBoard}>
-                <img className={"smaller"} src={refresh} alt="Restart"/>
+                <img className="smaller" src={refresh} alt="Restart"/>
+                <p className="config-desc">Restart</p>
             </div>
             <div className="commentary-card no-background undo" onClick={undoMove}>
                 <img src={undo} alt="Undo"/>
+                <p className="config-desc">Undo</p>
             </div>
             <div className="commentary-card no-background x" onClick={triggerStockfishTakeover}>
                 <img
-                    className={"smaller"}
+                    className="smaller"
                     src={stockfishTakeoverEnabled ? autoFilled : autoUnfilled}
                     alt="Stockfish Takeover"/>
+                <p className="config-desc">Autosteer</p>
             </div>
         </section>
     );
