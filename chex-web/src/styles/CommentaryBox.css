@@ -159,6 +159,11 @@ a:visited {
     transform: translateY(-3px) scale(1.05);
 }
 
+.slight-hover:hover {
+    box-shadow: rgba(2, 8, 20, 0.1) 0 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0 0.175em 0.5em !important;
+    transform: translateY(-3px) scale(1.01) !important;
+}
+
 .commentary-animated-grid {
     height: 85vh;
     margin-bottom: 10px;

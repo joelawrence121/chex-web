@@ -265,7 +265,7 @@ const CommentaryBox: React.FC = () => {
                     aggregationEnabled={aggregationEnabled}
                 />
             </div>
-            <div className="commentary-card no-background graph">
+            <div className="commentary-card no-background graph slight-hover">
                 <AdvantageGraph
                     moveStack={moveStack} dataStack={descDataStack}
                     playStack={undefined} scoreStack={undefined} width={600}
