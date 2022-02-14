@@ -34,7 +34,8 @@ const About: React.FC = () => {
     return (
         <section className="about-animated-grid">
             <div className="card-stationary a">
-                <h2>Created by Joseph Lawrence</h2>
+                <br/>
+                <h2><a href={"https://github.com/joelawrence121"}>Created by Joseph Lawrence</a></h2>
                 Third Year Project at the University of Manchester
             </div>
             <div className="card-stationary b">

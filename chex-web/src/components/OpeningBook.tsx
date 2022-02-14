@@ -153,9 +153,9 @@ const OpeningBook: React.FC = () => {
 
     function formatTitle() {
         if (openingData && openingData.opening.wiki_link) {
-            return <h4><a href={openingData?.opening.wiki_link}>{openingData?.opening.name}</a></h4>
+            return <h4 className="title"><a href={openingData?.opening.wiki_link}>{openingData?.opening.name}</a></h4>
         }
-        return <h4>{openingData?.opening.name}</h4>
+        return <h4 className="title">{openingData?.opening.name}</h4>
     }
 
     function onSelection(index: number) {

@@ -34,6 +34,10 @@ button {
     cursor: pointer;
 }
 
+.title {
+    font-size: xx-large;
+}
+
 a.variation {
     font-weight: bold;
     text-align: center;
