@@ -21,16 +21,24 @@ img.bigger {
 
 .text.mate-type {
     margin-top: 3%;
-    font-weight: bold;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    font-size: xxx-large;
+    font-style: italic;
+    font-size: xx-large;
     font-family: 'Noto Sans', sans-serif;
     color: rgb(0, 0, 0);
     height: 100%;
     width: 100%;
+    margin-bottom: 0;
+}
+
+.mate-n {
+    font-family: 'Righteous', serif;
+    font-weight: bolder;
+    font-size: xxx-large;
+    font-style: normal;
+}
+
+.card.t {
+    clear: both;
 }
 
 .text.type {
