@@ -124,6 +124,10 @@ h2 {
     grid-area: s;
 }
 
+.card-no-shadow.a {
+    grid-area: a;
+}
+
 .card-no-shadow.s:hover {
     box-shadow: rgba(2, 8, 20, 0.1) 0 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0 0.175em 0.5em;
     transform: translateY(-3px) scale(1.05);
@@ -183,10 +187,10 @@ h2 {
     'm  r  t  n  s'
     'c  🌟 🌟 🌟  d'
     'c  🌟 🌟 🌟  d'
-    'c  🌟 🌟 🌟  d';
+    'c  🌟 🌟 🌟  a';
 
-    grid-template-rows: 14% auto auto auto;
-    grid-template-columns: auto auto 50% auto auto;
+    grid-template-rows: 14% auto auto 15%;
+    grid-template-columns: 10% auto 50% auto 10%;
 
     --stagger-delay: 100ms;
 }

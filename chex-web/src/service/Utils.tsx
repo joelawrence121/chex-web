@@ -49,6 +49,13 @@ function getBoardHighlight(winner: string | undefined) {
     return BoardHighlight.normal();
 }
 
+function getSan(fen: string, from: string, to: string) {
+    let chess = new Chess(fen)
+    let newMove = chess.move({to: to, from: from})
+    if (newMove) return newMove?.san
+    else return ""
+}
+
 const Utils = {
     WHITE,
     BLACK,
@@ -56,7 +63,8 @@ const Utils = {
     getTrigger,
     formatDescription,
     getBoardHighlight,
-    sliceMove
+    sliceMove,
+    getSan
 }
 
 export default Utils;

@@ -40,7 +40,7 @@ const OpeningBook: React.FC = () => {
                     let newChess = new Chess(openingDataResponse.opening.epd)
                     setChess(newChess)
                     setMoveStackString(openingDataResponse.opening.move_stack)
-                    if (speechEnabled) setSpeechText(openingDataResponse.opening.name)
+                    setSpeechText(openingDataResponse.opening.name)
                 })
                 .catch(e => {
                     console.log(e)
@@ -76,7 +76,7 @@ const OpeningBook: React.FC = () => {
                     if (openingDataResponse.opening) {
                         setOpeningData(openingDataResponse);
                         setMoveStackString(openingDataResponse.opening.move_stack)
-                        if (speechEnabled) setSpeechText(openingDataResponse.opening.name)
+                        setSpeechText(openingDataResponse.opening.name)
                     }
                 })
                 .catch(e => {
@@ -110,7 +110,7 @@ const OpeningBook: React.FC = () => {
                             to: moveSlice[1],
                             from: moveSlice[0]
                         })
-                        if (speechEnabled) setSpeechText(newMove!.san)
+                        setSpeechText(newMove!.san)
                         setChess(newChess)
                     }
                 }
@@ -121,8 +121,10 @@ const OpeningBook: React.FC = () => {
 
     // speech synthesis hook
     useEffect(() => {
-        const utterThis = new SpeechSynthesisUtterance(speechText);
-        SYNTH.speak(utterThis);
+        if (speechEnabled) {
+            const utterThis = new SpeechSynthesisUtterance(speechText);
+            SYNTH.speak(utterThis);
+        }
     }, [speechText])
 
     function onDrop(sourceSquare: string, targetSquare: string): boolean {
@@ -134,7 +136,7 @@ const OpeningBook: React.FC = () => {
         })
         setChess(newChess)
         if (move != null) {
-            if (speechEnabled) setSpeechText(move.san)
+            setSpeechText(move.san)
             let newMoveStackString
             if (moveStackString.length == 0) {
                 newMoveStackString = sourceSquare + targetSquare

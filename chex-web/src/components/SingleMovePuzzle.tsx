@@ -12,6 +12,9 @@ import rightArrow from './icons/right-arrow.png';
 import blackPawn from './icons/black-pawn.png';
 import whitePawn from './icons/white-pawn.png';
 import BoardHighlight from "../types/BoardHighlight";
+import audio from "./icons/audio.png";
+import mute from "./icons/mute.png";
+import Utils from "../service/Utils";
 
 const PUZZLE_TYPE_NAMES = new Map([
     [PuzzleType.MATE.valueOf(), "MATE IN 1"],
@@ -29,13 +32,15 @@ const PUZZLE_TYPE_DESCRIPTIONS = new Map([
 
 const SingleMovePuzzle: React.FC = () => {
 
-    // piece of state just to trigger rerender on button press
-    const [random, setRandom] = useState(Math.random());
-    const [solutionVisible, setSolutionVisible] = useState(false);
-    const [correct, setCorrect] = useState(false);
-    const [arrow, setArrow] = useState([['', '']])
+    const SYNTH = window.speechSynthesis;
     const [puzzle, setPuzzle] = useState<SinglePuzzleData>();
-    const [puzzleType, changePuzzleType] = useState(PuzzleType.MATE);
+    const [solutionVisible, setSolutionVisible] = useState(false);
+    const [speechEnabled, setSpeechEnabled] = useState(false)
+    const [speechText, setSpeechText] = useState('')
+    const [puzzleType, setPuzzleType] = useState(PuzzleType.MATE);
+    const [random, setRandom] = useState(Math.random());
+    const [correct, setCorrect] = useState(false);
+    const [arrows, setArrows] = useState([['', '']])
     const [chess, setChess] = useState(new Chess())
     const [fen, setFen] = useState<string>()
 
@@ -57,25 +62,42 @@ const SingleMovePuzzle: React.FC = () => {
             })
     }, [random, puzzleType])
 
+    // speech synthesis hook
+    useEffect(() => {
+        if (speechEnabled) {
+            const utterThis = new SpeechSynthesisUtterance(speechText);
+            SYNTH.speak(utterThis);
+        }
+    }, [speechText])
+
     function getArrows() {
         function sliceMove(solution: string | undefined) {
             return [solution?.slice(0, 2) as string, solution?.slice(2, 5) as string]
         }
 
-        let solution = puzzle?.move
-        let arrows = [sliceMove(solution)]
-        // if pin puzzle type we want to show the following move by the other player
-        if (puzzle?.type === PuzzleType.PIN.valueOf()) {
-            arrows.push(sliceMove(puzzle?.follow_move))
+        let slicedMove = sliceMove(puzzle?.move)
+        let arrows = [slicedMove]
+
+        let solutionSpeech = ""
+        if (puzzle) solutionSpeech = Utils.getSan(puzzle.starting_fen, slicedMove[0], slicedMove[1])
+
+        // on pin puzzle show following move
+        if (puzzle && puzzle.type === PuzzleType.PIN.valueOf()) {
+            let slicedFollowMove = sliceMove(puzzle.follow_move)
+            let chess = new Chess(puzzle.starting_fen)
+            chess.move({from: slicedMove[0], to: slicedMove[1]})
+            solutionSpeech += " then " + Utils.getSan(chess.fen(), slicedFollowMove[0], slicedFollowMove[1])
+            arrows.push(slicedFollowMove)
         }
+        setSpeechText(solutionSpeech)
         return arrows
     }
 
     function toggleSolution() {
         if (!solutionVisible) {
-            setArrow(getArrows())
+            setArrows(getArrows())
         } else {
-            setArrow([])
+            setArrows([])
         }
         setSolutionVisible(!solutionVisible);
     }
@@ -104,7 +126,10 @@ const SingleMovePuzzle: React.FC = () => {
 
     function switchPuzzleType() {
         const puzzleTypes = [PuzzleType.MATE, PuzzleType.GAIN, PuzzleType.SWING, PuzzleType.PIN]
-        changePuzzleType(puzzleTypes[(puzzleTypes.indexOf(puzzleType) + 1) % puzzleTypes.length])
+        const newPuzzleType = puzzleTypes[(puzzleTypes.indexOf(puzzleType) + 1) % puzzleTypes.length]
+        setPuzzleType(newPuzzleType)
+        speechSynthesis.cancel()
+        setSpeechText(PUZZLE_TYPE_DESCRIPTIONS.get(newPuzzleType)!)
     }
 
     function onDrop(sourceSquare: string, targetSquare: string): boolean {
@@ -115,11 +140,11 @@ const SingleMovePuzzle: React.FC = () => {
         if (move == null) return false;
         setFen(chess.fen())
 
-        if (puzzle?.type === PuzzleType.MATE) {
-            setCorrect(chess.inCheckmate())
-        } else {
-            setCorrect(move.from + move.to === puzzle?.move)
-        }
+        let isCorrect
+        if (puzzle?.type === PuzzleType.MATE) isCorrect = chess.inCheckmate()
+        else isCorrect = (move.from + move.to === puzzle?.move)
+        setCorrect(isCorrect)
+        if (isCorrect) setSpeechText("Correct.")
 
         return true
     }
@@ -156,12 +181,20 @@ const SingleMovePuzzle: React.FC = () => {
                     position={correct ? puzzle?.ending_fen : fen}
                     boardOrientation={puzzle?.to_move as string}
                     onPieceDrop={onDrop}
-                    arrows={arrow}
+                    arrows={arrows}
                     alternateArrows={false}
                     boardHighlight={correct ? BoardHighlight.userWinner() : BoardHighlight.normal()}
                 />
             </div>
             <div className="card-no-shadow d"></div>
+            <div className="card-no-shadow a">
+                <img onClick={() => {
+                    setSpeechEnabled(!speechEnabled)
+                    speechSynthesis.cancel()
+                }} className="tiny"
+                     src={speechEnabled ? audio : mute} alt="Enable Sound"/>
+                <p className="config-desc">Sound</p>
+            </div>
         </section>
     );
 }
