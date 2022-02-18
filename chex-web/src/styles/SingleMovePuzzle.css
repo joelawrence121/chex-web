@@ -171,6 +171,8 @@ h2 {
 }
 
 .animated-grid {
+    margin-top: 1%;
+
     height: 85vh;
 
     display: grid;
@@ -183,7 +185,7 @@ h2 {
     'c  🌟 🌟 🌟  d'
     'c  🌟 🌟 🌟  d';
 
-    grid-template-rows: 100px auto auto auto;
+    grid-template-rows: 14% auto auto auto;
     grid-template-columns: auto auto 50% auto auto;
 
     --stagger-delay: 100ms;

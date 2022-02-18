@@ -23,7 +23,7 @@ import SpeechToggle from "./SpeechToggle";
 const CommentaryBox: React.FC = () => {
 
     const BOARD_ID = "commentaryBox"
-    const synth = window.speechSynthesis;
+    const SYNTH = window.speechSynthesis;
 
     // -- CONFIG PARAMS --
     const [stockfishLevel, setStockfishLevel] = useState(3)
@@ -57,6 +57,7 @@ const CommentaryBox: React.FC = () => {
         setIsStart(true)
         setHintEnabled(false)
         setWinner(undefined)
+        speechSynthesis.cancel()
     }
 
     function undoMove() {
@@ -74,6 +75,7 @@ const CommentaryBox: React.FC = () => {
         setChess(new Chess(newFen))
         const newDescDataStack = descDataStack.slice(0, -2)
         setDescDataStack(newDescDataStack)
+        speechSynthesis.cancel()
     }
 
     function getUser() {
@@ -185,7 +187,7 @@ const CommentaryBox: React.FC = () => {
     // speech synthesis hook
     useEffect(() => {
         const utterThis = new SpeechSynthesisUtterance(speechText);
-        synth.speak(utterThis);
+        SYNTH.speak(utterThis);
     }, [speechText])
 
     useEffect(() => {

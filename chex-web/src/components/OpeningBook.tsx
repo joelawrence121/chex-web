@@ -16,8 +16,7 @@ import mute from "./icons/mute.png";
 
 const OpeningBook: React.FC = () => {
 
-    const synth = window.speechSynthesis;
-
+    const SYNTH = window.speechSynthesis;
     const [openingData, setOpeningData] = useState<OpeningData>();
     const [refresh, setRefresh] = useState(false)
     const [isStart, setIsStart] = useState(true)
@@ -123,7 +122,7 @@ const OpeningBook: React.FC = () => {
     // speech synthesis hook
     useEffect(() => {
         const utterThis = new SpeechSynthesisUtterance(speechText);
-        synth.speak(utterThis);
+        SYNTH.speak(utterThis);
     }, [speechText])
 
     function onDrop(sourceSquare: string, targetSquare: string): boolean {
@@ -154,6 +153,11 @@ const OpeningBook: React.FC = () => {
     }
 
     function onCollapsibleOpening(index: number) {
+        if (speechEnabled && openingData) {
+            let variationData = openingData.variations[index]
+            let followingMove = variationData.pgn.replace(openingData.opening.pgn, "").replace(/[0-9][.]/g, ' ')
+            setSpeechText(openingData.opening.name + " variation. " + followingMove + ". " + variationData.name)
+        }
         if (!showAnimation) {
             let variation = openingData!.variations[index]
             let moves = variation.move_stack.replace(openingData!.opening.move_stack + ' ', '').split(" ")
@@ -197,6 +201,7 @@ const OpeningBook: React.FC = () => {
                     setIsStart(false)
                     speechSynthesis.cancel()
                 }}/>
+                <p className="config-desc">Random</p>
             </div>
             <div className="opening-card no-background click turn">
                 <img className={"bigger"} src={getToMove()} alt={"to move"} onClick={() => {
@@ -205,6 +210,7 @@ const OpeningBook: React.FC = () => {
                     setAnimationMoveQueue(moveStack)
                     setIsBeginning(true)
                 }}/>
+                <p className="config-desc">Show</p>
             </div>
             <div className="opening-card no-background click play">
                 <img onClick={() => {
@@ -212,6 +218,7 @@ const OpeningBook: React.FC = () => {
                     speechSynthesis.cancel()
                 }} className="tiny"
                      src={speechEnabled ? audio : mute} alt="Enable Sound"/>
+                <p className="config-desc">Sound</p>
             </div>
             <div className="opening-card no-background pgn">
                 <p>{openingData?.opening.pgn}</p>

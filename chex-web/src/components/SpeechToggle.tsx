@@ -15,6 +15,7 @@ function SpeechToggle(props: SpeechToggleProps) {
 
     function toggleSpeechMode() {
         const nextMode = speechModes[(speechModes.indexOf(props.speechMode) + 1) % speechModes.length]
+        speechSynthesis.cancel()
         if (nextMode != SpeechMode.OFF) {
             props.setSpeechText(nextMode.valueOf())
         }
